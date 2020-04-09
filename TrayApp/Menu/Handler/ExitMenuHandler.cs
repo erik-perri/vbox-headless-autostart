@@ -15,8 +15,8 @@ namespace TrayApp.Menu.Handler
         {
             logger.LogTrace(".ctor");
 
-            this.logger = logger;
-            this.trayIconManager = trayIconManager;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.trayIconManager = trayIconManager ?? throw new ArgumentNullException(nameof(trayIconManager));
         }
 
         public int GetSortOrder()

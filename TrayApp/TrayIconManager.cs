@@ -14,8 +14,8 @@ namespace TrayApp
         {
             logger.LogTrace(".ctor");
 
-            this.logger = logger;
-            trayIcon = new NotifyIcon()
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.trayIcon = new NotifyIcon()
             {
                 Icon = Properties.Resources.TrayIcon,
                 Text = Properties.Resources.TrayTitle,

@@ -13,7 +13,7 @@ namespace TrayApp.Menu.Handler
         {
             logger.LogTrace(".ctor");
 
-            this.logger = logger;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public int GetSortOrder()

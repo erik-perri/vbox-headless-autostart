@@ -18,7 +18,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.metadataReader = metadataReader;
+            this.metadataReader = metadataReader ?? throw new ArgumentNullException(nameof(metadataReader));
         }
 
         public IMachine[] LocateMachines(bool loadMetadata)

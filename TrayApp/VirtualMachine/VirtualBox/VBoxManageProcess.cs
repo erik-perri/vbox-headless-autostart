@@ -8,6 +8,11 @@ namespace TrayApp.VirtualMachine.VirtualBox
     {
         public VBoxManageProcess(string arguments)
         {
+            if (arguments == null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
             var installPath = InstallPathLocator.FindInstallPath();
             if (installPath == null || !Directory.Exists(installPath))
             {
