@@ -8,7 +8,8 @@ namespace TrayApp.Menu.Handler
     {
         private readonly ILogger<ExitMenuHandler> logger;
         private readonly TrayIconManager trayIconManager;
-        private ToolStripMenuItem menuItem;
+        private ToolStripItem menuItemSeparator;
+        private ToolStripItem menuItemExit;
 
         public ExitMenuHandler(ILogger<ExitMenuHandler> logger, TrayIconManager trayIconManager)
         {
@@ -25,10 +26,16 @@ namespace TrayApp.Menu.Handler
 
         public ToolStripItem[] CreateMenuItems()
         {
-            menuItem?.Dispose();
-            menuItem = new ToolStripMenuItem("E&xit", null, OnExit);
+            menuItemSeparator?.Dispose();
+            menuItemSeparator = new ToolStripSeparator();
 
-            return new ToolStripItem[] { menuItem };
+            menuItemExit?.Dispose();
+            menuItemExit = new ToolStripMenuItem("E&xit", null, OnExit);
+
+            return new ToolStripItem[] {
+                menuItemSeparator,
+                menuItemExit,
+            };
         }
 
         private void OnExit(object sender, EventArgs e)
@@ -51,8 +58,8 @@ namespace TrayApp.Menu.Handler
 
             if (disposing)
             {
-                menuItem?.Dispose();
-                menuItem = null;
+                menuItemSeparator?.Dispose();
+                menuItemExit?.Dispose();
             }
         }
     }
