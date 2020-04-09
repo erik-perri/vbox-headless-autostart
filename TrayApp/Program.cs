@@ -22,11 +22,8 @@ namespace TrayApp
             Application.SetCompatibleTextRenderingDefault(false);
 
             using var serviceProvider = new ServiceCollection()
-                .AddLogging(builder =>
-                {
-                    builder.SetMinimumLevel(LogLevel.Trace);
-                    builder.AddNLog("NLog.config.xml");
-                })
+                .AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddNLog("NLog.config.xml"))
+
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
                     .AddSingleton<TrayIconManager>()
