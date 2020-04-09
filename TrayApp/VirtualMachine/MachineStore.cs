@@ -56,20 +56,20 @@ namespace TrayApp.VirtualMachine
             {
                 if (oldMachines == null)
                 {
-                    logger.LogDebug(" - Machine added: \"{new}\"", newMachine.Uuid);
+                    logger.LogDebug($" - Machine added: \"{newMachine.Uuid}\"");
                     continue;
                 }
 
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
                 if (oldMachine == null)
                 {
-                    logger.LogDebug(" - Machine added: \"{new}\"", newMachine.Uuid);
+                    logger.LogDebug($" - Machine added: \"{newMachine.Uuid}\"");
                     continue;
                 }
 
                 if (!oldMachine.Equals(newMachine))
                 {
-                    logger.LogDebug(" - Machine changed: \"{new}\"", newMachine.Uuid);
+                    logger.LogDebug($" - Machine changed: \"{newMachine.Uuid}\"");
                     logger.LogDebug("     Old: {machine}", new
                     {
                         oldMachine.Uuid,
@@ -91,7 +91,7 @@ namespace TrayApp.VirtualMachine
                 {
                     if (Array.Find(newMachines, m => m.Uuid == oldMachine.Uuid) == null)
                     {
-                        logger.LogDebug(" - Machine removed: \"{new}\"", oldMachine.Uuid);
+                        logger.LogDebug($" - Machine removed: \"{oldMachine.Uuid}\"");
                     }
                 }
             }
