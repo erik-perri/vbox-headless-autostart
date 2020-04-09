@@ -20,14 +20,14 @@ namespace TrayApp
                     builder.SetMinimumLevel(LogLevel.Trace);
                     builder.AddNLog("NLog.config.xml");
                 })
-                .AddSingleton<TrayAppContext>()
+                .AddSingleton<TrayApplicationContext>()
                 .BuildServiceProvider();
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var context = serviceProvider.GetService<TrayAppContext>();
+            using var context = serviceProvider.GetService<TrayApplicationContext>();
 
             Application.Run(context);
         }
