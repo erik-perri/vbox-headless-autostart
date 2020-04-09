@@ -29,14 +29,15 @@ namespace TrayApp
                 })
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
-
-                    // Dependencies
                     .AddSingleton<TrayIconManager>()
                     .AddSingleton<TrayContextMenuStrip>()
 
-                // Menu handlers
-                .AddSingleton<IMenuHandler, ExitMenuHandler>()
-                .AddSingleton(provider => new TrayContextMenuStrip(provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray()))
+                // Menu
+                .AddSingleton(provider => new TrayContextMenuStrip(
+                    provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray()
+                ))
+                    .AddSingleton<IMenuHandler, ExitMenuHandler>()
+                    .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
 
                 .BuildServiceProvider();
 
