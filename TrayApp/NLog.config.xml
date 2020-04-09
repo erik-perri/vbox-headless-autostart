@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  See https://github.com/nlog/nlog/wiki/Configuration-file for information on customizing logging rules and outputs.
+   -->
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.nlog-project.org/schemas/NLog.xsd NLog.xsd"
+      autoReload="true">
+
+  <variable name="LogPath" value="${specialfolder:folder=UserProfile}\\.VirtualBox" />
+  <variable name="LogFile" value="${LogPath}\\VBoxHeadlessAutoStart.log" />
+
+  <targets>
+    <!--
+    See https://github.com/nlog/NLog/wiki/Targets for possible targets.
+    See https://github.com/nlog/NLog/wiki/Layout-Renderers for the possible layout renderers.
+    -->
+    <target xsi:type="File"
+            name="infoFile"
+            fileName="${LogFile}"
+            layout="${longdate} ${level:uppercase=true:padding=-5} ${message} ${exception:format=tostring}"
+            archiveFileName="${LogFile}.{#}"
+            archiveEvery="Day"
+            archiveNumbering="Rolling"
+            maxArchiveFiles="7" />
+
+    <target xsi:type="Trace"
+            name="debugString"
+            layout="VBoxHeadlessAutoStart ${longdate} ${level:uppercase=true:padding=-5} [${logger:padding=-35}] ${message}" />
+  </targets>
+
+  <rules>
+    <!-- Levels: Debug | Info | Warn | Error | Fatal | Trace -->
+    <logger name="*" minlevel="Trace" writeTo="debugString" />
+    <logger name="*" minlevel="Info" writeTo="infoFile" />
+  </rules>
+</nlog>
