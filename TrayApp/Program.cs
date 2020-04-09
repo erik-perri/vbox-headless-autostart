@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp
 {
@@ -35,6 +36,12 @@ namespace TrayApp
                 ))
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
+
+                // Machine locator
+                .AddSingleton<MachineStore>()
+                .AddSingleton<MachineStoreUpdater>()
+                .AddSingleton<ILocatorService, VirtualMachine.VirtualBox.LocatorService>()
+                    .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
 
                 .BuildServiceProvider();
 
