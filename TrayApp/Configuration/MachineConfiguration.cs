@@ -27,5 +27,15 @@ namespace TrayApp.Configuration
         {
             return HashCode.Combine(Uuid.GetHashCode(StringComparison.Ordinal), SaveState, AutoStart);
         }
+
+        public static MachineConfiguration GetDefaultConfiguration(string uuid)
+        {
+            return new MachineConfiguration()
+            {
+                Uuid = uuid,
+                AutoStart = false,
+                SaveState = true,
+            };
+        }
     }
 }

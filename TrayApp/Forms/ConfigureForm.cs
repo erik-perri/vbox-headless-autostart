@@ -60,13 +60,20 @@ namespace TrayApp.Forms
             foreach (var machine in machines)
             {
                 var configuration = Array.Find(machineConfigurations, c => c.Uuid == machine.Uuid);
+                var monitored = configuration != null;
+
+                if (configuration == null)
+                {
+                    configuration = MachineConfiguration.GetDefaultConfiguration(machine.Uuid);
+                }
+
                 currentRows.Add(new MachineRow()
                 {
-                    Monitored = configuration != null,
+                    Monitored = monitored,
                     Uuid = machine.Uuid,
                     Name = machine.Name,
-                    AutoStart = configuration != null ? configuration.AutoStart : false,
-                    SaveState = configuration != null ? configuration.SaveState : true,
+                    AutoStart = configuration.AutoStart,
+                    SaveState = configuration.SaveState,
                 });
             }
 
