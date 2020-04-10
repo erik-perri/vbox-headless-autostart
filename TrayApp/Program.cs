@@ -61,6 +61,10 @@ namespace TrayApp
             // Set the log level from the configuration
             LogLevelConfigurationManager.SetLogLevel(configurationStore.GetConfiguration().LogLevel);
 
+            // Start the machine state monitor
+            var machineStoreUpdater = serviceProvider.GetService<MachineStoreUpdater>();
+            machineStoreUpdater.StartMonitor();
+
             // Run the application
             var context = serviceProvider.GetService<TrayApplicationContext>();
 

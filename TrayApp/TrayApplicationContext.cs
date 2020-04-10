@@ -31,8 +31,6 @@ namespace TrayApp
             iconManager.Show();
 
             contextMenu.CreateContextMenu();
-
-            machineStoreUpdater.StartMonitor();
         }
 
         protected override void Dispose(bool disposing)
