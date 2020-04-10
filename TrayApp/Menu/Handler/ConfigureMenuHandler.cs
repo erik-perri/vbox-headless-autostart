@@ -13,8 +13,8 @@ namespace TrayApp.Menu.Handler
         private readonly ILogger<ConfigureMenuHandler> logger;
         private readonly ConfigurationStore configurationStore;
         private readonly ILocatorService locatorService;
-        private ToolStripMenuItem menuItem;
         private readonly IConfigurationWriter configurationWriter;
+        private ToolStripMenuItem menuItem;
 
         public ConfigureMenuHandler(
             ILogger<ConfigureMenuHandler> logger,

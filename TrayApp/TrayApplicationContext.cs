@@ -51,7 +51,7 @@ namespace TrayApp
             {
                 if (contextMenu.InvokeRequired)
                 {
-                    logger.LogTrace($"RecreateContextMenu (Invoking)");
+                    logger.LogTrace("CreateContextMenu (Invoking)");
 
                     // TODO Same as UpdateContextMenu
                     Task.Factory.StartNew(
@@ -63,7 +63,7 @@ namespace TrayApp
                     return;
                 }
 
-                logger.LogTrace($"RecreateContextMenu");
+                logger.LogTrace("CreateContextMenu");
 
                 contextMenu.CreateContextMenu();
             }
@@ -75,7 +75,7 @@ namespace TrayApp
             {
                 if (contextMenu.InvokeRequired)
                 {
-                    logger.LogTrace($"UpdateContextMenu (Invoking)");
+                    logger.LogTrace("UpdateContextMenu (Invoking)");
 
                     // TODO Figure out why this doesn't work without a new thread. If it is run in this thread the menu
                     //      fails to update and stops responding to the mouse with no errors.  If Invoke is removed we get
@@ -89,7 +89,7 @@ namespace TrayApp
                     return;
                 }
 
-                logger.LogTrace($"UpdateContextMenu");
+                logger.LogTrace("UpdateContextMenu");
 
                 contextMenu.UpdateContextMenu();
             }
