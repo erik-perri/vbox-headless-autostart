@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace TrayApp.Configuration
@@ -17,7 +15,7 @@ namespace TrayApp.Configuration
         [XmlArray("Machines")]
 #pragma warning disable CA1819 // Properties should not return arrays
         public MachineConfiguration[] Machines { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
 
+#pragma warning restore CA1819 // Properties should not return arrays
     }
 }

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace TrayApp.Configuration
 {
@@ -30,7 +29,7 @@ namespace TrayApp.Configuration
         {
             var hashCode = LogLevel.GetHashCode();
 
-            foreach(var machine in Machines)
+            foreach (var machine in Machines)
             {
                 hashCode = HashCode.Combine(hashCode, machine.GetHashCode());
             }

@@ -48,7 +48,7 @@ namespace TrayApp.Configuration
         private LogLevel ReadLogLevel(XmlDocument document)
         {
             var level = ReadString(document, "/Configuration/LogLevel");
-            
+
             if (!Enum.TryParse(level, out LogLevel logLevel))
             {
                 logger.LogError($"Unknown LogLevel \"{level}\" specified");

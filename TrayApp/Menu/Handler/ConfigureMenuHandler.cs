@@ -58,7 +58,7 @@ namespace TrayApp.Menu.Handler
                 {
                     configurationWriter.WriteConfiguration(form.UpdatedConfiguration);
                 }
-                catch(Exception exception) when (exception is InvalidOperationException ||
+                catch (Exception exception) when (exception is InvalidOperationException ||
                                                  exception is DirectoryNotFoundException)
                 {
                     logger.LogError(exception, "Failed to write configuration");
