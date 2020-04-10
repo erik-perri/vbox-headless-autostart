@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using TrayApp.Configuration;
+using TrayApp.Logging;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
 using TrayApp.VirtualMachine;
@@ -55,6 +56,9 @@ namespace TrayApp
             // Load the configuration into the store
             var configurationStore = serviceProvider.GetService<ConfigurationStore>();
             configurationStore.UpdateConfiguration();
+
+            // Set the log level from the configuration
+            LogLevelConfigurationManager.SetLogLevel(configurationStore.GetConfiguration().LogLevel);
 
             // Run the application
             var context = serviceProvider.GetService<TrayApplicationContext>();
