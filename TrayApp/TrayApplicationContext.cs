@@ -38,13 +38,13 @@ namespace TrayApp
             iconManager.SetContextMenu(contextMenu);
             iconManager.Show();
 
-            machineStore.OnMachineChange += (object _, EventArgs __) => RecreateContextMenu();
+            machineStore.OnMachineChange += (object _, EventArgs __) => CreateContextMenu();
             machineStore.OnStateChange += (object _, EventArgs __) => UpdateContextMenu();
 
-            RecreateContextMenu();
+            CreateContextMenu();
         }
 
-        private void RecreateContextMenu()
+        private void CreateContextMenu()
         {
             logger.LogTrace($"RecreateContextMenu");
 
