@@ -8,7 +8,6 @@ namespace TrayApp.VirtualMachine
 {
     public class MachineStore
     {
-        private readonly object machineLock = new object();
         private readonly List<IMachine> machines = new List<IMachine>();
 
         private readonly ILogger<MachineStore> logger;
@@ -32,18 +31,12 @@ namespace TrayApp.VirtualMachine
 
         public IMachine[] GetMachines()
         {
-            lock (machineLock)
-            {
-                return machines.ToArray();
-            }
+            return machines.ToArray();
         }
 
         public void UpdateMachines()
         {
-            lock (machineLock)
-            {
-                SetMachines(locatorService.LocateMachines(machineFilter, true));
-            }
+            SetMachines(locatorService.LocateMachines(machineFilter, true));
         }
 
         private void SetMachines(IMachine[] newMachines)
@@ -53,24 +46,21 @@ namespace TrayApp.VirtualMachine
                 throw new ArgumentNullException(nameof(newMachines));
             }
 
-            lock (machineLock)
+            var oldMachines = machines.ToArray();
+            machines.Clear();
+            machines.AddRange(newMachines);
+
+            if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(oldMachines.OrderBy(m => m.Uuid)))
             {
-                var oldMachines = machines.ToArray();
-                machines.Clear();
-                machines.AddRange(newMachines);
+                DumpMachineListChanges(oldMachines, newMachines);
 
-                if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(oldMachines.OrderBy(m => m.Uuid)))
+                if (WasMachineListChanged(oldMachines, newMachines))
                 {
-                    DumpMachineListChanges(oldMachines, newMachines);
-
-                    if (WasMachineListChanged(oldMachines, newMachines))
-                    {
-                        OnMachineChange?.Invoke(this, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        OnStateChange?.Invoke(this, EventArgs.Empty);
-                    }
+                    OnMachineChange?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    OnStateChange?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

@@ -9,7 +9,6 @@ namespace TrayApp.Configuration
 {
     public class ConfigurationStore
     {
-        private readonly object configurationLock = new object();
         private readonly ILogger<ConfigurationStore> logger;
         private TrayConfiguration configuration;
         private readonly IConfigurationReader configurationReader;
@@ -24,30 +23,24 @@ namespace TrayApp.Configuration
 
         public TrayConfiguration GetConfiguration()
         {
-            lock (configurationLock)
-            {
-                return configuration;
-            }
+            return configuration;
         }
 
         public void UpdateConfiguration()
         {
-            lock (configurationLock)
+            var configuration = configurationReader.ReadConfiguration();
+
+            if (configuration == null)
             {
-                var configuration = configurationReader.ReadConfiguration();
-
-                if (configuration == null)
+                configuration = new TrayConfiguration()
                 {
-                    configuration = new TrayConfiguration()
-                    {
-                        LogLevel = LogLevelConfigurationManager.DefaultLevel,
-                        ShowKeepAwakeMenu = false,
-                        Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
-                    };
-                }
-
-                SetConfiguration(configuration);
+                    LogLevel = LogLevelConfigurationManager.DefaultLevel,
+                    ShowKeepAwakeMenu = false,
+                    Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
+                };
             }
+
+            SetConfiguration(configuration);
         }
 
         private void SetConfiguration(TrayConfiguration newConfiguration)
@@ -57,17 +50,14 @@ namespace TrayApp.Configuration
                 throw new ArgumentNullException(nameof(newConfiguration));
             }
 
-            lock (configurationLock)
+            var previousConfiguration = configuration;
+            configuration = newConfiguration;
+
+            if (!newConfiguration.Equals(previousConfiguration))
             {
-                var previousConfiguration = configuration;
-                configuration = newConfiguration;
+                DumpChanges(previousConfiguration, newConfiguration);
 
-                if (!newConfiguration.Equals(previousConfiguration))
-                {
-                    DumpChanges(previousConfiguration, newConfiguration);
-
-                    OnConfigurationChange?.Invoke(this, EventArgs.Empty);
-                }
+                OnConfigurationChange?.Invoke(this, EventArgs.Empty);
             }
         }
 

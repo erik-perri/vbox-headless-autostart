@@ -176,9 +176,9 @@ namespace TrayApp.Menu.Handler
         {
             if (menuItems != null)
             {
-                foreach (var menuItem in menuItems)
+                foreach (var menuItem in menuItems.Values)
                 {
-                    menuItem.Value.Dispose();
+                    menuItem.Dispose();
                 }
                 menuItems.Clear();
             }

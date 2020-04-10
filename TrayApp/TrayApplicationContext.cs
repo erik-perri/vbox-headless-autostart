@@ -53,13 +53,7 @@ namespace TrayApp
                 {
                     logger.LogTrace("CreateContextMenu (Invoking)");
 
-                    // TODO Same as UpdateContextMenu
-                    Task.Factory.StartNew(
-                        () => contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.CreateContextMenu(); })),
-                        CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskScheduler.Default
-                    );
+                    contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.CreateContextMenu(); }));
                     return;
                 }
 
@@ -77,15 +71,7 @@ namespace TrayApp
                 {
                     logger.LogTrace("UpdateContextMenu (Invoking)");
 
-                    // TODO Figure out why this doesn't work without a new thread. If it is run in this thread the menu
-                    //      fails to update and stops responding to the mouse with no errors.  If Invoke is removed we get
-                    //      the normal cannot update control from a different thread error.
-                    Task.Factory.StartNew(
-                        () => contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.UpdateContextMenu(); })),
-                        CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskScheduler.Default
-                    );
+                    contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.UpdateContextMenu(); }));
                     return;
                 }
 
