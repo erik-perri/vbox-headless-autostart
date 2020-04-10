@@ -44,6 +44,25 @@ namespace TrayApp
             RecreateContextMenu();
         }
 
+        private void RecreateContextMenu()
+        {
+            logger.LogTrace($"RecreateContextMenu");
+
+            if (contextMenu.InvokeRequired)
+            {
+                // TODO Same as UpdateContextMenu
+                Task.Factory.StartNew(
+                    () => contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.CreateContextMenu(); })),
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskScheduler.Default
+                );
+                return;
+            }
+
+            contextMenu.CreateContextMenu();
+        }
+
         private void UpdateContextMenu()
         {
             logger.LogTrace($"UpdateContextMenu");
@@ -63,25 +82,6 @@ namespace TrayApp
             }
 
             contextMenu.UpdateContextMenu();
-        }
-
-        private void RecreateContextMenu()
-        {
-            logger.LogTrace($"RecreateContextMenu");
-
-            if (contextMenu.InvokeRequired)
-            {
-                // TODO Same as UpdateContextMenu
-                Task.Factory.StartNew(
-                    () => contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.CreateContextMenu(); })),
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.Default
-                );
-                return;
-            }
-
-            contextMenu.CreateContextMenu();
         }
 
         protected override void Dispose(bool disposing)
