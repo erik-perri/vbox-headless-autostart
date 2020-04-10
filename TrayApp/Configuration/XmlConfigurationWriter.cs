@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace TrayApp.Configuration
@@ -14,25 +15,26 @@ namespace TrayApp.Configuration
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public bool WriteConfiguration(TrayConfiguration configuration)
+        public void WriteConfiguration(TrayConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
 
-            try
+            var configuratingMapping = new TrayConfigurationXml()
             {
-                var writer = new XmlSerializer(typeof(TrayConfiguration));
-                var stream = File.Create(configurationFile);
-                writer.Serialize(stream, configuration);
-                stream.Close();
-                return true;
-            }
-            catch (Exception e) when (e is InvalidOperationException
-                                    || e is DirectoryNotFoundException)
-            {
-                logger.LogError(e, $"Failed to write configuration to \"{configurationFile}\"");
-            }
+                LogLevel = configuration.LogLevel,
+                ShowKeepAwakeMenu = configuration.ShowKeepAwakeMenu,
+                Machines = configuration.Machines.ToArray(),
+            };
 
-            return false;
+            var writer = new XmlSerializer(typeof(TrayConfigurationXml));
+            var stream = File.Create(configurationFile);
+            writer.Serialize(stream, configuratingMapping);
+            stream.Close();
         }
     }
 }
