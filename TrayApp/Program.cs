@@ -4,6 +4,7 @@ using NLog.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using TrayApp.Configuration;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
 using TrayApp.VirtualMachine;
@@ -43,6 +44,11 @@ namespace TrayApp
                 .AddSingleton<MachineStoreUpdater>()
                 .AddSingleton<ILocatorService, VirtualMachine.VirtualBox.LocatorService>()
                     .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
+
+                // Configuration
+                .AddSingleton<ConfigurationStore>()
+                .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
+                .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
                 .BuildServiceProvider();
 
