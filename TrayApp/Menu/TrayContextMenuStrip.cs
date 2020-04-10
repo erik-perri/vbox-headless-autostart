@@ -7,6 +7,7 @@ namespace TrayApp.Menu
 {
     public class TrayContextMenuStrip : ContextMenuStrip
     {
+        private readonly object updateLock = new object();
         private readonly ILogger<TrayContextMenuStrip> logger;
         private readonly IMenuHandler[] handlers;
 
@@ -27,25 +28,31 @@ namespace TrayApp.Menu
 
         public void CreateContextMenu()
         {
-            Items.Clear();
-
-            foreach (var handler in handlers)
+            lock (updateLock)
             {
-                var items = handler.CreateMenuItems();
-                if (items.Length > 0)
+                Items.Clear();
+
+                foreach (var handler in handlers)
                 {
-                    Items.AddRange(items);
+                    var items = handler.CreateMenuItems();
+                    if (items.Length > 0)
+                    {
+                        Items.AddRange(items);
+                    }
                 }
             }
         }
 
         public void UpdateContextMenu()
         {
-            foreach (var handler in handlers)
+            lock (updateLock)
             {
-                if (handler is IMenuHandlerUpdateAware updateHandler)
+                foreach (var handler in handlers)
                 {
-                    updateHandler.UpdateMenuItems();
+                    if (handler is IMenuHandlerUpdateAware updateHandler)
+                    {
+                        updateHandler.UpdateMenuItems();
+                    }
                 }
             }
         }
