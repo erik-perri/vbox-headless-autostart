@@ -52,6 +52,11 @@ namespace TrayApp
 
                 .BuildServiceProvider();
 
+            // Load the configuration into the store
+            var configurationStore = serviceProvider.GetService<ConfigurationStore>();
+            configurationStore.UpdateConfiguration();
+
+            // Run the application
             var context = serviceProvider.GetService<TrayApplicationContext>();
 
             Application.Run(context);
