@@ -93,9 +93,7 @@ namespace TrayApp.Menu.Handler
                         {
                             case "Headless start":
                             case "Normal start":
-                                item.Enabled = machine.Metadata.State == MachineState.Aborted
-                                    || machine.Metadata.State == MachineState.PoweredOff
-                                    || machine.Metadata.State == MachineState.StateSaved;
+                                item.Enabled = machine.IsPoweredOff;
                                 break;
 
                             case "Save State":
@@ -103,7 +101,7 @@ namespace TrayApp.Menu.Handler
                             case "Power off":
                             case "Pause":
                             case "Reset":
-                                item.Enabled = machine.Metadata.State == MachineState.Running;
+                                item.Enabled = machine.IsPoweredOn;
                                 break;
                         }
                     }
