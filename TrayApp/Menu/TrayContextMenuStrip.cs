@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Windows.Forms;
 using TrayApp.Menu.Handler;
 
@@ -6,11 +7,22 @@ namespace TrayApp.Menu
 {
     public class TrayContextMenuStrip : ContextMenuStrip
     {
+        private readonly ILogger<TrayContextMenuStrip> logger;
         private readonly IMenuHandler[] handlers;
 
-        public TrayContextMenuStrip(IMenuHandler[] handlers)
+        public TrayContextMenuStrip(ILogger<TrayContextMenuStrip> logger, IMenuHandler[] handlers)
         {
+            logger.LogTrace(".ctor");
+
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            logger.LogTrace($"Dispose({disposing})");
+
+            base.Dispose(disposing);
         }
 
         public void CreateContextMenu()

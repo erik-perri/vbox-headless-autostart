@@ -15,8 +15,6 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
         public LocatorService(ILogger<LocatorService> logger, MetadataReader metadataReader)
         {
-            logger.LogTrace(".ctor");
-
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.metadataReader = metadataReader ?? throw new ArgumentNullException(nameof(metadataReader));
         }

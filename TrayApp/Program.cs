@@ -32,6 +32,7 @@ namespace TrayApp
 
                 // Menu
                 .AddSingleton(provider => new TrayContextMenuStrip(
+                    provider.GetService<ILogger<TrayContextMenuStrip>>(),
                     provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray()
                 ))
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()

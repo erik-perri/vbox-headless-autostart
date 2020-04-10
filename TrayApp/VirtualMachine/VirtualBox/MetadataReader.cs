@@ -12,8 +12,6 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
         public MetadataReader(ILogger<MetadataReader> logger)
         {
-            logger.LogTrace(".ctor");
-
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
