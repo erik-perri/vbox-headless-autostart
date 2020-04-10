@@ -54,6 +54,17 @@ namespace TrayApp.Menu.Handler
 
             if (result == DialogResult.OK)
             {
+                if (form.UpdatedConfiguration.Equals(configurationStore.GetConfiguration()))
+                {
+                    MessageBox.Show(
+                        $"Nothing changed.",
+                        Properties.Resources.TrayTitle,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                    return;
+                }
+
                 try
                 {
                     configurationWriter.WriteConfiguration(form.UpdatedConfiguration);
