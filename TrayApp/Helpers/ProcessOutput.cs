@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace TrayApp.Extensions
+namespace TrayApp.Helpers
 {
     public class ProcessOutput
     {

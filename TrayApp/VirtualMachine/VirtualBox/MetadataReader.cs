@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using TrayApp.Extensions;
+using TrayApp.Helpers;
 
 namespace TrayApp.VirtualMachine.VirtualBox
 {
