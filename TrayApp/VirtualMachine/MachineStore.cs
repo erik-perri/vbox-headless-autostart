@@ -103,7 +103,7 @@ namespace TrayApp.VirtualMachine
                 throw new ArgumentNullException(nameof(newMachines));
             }
 
-            logger.LogDebug("Machines modified");
+            logger.LogDebug("Machine store changed");
 
             var added = newMachines.Except(oldMachines, new UuidEqualityComparer());
             var removed = oldMachines.Except(newMachines, new UuidEqualityComparer());

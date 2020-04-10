@@ -9,7 +9,7 @@
 
   <variable name="LogPath" value="${specialfolder:folder=UserProfile}\\.VirtualBox" />
   <variable name="LogFile" value="${LogPath}\\VBoxHeadlessAutoStart.log" />
-  <variable name="LogLevel" value="${gdc:LogLevel:whenEmpty=Info}" />
+  <variable name="LogLevel" value="${gdc:LogLevel:whenEmpty=Trace}" />
 
   <targets>
     <!--
@@ -19,7 +19,7 @@
     <target xsi:type="File"
             name="infoFile"
             fileName="${LogFile}"
-            layout="${longdate} ${logger:shortName=true:padding=25} ${level:uppercase=true:padding=-5} ${message} ${exception:format=tostring}"
+            layout="${longdate} ${level:uppercase=true:padding=-5} ${message} [${logger:shortName=true}] ${exception:format=tostring}"
             archiveFileName="${LogFile}.{#}"
             archiveEvery="Day"
             archiveNumbering="Rolling"

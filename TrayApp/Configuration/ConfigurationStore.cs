@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using TrayApp.Logging;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.Configuration
 {
@@ -33,12 +35,18 @@ namespace TrayApp.Configuration
         {
             lock (configurationLock)
             {
-                var configuration = configurationReader.ReadConfiguration() ?? new TrayConfiguration()
+                var configuration = configurationReader.ReadConfiguration();
+
+                if (configuration == null)
                 {
-                    LogLevel = LogLevelConfigurationManager.DefaultLevel,
-                    ShowKeepAwakeMenu = false,
-                    Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
-                };
+                    configuration = new TrayConfiguration()
+                    {
+                        LogLevel = LogLevelConfigurationManager.DefaultLevel,
+                        ShowKeepAwakeMenu = false,
+                        Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
+                    };
+                }
+
                 SetConfiguration(configuration);
             }
         }
@@ -66,77 +74,70 @@ namespace TrayApp.Configuration
 
         private void DumpChanges(TrayConfiguration oldConfiguration, TrayConfiguration newConfiguration)
         {
-            logger.LogDebug("Configuration modified");
+            if (newConfiguration == null)
+            {
+                throw new ArgumentNullException(nameof(newConfiguration));
+            }
+
+            logger.LogDebug("Configuration store changed");
 
             if (oldConfiguration?.LogLevel != newConfiguration?.LogLevel)
             {
-                logger.LogDebug(
-                    $" - Log level changed: \"{oldConfiguration?.LogLevel}\" -> \"{newConfiguration?.LogLevel}\""
-                );
+                var newValue = FormattableString.Invariant($"\"{newConfiguration.LogLevel}\"");
+                var oldValue = oldConfiguration == null
+                    ? "null"
+                    : FormattableString.Invariant($"\"{oldConfiguration.LogLevel}\"");
+
+                logger.LogDebug($" - LogLevel changed: {oldValue} -> {newValue}");
             }
 
             if (oldConfiguration?.ShowKeepAwakeMenu != newConfiguration?.ShowKeepAwakeMenu)
             {
-                logger.LogDebug(
-                    $" - Show keep awake menu changed: \"{oldConfiguration?.ShowKeepAwakeMenu}\" -> \"{newConfiguration?.ShowKeepAwakeMenu}\""
-                );
+                var newValue = FormattableString.Invariant($"\"{newConfiguration.ShowKeepAwakeMenu}\"");
+                var oldValue = oldConfiguration == null
+                    ? "null"
+                    : FormattableString.Invariant($"\"{oldConfiguration.ShowKeepAwakeMenu}\"");
+                
+                logger.LogDebug($" - ShowKeepAwakeMenu changed: {oldValue} -> {newValue}");
             }
 
-            if (newConfiguration?.Machines != null)
+            DumpMachineListChanges(oldConfiguration?.Machines.ToArray(), newConfiguration.Machines.ToArray());
+        }
+        private void DumpMachineListChanges(MachineConfiguration[] oldMachines, MachineConfiguration[] newMachines)
+        {
+            if (newMachines == null)
             {
-                foreach (var newMachine in newConfiguration.Machines)
-                {
-                    var newLog = new
-                    {
-                        newMachine.Uuid,
-                        newMachine.AutoStart,
-                        newMachine.SaveState,
-                    };
-
-                    if (oldConfiguration == null)
-                    {
-                        logger.LogDebug($" - Added: {newLog}");
-                        continue;
-                    }
-
-                    var oldMachine = oldConfiguration.Machines.FirstOrDefault(m => m.Uuid == newMachine.Uuid);
-                    if (oldMachine == null)
-                    {
-                        logger.LogDebug($" - Added: {newLog}");
-                        continue;
-                    }
-
-                    if (!oldMachine.Equals(newMachine))
-                    {
-                        var oldLog = new
-                        {
-                            oldMachine.Uuid,
-                            oldMachine.AutoStart,
-                            oldMachine.SaveState,
-                        };
-
-                        logger.LogDebug($" - Changed:");
-                        logger.LogDebug($"     Old: {oldLog}");
-                        logger.LogDebug($"     New: {newLog}");
-                    }
-                }
+                throw new ArgumentNullException(nameof(newMachines));
+            }
+            
+            if (oldMachines == null)
+            {
+                oldMachines = Array.Empty<MachineConfiguration>();
             }
 
-            if (oldConfiguration?.Machines != null)
-            {
-                foreach (var oldMachine in oldConfiguration.Machines)
-                {
-                    if (!newConfiguration.Machines.Any(m => m.Uuid == oldMachine.Uuid))
-                    {
-                        var oldLog = new
-                        {
-                            oldMachine.Uuid,
-                            oldMachine.AutoStart,
-                            oldMachine.SaveState,
-                        };
+            logger.LogDebug(" - Machines changed");
 
-                        logger.LogDebug($" - Removed: {oldLog}");
-                    }
+            var added = newMachines.Except(oldMachines, new UuidEqualityComparer());
+            var removed = oldMachines.Except(newMachines, new UuidEqualityComparer());
+
+            foreach (var machine in added)
+            {
+                logger.LogDebug($"    - Added:   {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
+            }
+
+            foreach (var machine in removed)
+            {
+                logger.LogDebug($"    - Removed: {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
+            }
+
+            foreach (var newMachine in newMachines)
+            {
+                var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
+                if (oldMachine?.Equals(newMachine) == false)
+                {
+                    logger.LogDebug($"    - Changed:");
+                    logger.LogDebug($"        Old: {new { oldMachine.Uuid, oldMachine.AutoStart, oldMachine.SaveState }}");
+                    logger.LogDebug($"        New: {new { newMachine.Uuid, newMachine.AutoStart, newMachine.SaveState }}");
                 }
             }
         }
