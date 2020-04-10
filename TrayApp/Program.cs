@@ -45,7 +45,7 @@ namespace TrayApp
                 .AddSingleton<MachineStoreUpdater>()
                 .AddSingleton<ILocatorService, VirtualMachine.VirtualBox.LocatorService>()
                     .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
-                    .AddSingleton<VirtualMachine.MonitoredMachineFilter>()
+                    .AddSingleton<MonitoredMachineFilter>()
 
                 // Configuration
                 .AddSingleton<ConfigurationStore>()
