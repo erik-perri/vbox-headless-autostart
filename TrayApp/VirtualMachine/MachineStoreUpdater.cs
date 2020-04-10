@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using TrayApp.Configuration;
 
 namespace TrayApp.VirtualMachine
 {
@@ -20,7 +21,8 @@ namespace TrayApp.VirtualMachine
             ILogger<MachineStoreUpdater> logger,
             ILocatorService locatorService,
             MachineStore machineStore,
-            MonitoredMachineFilter machineFilter
+            MonitoredMachineFilter machineFilter,
+            ConfigurationStore configurationStore
         )
         {
             logger.LogTrace(".ctor");
@@ -29,6 +31,13 @@ namespace TrayApp.VirtualMachine
             this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
             this.machineFilter = machineFilter ?? throw new ArgumentNullException(nameof(machineFilter));
+
+            if (configurationStore == null)
+            {
+                throw new ArgumentNullException(nameof(configurationStore));
+            }
+
+            configurationStore.OnConfigurationChange += (object _, EventArgs __) => RequestUpdate();
         }
 
         public void RequestUpdate()
