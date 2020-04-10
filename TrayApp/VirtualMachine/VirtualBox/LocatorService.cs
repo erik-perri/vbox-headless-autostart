@@ -62,7 +62,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
         {
             using var process = new VBoxManageProcess($"list vms");
 
-            var output = process.GetOuput(100);
+            var output = process.GetOuput();
             var machines = new List<IMachine>();
 
             foreach (var line in output.OutputData)

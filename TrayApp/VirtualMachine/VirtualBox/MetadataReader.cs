@@ -24,7 +24,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
             using var process = new VBoxManageProcess($"showvminfo {machine.Uuid}");
 
-            var output = process.GetOuput(500);
+            var output = process.GetOuput();
 
             foreach (var line in output.OutputData)
             {
