@@ -76,7 +76,7 @@ namespace TrayApp.Menu.Handler
 
                     MessageBox.Show(
                         $"Failed to write configuration, {exception.Message}.",
-                        "Failed to write configuration",
+                        Properties.Resources.TrayTitle,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
