@@ -47,23 +47,37 @@ namespace TrayApp.Configuration
 
         private LogLevel ReadLogLevel(XmlDocument document)
         {
+            var level = ReadString(document, "/Configuration/LogLevel");
+            
+            if (!Enum.TryParse(level, out LogLevel logLevel))
+            {
+                logger.LogError($"Unknown LogLevel \"{level}\" specified");
+            }
+
+            return logLevel;
+        }
+
+        private bool ReadShowKeepAwakeMenu(XmlDocument document)
+        {
+            var show = ReadString(document, "/Configuration/ShowKeepAwakeMenu");
+
+            return show.Equals("true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string ReadString(XmlDocument document, string path)
+        {
             if (document == null)
             {
                 throw new ArgumentNullException(nameof(document));
             }
 
-            var logLevelNode = document.DocumentElement.SelectSingleNode("/Configuration/LogLevel");
-            if (logLevelNode == null)
+            var node = document.DocumentElement.SelectSingleNode(path);
+            if (node == null)
             {
-                return LogLevel.Information;
+                return null;
             }
 
-            if (!Enum.TryParse(logLevelNode.InnerText.Trim(), out LogLevel logLevel))
-            {
-                logger.LogError($"Unknown LogLevel \"{logLevelNode.InnerText.Trim()}\" specified");
-            }
-
-            return logLevel;
+            return node.InnerText.Trim();
         }
 
         private MachineConfiguration[] ReadMachines(XmlDocument document)

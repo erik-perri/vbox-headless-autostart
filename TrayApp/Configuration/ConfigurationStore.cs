@@ -36,6 +36,7 @@ namespace TrayApp.Configuration
                 var configuration = configurationReader.ReadConfiguration() ?? new TrayConfiguration()
                 {
                     LogLevel = LogLevelConfigurationManager.DefaultLevel,
+                    ShowKeepAwakeMenu = false,
                     Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
                 };
                 SetConfiguration(configuration);
@@ -71,6 +72,13 @@ namespace TrayApp.Configuration
             {
                 logger.LogDebug(
                     $" - Log level changed: \"{oldConfiguration?.LogLevel}\" -> \"{newConfiguration?.LogLevel}\""
+                );
+            }
+
+            if (oldConfiguration?.ShowKeepAwakeMenu != newConfiguration?.ShowKeepAwakeMenu)
+            {
+                logger.LogDebug(
+                    $" - Show keep awake menu changed: \"{oldConfiguration?.ShowKeepAwakeMenu}\" -> \"{newConfiguration?.ShowKeepAwakeMenu}\""
                 );
             }
 
