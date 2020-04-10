@@ -4,6 +4,7 @@
     {
         Unknown = 0,
         Running,
+        Starting,
         PoweredOff,
         Aborted,
         Saving,
