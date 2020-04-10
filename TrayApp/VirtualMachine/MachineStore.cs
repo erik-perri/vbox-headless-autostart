@@ -54,34 +54,38 @@ namespace TrayApp.VirtualMachine
 
             foreach (var newMachine in newMachines)
             {
+                var newLog = new
+                {
+                    newMachine.Uuid,
+                    newMachine.Name,
+                    newMachine.Metadata,
+                };
+
                 if (oldMachines == null)
                 {
-                    logger.LogDebug($" - Machine added: \"{newMachine.Uuid}\"");
+                    logger.LogDebug($" - Added: {newLog}");
                     continue;
                 }
 
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
                 if (oldMachine == null)
                 {
-                    logger.LogDebug($" - Machine added: \"{newMachine.Uuid}\"");
+                    logger.LogDebug($" - Added: {newLog}");
                     continue;
                 }
 
                 if (!oldMachine.Equals(newMachine))
                 {
-                    logger.LogDebug($" - Machine changed: \"{newMachine.Uuid}\"");
-                    logger.LogDebug("     Old: {machine}", new
+                    var oldLog = new
                     {
                         oldMachine.Uuid,
                         oldMachine.Name,
                         oldMachine.Metadata,
-                    });
-                    logger.LogDebug("     New: {machine}", new
-                    {
-                        newMachine.Uuid,
-                        newMachine.Name,
-                        newMachine.Metadata,
-                    });
+                    };
+
+                    logger.LogDebug($" - Changed:");
+                    logger.LogDebug($"     Old: {oldLog}");
+                    logger.LogDebug($"     New: {newLog}");
                 }
             }
 
@@ -91,7 +95,14 @@ namespace TrayApp.VirtualMachine
                 {
                     if (Array.Find(newMachines, m => m.Uuid == oldMachine.Uuid) == null)
                     {
-                        logger.LogDebug($" - Machine removed: \"{oldMachine.Uuid}\"");
+                        var oldLog = new
+                        {
+                            oldMachine.Uuid,
+                            oldMachine.Name,
+                            oldMachine.Metadata,
+                        };
+
+                        logger.LogDebug($" - Removed: {oldLog}");
                     }
                 }
             }
