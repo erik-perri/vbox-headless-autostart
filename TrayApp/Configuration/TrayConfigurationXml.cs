@@ -13,6 +13,7 @@ namespace TrayApp.Configuration
         public bool ShowKeepAwakeMenu { get; set; }
 
         [XmlArray("Machines")]
+        [XmlArrayItem(ElementName = "Machine")]
 #pragma warning disable CA1819 // Properties should not return arrays
         public MachineConfiguration[] Machines { get; set; }
 
