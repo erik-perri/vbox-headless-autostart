@@ -101,7 +101,7 @@ namespace TrayApp.VirtualMachine
 
             foreach (var machine in added)
             {
-                logger.LogDebug($" - Added:   {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                logger.LogDebug($" - Added: {new { machine.Uuid, machine.Name, machine.Metadata }}");
             }
 
             foreach (var machine in removed)

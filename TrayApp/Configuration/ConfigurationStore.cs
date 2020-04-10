@@ -108,7 +108,7 @@ namespace TrayApp.Configuration
 
             foreach (var machine in added)
             {
-                logger.LogDebug($"    - Added:   {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
+                logger.LogDebug($"    - Added: {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
             }
 
             foreach (var machine in removed)
