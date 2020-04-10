@@ -19,11 +19,6 @@ namespace TrayApp.VirtualMachine.VirtualBox
             this.metadataReader = metadataReader ?? throw new ArgumentNullException(nameof(metadataReader));
         }
 
-        public IMachine[] LocateMachines(bool loadMetadata)
-        {
-            return LocateMachines(null, loadMetadata);
-        }
-
         public IMachine[] LocateMachines(IMachineFilter filter, bool loadMetadata)
         {
             var machines = GetMachinesFromVBoxManage(filter);
@@ -34,6 +29,11 @@ namespace TrayApp.VirtualMachine.VirtualBox
             }
 
             return machines;
+        }
+
+        public IMachine[] LocateMachines(bool loadMetadata)
+        {
+            return LocateMachines(null, loadMetadata);
         }
 
         private async Task UpdateMetadataInMachinesAsync(IMachine[] machines)
