@@ -29,7 +29,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             {
                 return other.Uuid.Equals(Uuid, StringComparison.Ordinal)
                     && other.Name.Equals(Name, StringComparison.Ordinal)
-                    && other.Metadata.Equals(Metadata);
+                    && (other.Metadata == null ? other.Metadata == Metadata : other.Metadata.Equals(Metadata));
             }
 
             return false;
