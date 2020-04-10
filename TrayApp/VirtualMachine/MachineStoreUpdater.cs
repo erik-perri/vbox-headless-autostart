@@ -14,11 +14,13 @@ namespace TrayApp.VirtualMachine
         private readonly MachineStore machineStore;
 
         private Task updateTask;
+        private readonly MonitoredMachineFilter machineFilter;
 
         public MachineStoreUpdater(
             ILogger<MachineStoreUpdater> logger,
             ILocatorService locatorService,
-            MachineStore machineStore
+            MachineStore machineStore,
+            MonitoredMachineFilter machineFilter
         )
         {
             logger.LogTrace(".ctor");
@@ -26,6 +28,7 @@ namespace TrayApp.VirtualMachine
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
+            this.machineFilter = machineFilter ?? throw new ArgumentNullException(nameof(machineFilter));
         }
 
         public void RequestUpdate()
@@ -46,7 +49,7 @@ namespace TrayApp.VirtualMachine
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    machineStore.SetMachines(locatorService.LocateMachines(true));
+                    machineStore.SetMachines(locatorService.LocateMachines(machineFilter, true));
 
                     waitEvent.WaitOne(1000);
                 }

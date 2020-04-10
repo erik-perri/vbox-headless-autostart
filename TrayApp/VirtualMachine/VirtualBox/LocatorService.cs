@@ -21,7 +21,12 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
         public IMachine[] LocateMachines(bool loadMetadata)
         {
-            var machines = GetMachinesFromVBoxManage();
+            return LocateMachines(null, loadMetadata);
+        }
+
+        public IMachine[] LocateMachines(IMachineFilter filter, bool loadMetadata)
+        {
+            var machines = GetMachinesFromVBoxManage(filter);
 
             if (loadMetadata)
             {
@@ -53,7 +58,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             }
         }
 
-        private IMachine[] GetMachinesFromVBoxManage()
+        private IMachine[] GetMachinesFromVBoxManage(IMachineFilter filter)
         {
             using var process = new VBoxManageProcess($"list vms");
 
@@ -72,7 +77,15 @@ namespace TrayApp.VirtualMachine.VirtualBox
                     continue;
                 }
 
-                machines.Add(new Machine(match.Groups[2].Value, match.Groups[1].Value));
+                var uuid = match.Groups[2].Value.Trim();
+                var name = match.Groups[1].Value;
+
+                if (filter?.IncludeMachine(uuid) == false)
+                {
+                    continue;
+                }
+
+                machines.Add(new Machine(uuid, name));
             }
 
             return machines.ToArray();
