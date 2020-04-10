@@ -11,26 +11,20 @@ namespace TrayApp.VirtualMachine
         private readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
         private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
         private readonly ILogger<MachineStoreUpdater> logger;
-        private readonly ILocatorService locatorService;
         private readonly MachineStore machineStore;
 
         private Task updateTask;
-        private readonly MonitoredMachineFilter machineFilter;
 
         public MachineStoreUpdater(
             ILogger<MachineStoreUpdater> logger,
-            ILocatorService locatorService,
             MachineStore machineStore,
-            MonitoredMachineFilter machineFilter,
             ConfigurationStore configurationStore
         )
         {
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
-            this.machineFilter = machineFilter ?? throw new ArgumentNullException(nameof(machineFilter));
 
             if (configurationStore == null)
             {
@@ -58,7 +52,7 @@ namespace TrayApp.VirtualMachine
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    machineStore.SetMachines(locatorService.LocateMachines(machineFilter, true));
+                    machineStore.UpdateMachines();
 
                     waitEvent.WaitOne(1000);
                 }

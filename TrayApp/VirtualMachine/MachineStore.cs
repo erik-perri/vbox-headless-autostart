@@ -8,16 +8,25 @@ namespace TrayApp.VirtualMachine
     public class MachineStore
     {
         private readonly object machineLock = new object();
-        private readonly ILogger<MachineStore> logger;
         private readonly List<IMachine> machines = new List<IMachine>();
+
+        private readonly ILogger<MachineStore> logger;
+        private readonly ILocatorService locatorService;
+        private readonly MonitoredMachineFilter machineFilter;
 
         public event EventHandler OnMachineChange;
 
         public event EventHandler OnStateChange;
 
-        public MachineStore(ILogger<MachineStore> logger)
+        public MachineStore(
+            ILogger<MachineStore> logger,
+            ILocatorService locatorService,
+            MonitoredMachineFilter machineFilter
+        )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
+            this.machineFilter = machineFilter ?? throw new ArgumentNullException(nameof(machineFilter));
         }
 
         public IMachine[] GetMachines()
@@ -28,7 +37,15 @@ namespace TrayApp.VirtualMachine
             }
         }
 
-        internal void SetMachines(IMachine[] newMachines)
+        public void UpdateMachines()
+        {
+            lock (machineLock)
+            {
+                SetMachines(locatorService.LocateMachines(machineFilter, true));
+            }
+        }
+
+        private void SetMachines(IMachine[] newMachines)
         {
             if (newMachines == null)
             {
