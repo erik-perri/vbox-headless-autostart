@@ -8,13 +8,6 @@ namespace TrayApp.Configuration
 {
     public class XmlConfigurationWriter : IConfigurationWriter
     {
-        private readonly ILogger<XmlConfigurationWriter> logger;
-
-        public XmlConfigurationWriter(ILogger<XmlConfigurationWriter> logger)
-        {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
         public void WriteConfiguration(TrayConfiguration configuration)
         {
             if (configuration == null)
