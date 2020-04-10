@@ -35,75 +35,54 @@ namespace TrayApp.VirtualMachine
 
             lock (machineLock)
             {
-                var previousMachines = machines.ToArray();
+                var oldMachines = machines.ToArray();
                 machines.Clear();
                 machines.AddRange(newMachines);
 
-                if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(previousMachines.OrderBy(m => m.Uuid)))
+                if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(oldMachines.OrderBy(m => m.Uuid)))
                 {
-                    DumpChanges(previousMachines, newMachines);
+                    DumpMachineListChanges(oldMachines, newMachines);
 
                     OnMachineChange?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        private void DumpChanges(IMachine[] oldMachines, IMachine[] newMachines)
+        private void DumpMachineListChanges(IMachine[] oldMachines, IMachine[] newMachines)
         {
+            if (oldMachines == null)
+            {
+                throw new ArgumentNullException(nameof(oldMachines));
+            }
+
+            if (newMachines == null)
+            {
+                throw new ArgumentNullException(nameof(newMachines));
+            }
+
             logger.LogDebug("Machines modified");
+
+            var added = newMachines.Except(oldMachines, new UuidEqualityComparer());
+            var removed = oldMachines.Except(newMachines, new UuidEqualityComparer());
+
+            foreach (var machine in added)
+            {
+                logger.LogDebug($" - Added:   {new { machine.Uuid, machine.Name, machine.Metadata }}");
+            }
+
+            foreach (var machine in removed)
+            {
+                logger.LogDebug($" - Removed: {new { machine.Uuid, machine.Name, machine.Metadata }}");
+            }
 
             foreach (var newMachine in newMachines)
             {
-                var newLog = new
-                {
-                    newMachine.Uuid,
-                    newMachine.Name,
-                    newMachine.Metadata,
-                };
-
-                if (oldMachines == null)
-                {
-                    logger.LogDebug($" - Added: {newLog}");
-                    continue;
-                }
-
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
-                if (oldMachine == null)
+                if (oldMachine?.Equals(newMachine) == false)
                 {
-                    logger.LogDebug($" - Added: {newLog}");
-                    continue;
-                }
-
-                if (!oldMachine.Equals(newMachine))
-                {
-                    var oldLog = new
-                    {
-                        oldMachine.Uuid,
-                        oldMachine.Name,
-                        oldMachine.Metadata,
-                    };
-
                     logger.LogDebug($" - Changed:");
-                    logger.LogDebug($"     Old: {oldLog}");
-                    logger.LogDebug($"     New: {newLog}");
-                }
-            }
-
-            if (oldMachines != null)
-            {
-                foreach (var oldMachine in oldMachines)
-                {
-                    if (Array.Find(newMachines, m => m.Uuid == oldMachine.Uuid) == null)
-                    {
-                        var oldLog = new
-                        {
-                            oldMachine.Uuid,
-                            oldMachine.Name,
-                            oldMachine.Metadata,
-                        };
-
-                        logger.LogDebug($" - Removed: {oldLog}");
-                    }
+                    logger.LogDebug($"     Old: {new { oldMachine.Uuid, oldMachine.Name, oldMachine.Metadata }}");
+                    logger.LogDebug($"     New: {new { newMachine.Uuid, newMachine.Name, newMachine.Metadata }}");
                 }
             }
         }
