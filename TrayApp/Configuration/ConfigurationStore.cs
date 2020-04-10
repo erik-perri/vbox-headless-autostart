@@ -45,13 +45,9 @@ namespace TrayApp.Configuration
 
         private void SetConfiguration(TrayConfiguration newConfiguration)
         {
-            if (newConfiguration == null)
-            {
-                throw new ArgumentNullException(nameof(newConfiguration));
-            }
-
             var previousConfiguration = configuration;
-            configuration = newConfiguration;
+
+            configuration = newConfiguration ?? throw new ArgumentNullException(nameof(newConfiguration));
 
             if (!newConfiguration.Equals(previousConfiguration))
             {
