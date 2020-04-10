@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
+using TrayApp.Helpers;
 using TrayApp.Logging;
-using TrayApp.VirtualMachine;
 
 namespace TrayApp.Configuration
 {
@@ -97,19 +96,20 @@ namespace TrayApp.Configuration
                 var oldValue = oldConfiguration == null
                     ? "null"
                     : FormattableString.Invariant($"\"{oldConfiguration.ShowKeepAwakeMenu}\"");
-                
+
                 logger.LogDebug($" - ShowKeepAwakeMenu changed: {oldValue} -> {newValue}");
             }
 
             DumpMachineListChanges(oldConfiguration?.Machines.ToArray(), newConfiguration.Machines.ToArray());
         }
+
         private void DumpMachineListChanges(MachineConfiguration[] oldMachines, MachineConfiguration[] newMachines)
         {
             if (newMachines == null)
             {
                 throw new ArgumentNullException(nameof(newMachines));
             }
-            
+
             if (oldMachines == null)
             {
                 oldMachines = Array.Empty<MachineConfiguration>();
