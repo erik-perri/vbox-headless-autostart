@@ -4,6 +4,7 @@ using NLog.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using TrayApp.AutoStart;
 using TrayApp.Configuration;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
@@ -57,6 +58,8 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
+                .AddSingleton<MachineAutoStarter>()
+
                 .BuildServiceProvider();
 
             // Load the configuration into the store
@@ -66,6 +69,17 @@ namespace TrayApp
             // Set the log level from the configuration
             LogLevelConfigurationManager.SetLogLevel(configurationStore.GetConfiguration().LogLevel);
 
+            if (IsAutoStarting())
+            {
+                var machineStore = serviceProvider.GetService<MachineStore>();
+                machineStore.UpdateMachines();
+
+                if (serviceProvider.GetService<MachineAutoStarter>().StartMachines())
+                {
+                    machineStore.UpdateMachines(); // Update again so the tray is created with the correct state
+                }
+            }
+
             // Start the machine state monitor
             var machineStoreUpdater = serviceProvider.GetService<MachineStoreUpdater>();
             machineStoreUpdater.StartMonitor();
@@ -74,6 +88,11 @@ namespace TrayApp
             var context = serviceProvider.GetService<TrayApplicationContext>();
 
             Application.Run(context);
+        }
+
+        private static bool IsAutoStarting()
+        {
+            return Array.Find(Environment.GetCommandLineArgs(), arg => arg == "--auto-start") != null;
         }
     }
 }
