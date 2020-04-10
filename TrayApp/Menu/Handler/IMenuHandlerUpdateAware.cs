@@ -2,6 +2,6 @@
 {
     public interface IMenuHandlerUpdateAware
     {
-        void UpdateContextMenu();
+        void UpdateMenuItems();
     }
 }

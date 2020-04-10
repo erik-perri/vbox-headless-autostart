@@ -45,7 +45,7 @@ namespace TrayApp.Menu
             {
                 if (handler is IMenuHandlerUpdateAware updateHandler)
                 {
-                    updateHandler.UpdateContextMenu();
+                    updateHandler.UpdateMenuItems();
                 }
             }
         }
