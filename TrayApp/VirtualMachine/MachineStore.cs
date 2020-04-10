@@ -13,6 +13,8 @@ namespace TrayApp.VirtualMachine
 
         public event EventHandler OnMachineChange;
 
+        public event EventHandler OnStateChange;
+
         public MachineStore(ILogger<MachineStore> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -43,9 +45,33 @@ namespace TrayApp.VirtualMachine
                 {
                     DumpMachineListChanges(oldMachines, newMachines);
 
-                    OnMachineChange?.Invoke(this, EventArgs.Empty);
+                    if (WasMachineListChanged(oldMachines, newMachines))
+                    {
+                        OnMachineChange?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        OnStateChange?.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
+        }
+
+        private static bool WasMachineListChanged(IMachine[] oldMachines, IMachine[] newMachines)
+        {
+            if (oldMachines == null)
+            {
+                throw new ArgumentNullException(nameof(oldMachines));
+            }
+
+            if (newMachines == null)
+            {
+                throw new ArgumentNullException(nameof(newMachines));
+            }
+
+            return oldMachines == null
+                || newMachines.Except(oldMachines, new UuidEqualityComparer()).Any()
+                || oldMachines.Except(newMachines, new UuidEqualityComparer()).Any();
         }
 
         private void DumpMachineListChanges(IMachine[] oldMachines, IMachine[] newMachines)
