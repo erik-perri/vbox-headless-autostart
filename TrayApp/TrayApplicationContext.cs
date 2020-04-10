@@ -39,11 +39,6 @@ namespace TrayApp
         {
             logger.LogTrace($"Dispose({disposing})");
 
-            if (disposing)
-            {
-                contextMenu?.Dispose();
-            }
-
             base.Dispose(disposing);
         }
     }
