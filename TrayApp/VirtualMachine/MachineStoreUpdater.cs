@@ -82,10 +82,7 @@ namespace TrayApp.VirtualMachine
 
             if (disposing)
             {
-                if (updateTask != null
-                    || updateTask.Status == TaskStatus.Running
-                    || updateTask.Status == TaskStatus.WaitingToRun
-                    || updateTask.Status == TaskStatus.WaitingForActivation)
+                if (updateTask?.IsCompleted == false)
                 {
                     cancellationToken.Cancel();
                     waitEvent.Set();
