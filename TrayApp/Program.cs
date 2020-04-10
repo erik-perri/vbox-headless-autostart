@@ -40,6 +40,7 @@ namespace TrayApp
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
+                        .AddSingleton<IMachineController, VirtualMachine.VirtualBox.MachineController>()
 
                 // Machine locator
                 .AddSingleton<MachineStore>()
@@ -52,9 +53,6 @@ namespace TrayApp
                 .AddSingleton<ConfigurationStore>()
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
-
-                // Controller
-                .AddSingleton<IMachineController, VirtualMachine.VirtualBox.MachineController>()
 
                 .BuildServiceProvider();
 
