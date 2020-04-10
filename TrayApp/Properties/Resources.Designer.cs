@@ -88,5 +88,65 @@ namespace TrayApp.Properties {
                 return ResourceManager.GetString("TrayTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachine {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachine", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachineError {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachineError", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachinePause {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachinePause", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachineRefresh {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachineRefresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachineRunning {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachineRunning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VirtualMachineStop {
+            get {
+                object obj = ResourceManager.GetObject("VirtualMachineStop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
