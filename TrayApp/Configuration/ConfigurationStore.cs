@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using TrayApp.Logging;
 
@@ -32,9 +33,11 @@ namespace TrayApp.Configuration
         {
             lock (configurationLock)
             {
-                var configuration = configurationReader.ReadConfiguration() ?? new TrayConfiguration(
-                    LogLevelConfigurationManager.DefaultLevel
-                );
+                var configuration = configurationReader.ReadConfiguration() ?? new TrayConfiguration()
+                {
+                    LogLevel = LogLevelConfigurationManager.DefaultLevel,
+                    Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
+                };
                 SetConfiguration(configuration);
             }
         }

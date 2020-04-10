@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml;
 using System.Xml.XPath;
@@ -25,7 +26,12 @@ namespace TrayApp.Configuration
                 var document = new XmlDocument();
                 document.Load(configurationFile);
 
-                return new TrayConfiguration(ReadLogLevel(document), ReadMachines(document));
+                return new TrayConfiguration()
+                {
+                    LogLevel = ReadLogLevel(document),
+                    ShowKeepAwakeMenu = ReadShowKeepAwakeMenu(document),
+                    Machines = new ReadOnlyCollection<MachineConfiguration>(ReadMachines(document)),
+                };
             }
             catch (Exception e) when (
                 e is XmlException ||

@@ -6,25 +6,36 @@ using System.Xml.Serialization;
 
 namespace TrayApp.Configuration
 {
-    [XmlType(TypeName = "Configuration")]
-    [Serializable]
-    public class TrayConfiguration
+    public class TrayConfiguration : IEquatable<TrayConfiguration>
     {
-        public LogLevel LogLevel { get; }
+        public LogLevel LogLevel { get; internal set; }
 
-        [XmlArray("Machines")]
-        public ReadOnlyCollection<MachineConfiguration> Machines { get; }
+        public bool ShowKeepAwakeMenu { get; internal set; }
 
-        public TrayConfiguration(LogLevel logLevel, MachineConfiguration[] machines)
+        public ReadOnlyCollection<MachineConfiguration> Machines { get; internal set; }
+
+        public bool Equals(TrayConfiguration other)
         {
-            LogLevel = logLevel;
-            Machines = new ReadOnlyCollection<MachineConfiguration>(machines.ToArray());
+            return other != null
+                && LogLevel == other.LogLevel
+                && Machines.OrderBy(m => m.Uuid).SequenceEqual(other.Machines.OrderBy(m => m.Uuid));
         }
 
-        public TrayConfiguration(LogLevel logLevel)
+        public override bool Equals(object obj)
         {
-            LogLevel = logLevel;
-            Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>());
+            return Equals(obj as TrayConfiguration);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = LogLevel.GetHashCode();
+
+            foreach(var machine in Machines)
+            {
+                hashCode = HashCode.Combine(hashCode, machine.GetHashCode());
+            }
+
+            return hashCode;
         }
     }
 }
