@@ -197,8 +197,10 @@ namespace TrayApp.Forms
         {
             foreach (var index in new int[] { columnName.Index, columnUuid.Index })
             {
-                var color = currentRows[e.RowIndex].Disabled ? Color.DimGray : Color.Black;
-                (dataGridMachines.Rows[e.RowIndex].Cells[index] as DataGridViewTextBoxCell).Style.ForeColor = color;
+                if (dataGridMachines.Rows[e.RowIndex].Cells[index] is DataGridViewTextBoxCell textBoxCell)
+                {
+                    textBoxCell.Style.ForeColor = currentRows[e.RowIndex].Disabled ? Color.DimGray : Color.Black;
+                }
             }
 
             foreach (var index in new int[] { columnAutoStart.Index, columnSaveState.Index })
