@@ -43,7 +43,7 @@ namespace TrayApp.Configuration
             }
         }
 
-        internal void SetConfiguration(TrayConfiguration newConfiguration)
+        private void SetConfiguration(TrayConfiguration newConfiguration)
         {
             if (newConfiguration == null)
             {
