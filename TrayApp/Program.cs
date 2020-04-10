@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using TrayApp.Configuration;
+using TrayApp.KeepAwake;
 using TrayApp.Logging;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
@@ -41,6 +42,8 @@ namespace TrayApp
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
                         .AddSingleton<IMachineController, VirtualMachine.VirtualBox.MachineController>()
+                    .AddSingleton<IMenuHandler, KeepAwakeMenuHandler>()
+                        .AddSingleton<KeepAwakeTask>()
 
                 // Machine locator
                 .AddSingleton<MachineStore>()

@@ -30,7 +30,7 @@ namespace TrayApp.Menu.Handler
 
         public int GetSortOrder()
         {
-            return 3;
+            return 4;
         }
 
         public ToolStripItem[] CreateMenuItems()
