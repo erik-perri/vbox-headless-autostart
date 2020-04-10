@@ -1,19 +1,34 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Windows.Forms;
+using TrayApp.Configuration;
+using TrayApp.Forms;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu.Handler
 {
     public class ConfigureMenuHandler : IMenuHandler, IDisposable
     {
         private readonly ILogger<ConfigureMenuHandler> logger;
+        private readonly ConfigurationStore configurationStore;
+        private readonly ILocatorService locatorService;
         private ToolStripMenuItem menuItem;
+        private readonly IConfigurationWriter configurationWriter;
 
-        public ConfigureMenuHandler(ILogger<ConfigureMenuHandler> logger)
+        public ConfigureMenuHandler(
+            ILogger<ConfigureMenuHandler> logger,
+            ConfigurationStore configurationStore,
+            ILocatorService locatorService,
+            IConfigurationWriter configurationWriter
+        )
         {
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
+            this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
+            this.configurationWriter = configurationWriter ?? throw new ArgumentNullException(nameof(configurationWriter));
         }
 
         public int GetSortOrder()
@@ -31,7 +46,33 @@ namespace TrayApp.Menu.Handler
 
         private void OnConfigure(object sender, EventArgs e)
         {
-            logger.LogTrace("OnConfigure");
+            configurationStore.UpdateConfiguration();
+
+            using var form = new ConfigureForm(configurationStore.GetConfiguration(), locatorService.LocateMachines(false));
+
+            var result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                try
+                {
+                    configurationWriter.WriteConfiguration(form.UpdatedConfiguration);
+                }
+                catch(Exception exception) when (exception is InvalidOperationException ||
+                                                 exception is DirectoryNotFoundException)
+                {
+                    logger.LogError(exception, "Failed to write configuration");
+
+                    MessageBox.Show(
+                        $"Failed to write configuration, {exception.Message}.",
+                        "Failed to write configuration",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+
+                configurationStore.UpdateConfiguration();
+            }
         }
 
         public void Dispose()
