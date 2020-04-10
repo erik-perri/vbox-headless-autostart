@@ -17,6 +17,7 @@ namespace TrayApp.Configuration
         {
             return other != null
                 && LogLevel == other.LogLevel
+                && ShowKeepAwakeMenu == other.ShowKeepAwakeMenu
                 && Machines.OrderBy(m => m.Uuid).SequenceEqual(other.Machines.OrderBy(m => m.Uuid));
         }
 
@@ -27,7 +28,7 @@ namespace TrayApp.Configuration
 
         public override int GetHashCode()
         {
-            var hashCode = LogLevel.GetHashCode();
+            var hashCode = HashCode.Combine(LogLevel.GetHashCode(), ShowKeepAwakeMenu);
 
             foreach (var machine in Machines)
             {

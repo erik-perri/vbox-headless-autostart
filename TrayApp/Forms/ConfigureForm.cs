@@ -49,6 +49,8 @@ namespace TrayApp.Forms
             {
                 comboBoxLogLevel.SelectedIndex = index;
             }
+
+            checkBoxKeepAwakeMenu.Checked = configuration.ShowKeepAwakeMenu;
         }
 
         private void SetupDataGrid(IMachine[] machines, MachineConfiguration[] machineConfigurations)
