@@ -58,10 +58,8 @@ namespace TrayApp.VirtualMachine
                 {
                     OnMachineChange?.Invoke(this, EventArgs.Empty);
                 }
-                else
-                {
-                    OnStateChange?.Invoke(this, EventArgs.Empty);
-                }
+
+                OnStateChange?.Invoke(this, EventArgs.Empty);
             }
         }
 
