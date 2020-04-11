@@ -42,7 +42,7 @@ namespace TrayApp.KeepAwake
                 throw new InvalidOperationException("Keep awake task already running");
             }
 
-            logger.LogTrace("Start");
+            logger.LogTrace("Start keep awake task");
 
             keepAwakeTask = Task.Factory.StartNew(() =>
             {
@@ -59,13 +59,13 @@ namespace TrayApp.KeepAwake
 
                 _ = NativeMethods.SetThreadExecutionState((NativeMethods.EXECUTION_STATE)previousExecutionState);
 
-                logger.LogTrace("Finished waiting");
+                logger.LogTrace("Keep awake task finished");
             }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         public void Stop()
         {
-            logger.LogTrace("Stop");
+            logger.LogTrace("Stopping keep awake task");
 
             waitEvent.Set();
             keepAwakeTask.Wait();

@@ -39,7 +39,7 @@ namespace TrayApp.Configuration
                 e is DirectoryNotFoundException
             )
             {
-                logger.LogError(e, $"Failed to parse config XML \"{configurationFile}\"");
+                logger.LogError(e, $"Failed to parse XML file {new { File = configurationFile, Error = e.Message }}");
             }
 
             return null;
@@ -51,7 +51,7 @@ namespace TrayApp.Configuration
 
             if (!Enum.TryParse(level, out LogLevel logLevel))
             {
-                logger.LogError($"Unknown LogLevel \"{level}\" specified");
+                logger.LogError($"Unknown LogLevel {new { Level = level }}");
             }
 
             return logLevel;
@@ -119,7 +119,7 @@ namespace TrayApp.Configuration
                 }
                 catch (XPathException e)
                 {
-                    logger.LogError(e, "Failed to parse machine config");
+                    logger.LogError(e, $"Failed to parse machine config {new { Error = e.Message }}");
                 }
             }
 

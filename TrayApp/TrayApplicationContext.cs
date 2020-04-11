@@ -47,15 +47,13 @@ namespace TrayApp
         {
             lock (updateLock)
             {
+                logger.LogTrace($"Creating context menu {new { contextMenu.InvokeRequired }}");
+
                 if (contextMenu.InvokeRequired)
                 {
-                    logger.LogTrace("CreateContextMenu (Invoking)");
-
                     contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.CreateContextMenu(); }));
                     return;
                 }
-
-                logger.LogTrace("CreateContextMenu");
 
                 contextMenu.CreateContextMenu();
             }
@@ -65,15 +63,13 @@ namespace TrayApp
         {
             lock (updateLock)
             {
+                logger.LogTrace($"Updating context menu {new { contextMenu.InvokeRequired }}");
+
                 if (contextMenu.InvokeRequired)
                 {
-                    logger.LogTrace("UpdateContextMenu (Invoking)");
-
                     contextMenu.Invoke(new MethodInvoker(delegate { contextMenu.UpdateContextMenu(); }));
                     return;
                 }
-
-                logger.LogTrace("UpdateContextMenu");
 
                 contextMenu.UpdateContextMenu();
             }

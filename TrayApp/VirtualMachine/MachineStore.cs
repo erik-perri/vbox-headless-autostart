@@ -36,6 +36,8 @@ namespace TrayApp.VirtualMachine
 
         public void UpdateMachines()
         {
+            logger.LogTrace("Updating machine states");
+
             SetMachines(machineLocator.LocateMachines(machineFilter, true));
         }
 
@@ -99,12 +101,12 @@ namespace TrayApp.VirtualMachine
 
             foreach (var machine in added)
             {
-                logger.LogDebug($" - Added: {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                logger.LogDebug($" - Added {new { machine.Uuid, machine.Name, machine.Metadata }}");
             }
 
             foreach (var machine in removed)
             {
-                logger.LogDebug($" - Removed: {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                logger.LogDebug($" - Removed {new { machine.Uuid, machine.Name, machine.Metadata }}");
             }
 
             foreach (var newMachine in newMachines)
@@ -112,9 +114,9 @@ namespace TrayApp.VirtualMachine
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
                 if (oldMachine?.Equals(newMachine) == false)
                 {
-                    logger.LogDebug($" - Changed:");
-                    logger.LogDebug($"     Old: {new { oldMachine.Uuid, oldMachine.Name, oldMachine.Metadata }}");
-                    logger.LogDebug($"     New: {new { newMachine.Uuid, newMachine.Name, newMachine.Metadata }}");
+                    logger.LogDebug($" - Changed");
+                    logger.LogDebug($"     Old {new { oldMachine.Uuid, oldMachine.Name, oldMachine.Metadata }}");
+                    logger.LogDebug($"     New {new { newMachine.Uuid, newMachine.Name, newMachine.Metadata }}");
                 }
             }
         }

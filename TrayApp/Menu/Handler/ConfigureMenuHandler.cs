@@ -44,7 +44,7 @@ namespace TrayApp.Menu.Handler
             return new ToolStripItem[] { menuItem };
         }
 
-        private void OnConfigure(object sender, EventArgs e)
+        private void OnConfigure(object sender, EventArgs eventArgs)
         {
             configurationStore.UpdateConfiguration();
 
@@ -69,13 +69,13 @@ namespace TrayApp.Menu.Handler
                 {
                     configurationWriter.WriteConfiguration(form.UpdatedConfiguration);
                 }
-                catch (Exception exception) when (exception is InvalidOperationException ||
-                                                 exception is DirectoryNotFoundException)
+                catch (Exception e) when (e is InvalidOperationException
+                                        || e is DirectoryNotFoundException)
                 {
-                    logger.LogError(exception, "Failed to write configuration");
+                    logger.LogError(e, $"Failed to write configuration {new { Error = e.Message }}");
 
                     MessageBox.Show(
-                        $"Failed to write configuration, {exception.Message}.",
+                        $"Failed to write configuration, {e.Message}.",
                         Properties.Resources.TrayTitle,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error

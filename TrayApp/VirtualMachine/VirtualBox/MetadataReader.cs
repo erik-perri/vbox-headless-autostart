@@ -31,7 +31,9 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 var match = Regex.Match(line, @"^([A-Za-z0-9\s\(\)\-\.]+):?\s+(.*)$");
                 if (!match.Success)
                 {
-                    logger.LogWarning($"Failed to parse VBoxManage line for machine {machine.Uuid}, line: \"{line}\"");
+                    logger.LogWarning(
+                        $"Failed to parse VBoxManage line {new { machine.Uuid, machine.Name, Line = line }}"
+                    );
                     continue;
                 }
 
@@ -45,7 +47,9 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 var stateMatch = Regex.Match(infoValue, @"^([A-Za-z\s]+)\s\(since ([0-9:\-\.T]+)\)$");
                 if (!stateMatch.Success)
                 {
-                    logger.LogWarning($"Failed to parse state output: \"{infoValue}\" for machine {machine.Uuid}");
+                    logger.LogWarning(
+                        $"Failed to parse state {new { machine.Uuid, machine.Name, State = infoValue }}"
+                    );
                     break;
                 }
 
@@ -55,7 +59,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 var state = ParseVirtualBoxState(foundState);
                 if (state == MachineState.Unknown)
                 {
-                    logger.LogWarning($"Unknown state found: \"{foundState}\" for machine {machine.Uuid}");
+                    logger.LogWarning($"Unknown state {new { machine.Uuid, machine.Name, State = foundState }}");
                     break;
                 }
 
@@ -67,13 +71,13 @@ namespace TrayApp.VirtualMachine.VirtualBox
                     out lastAction
                 ))
                 {
-                    logger.LogWarning($"Failed to parse date: \"{foundDate}\" for machine {machine.Uuid}");
+                    logger.LogWarning($"Failed to parse date {new { machine.Uuid, machine.Name, Date = foundDate }}");
                 }
 
                 return new MachineMetadata(state, lastAction.ToLocalTime());
             }
 
-            logger.LogWarning($"Failed to find state for machine {machine.Uuid}");
+            logger.LogWarning($"Failed to find state {new { machine.Uuid, machine.Name }}");
 
             return null;
         }

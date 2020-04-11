@@ -73,7 +73,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 );
                 if (!match.Success)
                 {
-                    logger.LogWarning($"Failed to parse VBoxManage output, line: \"{line}\"");
+                    logger.LogWarning($"Failed to parse VBoxManage output {new { Line = line }}");
                     continue;
                 }
 

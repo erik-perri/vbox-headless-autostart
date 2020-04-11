@@ -127,7 +127,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
             if (metadataReader.ReadMetadata(machine).State == MachineState.Running)
             {
-                logger.LogError($"Timed out while powering off machine with UUID {machine.Uuid}");
+                logger.LogError($"Timed out while powering off {new { machine.Uuid, machine.Name }}");
                 return false;
             }
 

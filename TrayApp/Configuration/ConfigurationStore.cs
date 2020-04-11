@@ -73,7 +73,7 @@ namespace TrayApp.Configuration
                     ? "null"
                     : FormattableString.Invariant($"\"{oldConfiguration.LogLevel}\"");
 
-                logger.LogDebug($" - LogLevel changed: {oldValue} -> {newValue}");
+                logger.LogDebug($" - LogLevel changed {new { Old = oldValue, New = newValue }}");
             }
 
             if (oldConfiguration?.ShowKeepAwakeMenu != newConfiguration?.ShowKeepAwakeMenu)
@@ -83,7 +83,7 @@ namespace TrayApp.Configuration
                     ? "null"
                     : FormattableString.Invariant($"\"{oldConfiguration.ShowKeepAwakeMenu}\"");
 
-                logger.LogDebug($" - ShowKeepAwakeMenu changed: {oldValue} -> {newValue}");
+                logger.LogDebug($" - ShowKeepAwakeMenu changed {new { Old = oldValue, New = newValue }}");
             }
 
             DumpMachineListChanges(oldConfiguration?.Machines.ToArray(), newConfiguration.Machines.ToArray());
@@ -108,12 +108,12 @@ namespace TrayApp.Configuration
 
             foreach (var machine in added)
             {
-                logger.LogDebug($"    - Added: {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
+                logger.LogDebug($"    - Added {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
             }
 
             foreach (var machine in removed)
             {
-                logger.LogDebug($"    - Removed: {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
+                logger.LogDebug($"    - Removed {new { machine.Uuid, machine.AutoStart, machine.SaveState }}");
             }
 
             foreach (var newMachine in newMachines)
@@ -121,9 +121,9 @@ namespace TrayApp.Configuration
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
                 if (oldMachine?.Equals(newMachine) == false)
                 {
-                    logger.LogDebug($"    - Changed:");
-                    logger.LogDebug($"        Old: {new { oldMachine.Uuid, oldMachine.AutoStart, oldMachine.SaveState }}");
-                    logger.LogDebug($"        New: {new { newMachine.Uuid, newMachine.AutoStart, newMachine.SaveState }}");
+                    logger.LogDebug("    - Changed");
+                    logger.LogDebug($"        Old {new { oldMachine.Uuid, oldMachine.AutoStart, oldMachine.SaveState }}");
+                    logger.LogDebug($"        New {new { newMachine.Uuid, newMachine.AutoStart, newMachine.SaveState }}");
                 }
             }
         }
