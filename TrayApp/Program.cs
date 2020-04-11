@@ -53,6 +53,7 @@ namespace TrayApp
                 .AddSingleton<IMachineLocator, VirtualMachine.VirtualBox.MachineLocator>()
                     .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
                     .AddSingleton<MonitoredMachineFilter>()
+                    .AddSingleton<IUpdateSpeedLocator, MenuVisibleUpdateSpeedLocator>()
 
                 // Configuration
                 .AddSingleton<ConfigurationStore>()

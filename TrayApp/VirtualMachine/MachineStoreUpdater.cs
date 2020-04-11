@@ -12,19 +12,22 @@ namespace TrayApp.VirtualMachine
         private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
         private readonly ILogger<MachineStoreUpdater> logger;
         private readonly MachineStore machineStore;
+        private readonly IUpdateSpeedLocator updateSpeedLocator;
 
         private Task updateTask;
 
         public MachineStoreUpdater(
             ILogger<MachineStoreUpdater> logger,
             MachineStore machineStore,
-            ConfigurationStore configurationStore
+            ConfigurationStore configurationStore,
+            IUpdateSpeedLocator updateSpeedLocator
         )
         {
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
+            this.updateSpeedLocator = updateSpeedLocator ?? throw new ArgumentNullException(nameof(updateSpeedLocator));
 
             if (configurationStore == null)
             {
@@ -54,7 +57,7 @@ namespace TrayApp.VirtualMachine
                 {
                     machineStore.UpdateMachines();
 
-                    waitEvent.WaitOne(1000);
+                    waitEvent.WaitOne(updateSpeedLocator.GetUpdateSpeed());
                 }
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
