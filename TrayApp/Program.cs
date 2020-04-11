@@ -81,13 +81,10 @@ namespace TrayApp
             }
 
             // Start the machine state monitor
-            var machineStoreUpdater = serviceProvider.GetService<MachineStoreUpdater>();
-            machineStoreUpdater.StartMonitor();
+            serviceProvider.GetService<MachineStoreUpdater>().StartMonitor();
 
             // Run the application
-            var context = serviceProvider.GetService<TrayApplicationContext>();
-
-            Application.Run(context);
+            Application.Run(serviceProvider.GetService<TrayApplicationContext>());
         }
 
         private static bool IsAutoStarting()
