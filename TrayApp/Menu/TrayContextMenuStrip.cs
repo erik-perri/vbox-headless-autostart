@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using TrayApp.Menu.Handler;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu
 {
@@ -10,12 +11,23 @@ namespace TrayApp.Menu
         private readonly ILogger<TrayContextMenuStrip> logger;
         private readonly IMenuHandler[] handlers;
 
-        public TrayContextMenuStrip(ILogger<TrayContextMenuStrip> logger, IMenuHandler[] handlers)
+        public TrayContextMenuStrip(
+            ILogger<TrayContextMenuStrip> logger,
+            IMenuHandler[] handlers,
+            MachineStoreUpdater machineStoreUpdater
+        )
         {
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
+
+            if (machineStoreUpdater is null)
+            {
+                throw new ArgumentNullException(nameof(machineStoreUpdater));
+            }
+
+            Opening += (object sender, System.ComponentModel.CancelEventArgs e) => machineStoreUpdater.RequestUpdate();
         }
 
         protected override void Dispose(bool disposing)
