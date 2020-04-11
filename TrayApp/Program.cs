@@ -4,7 +4,7 @@ using NLog.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using TrayApp.AutoStart;
+using TrayApp.AutoControl;
 using TrayApp.Configuration;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
@@ -60,7 +60,7 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
-                .AddSingleton<MachineAutoStarter>()
+                .AddSingleton<MachineStarter>()
 
                 .BuildServiceProvider();
 
@@ -76,7 +76,7 @@ namespace TrayApp
                 var machineStore = serviceProvider.GetService<MachineStore>();
                 machineStore.UpdateMachines();
 
-                if (serviceProvider.GetService<MachineAutoStarter>().StartMachines())
+                if (serviceProvider.GetService<MachineStarter>().StartMachines())
                 {
                     machineStore.UpdateMachines(); // Update again so the tray is created with the correct state
                 }

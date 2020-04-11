@@ -4,17 +4,17 @@ using System.Linq;
 using TrayApp.Configuration;
 using TrayApp.VirtualMachine;
 
-namespace TrayApp.AutoStart
+namespace TrayApp.AutoControl
 {
-    public class MachineAutoStarter
+    public class MachineStarter
     {
-        private readonly ILogger<MachineAutoStarter> logger;
+        private readonly ILogger<MachineStarter> logger;
         private readonly MachineStore machineStore;
         private readonly ConfigurationStore configurationStore;
         private readonly IMachineController machineController;
 
-        public MachineAutoStarter(
-            ILogger<MachineAutoStarter> logger,
+        public MachineStarter(
+            ILogger<MachineStarter> logger,
             MachineStore machineStore,
             ConfigurationStore configurationStore,
             IMachineController machineController
