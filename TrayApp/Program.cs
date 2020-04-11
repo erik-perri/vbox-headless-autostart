@@ -31,7 +31,7 @@ namespace TrayApp
 
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
-                    .AddSingleton<TrayIconManager>()
+                    .AddSingleton<NotifyIconManager>()
                     .AddSingleton<TrayContextMenuStrip>()
 
                 // Menu

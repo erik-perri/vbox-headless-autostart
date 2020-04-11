@@ -7,16 +7,16 @@ namespace TrayApp.Menu.Handler
     public class ExitMenuHandler : IMenuHandler, IDisposable
     {
         private readonly ILogger<ExitMenuHandler> logger;
-        private readonly TrayIconManager trayIconManager;
+        private readonly NotifyIconManager notifyIconManager;
         private ToolStripItem menuItemSeparator;
         private ToolStripItem menuItemExit;
 
-        public ExitMenuHandler(ILogger<ExitMenuHandler> logger, TrayIconManager trayIconManager)
+        public ExitMenuHandler(ILogger<ExitMenuHandler> logger, NotifyIconManager notifyIconManager)
         {
             logger.LogTrace(".ctor");
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.trayIconManager = trayIconManager ?? throw new ArgumentNullException(nameof(trayIconManager));
+            this.notifyIconManager = notifyIconManager ?? throw new ArgumentNullException(nameof(notifyIconManager));
         }
 
         public int GetSortOrder()
@@ -41,7 +41,7 @@ namespace TrayApp.Menu.Handler
         private void OnExit(object sender, EventArgs e)
         {
             // If the icon is not hidden before exiting it will remain in the tray until the user hovers over it
-            trayIconManager.Hide();
+            notifyIconManager.HideIcon();
 
             Application.Exit();
         }

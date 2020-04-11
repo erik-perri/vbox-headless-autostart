@@ -15,15 +15,15 @@ namespace TrayApp
         public TrayApplicationContext(
             ILogger<TrayApplicationContext> logger,
             TrayContextMenuStrip contextMenu,
-            TrayIconManager iconManager,
+            NotifyIconManager notifyIconManager,
             MachineStore machineStore
         )
         {
             logger.LogTrace(".ctor");
 
-            if (iconManager == null)
+            if (notifyIconManager == null)
             {
-                throw new ArgumentNullException(nameof(iconManager));
+                throw new ArgumentNullException(nameof(notifyIconManager));
             }
 
             if (machineStore == null)
@@ -34,8 +34,8 @@ namespace TrayApp
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.contextMenu = contextMenu ?? throw new ArgumentNullException(nameof(contextMenu));
 
-            iconManager.SetContextMenu(contextMenu);
-            iconManager.Show();
+            notifyIconManager.NotifyIcon.ContextMenuStrip = contextMenu;
+            notifyIconManager.ShowIcon();
 
             machineStore.OnMachineChange += (object _, EventArgs __) => CreateContextMenu();
             machineStore.OnStateChange += (object _, EventArgs __) => UpdateContextMenu();
