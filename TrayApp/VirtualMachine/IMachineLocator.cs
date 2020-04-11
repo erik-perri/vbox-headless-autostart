@@ -1,6 +1,6 @@
 ﻿namespace TrayApp.VirtualMachine
 {
-    public interface ILocatorService
+    public interface IMachineLocator
     {
         IMachine[] LocateMachines(IMachineFilter filter, bool loadMetadata);
 

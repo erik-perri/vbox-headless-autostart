@@ -8,12 +8,12 @@ using TrayApp.Helpers;
 
 namespace TrayApp.VirtualMachine.VirtualBox
 {
-    public class LocatorService : ILocatorService
+    public class MachineLocator : IMachineLocator
     {
-        private readonly ILogger<LocatorService> logger;
+        private readonly ILogger<MachineLocator> logger;
         private readonly MetadataReader metadataReader;
 
-        public LocatorService(ILogger<LocatorService> logger, MetadataReader metadataReader)
+        public MachineLocator(ILogger<MachineLocator> logger, MetadataReader metadataReader)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.metadataReader = metadataReader ?? throw new ArgumentNullException(nameof(metadataReader));

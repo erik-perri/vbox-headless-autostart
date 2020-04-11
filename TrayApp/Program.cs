@@ -49,7 +49,7 @@ namespace TrayApp
                 // Machine locator
                 .AddSingleton<MachineStore>()
                 .AddSingleton<MachineStoreUpdater>()
-                .AddSingleton<ILocatorService, VirtualMachine.VirtualBox.LocatorService>()
+                .AddSingleton<IMachineLocator, VirtualMachine.VirtualBox.MachineLocator>()
                     .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
                     .AddSingleton<MonitoredMachineFilter>()
 

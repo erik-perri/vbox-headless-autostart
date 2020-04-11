@@ -12,14 +12,14 @@ namespace TrayApp.Menu.Handler
     {
         private readonly ILogger<ConfigureMenuHandler> logger;
         private readonly ConfigurationStore configurationStore;
-        private readonly ILocatorService locatorService;
+        private readonly IMachineLocator machineLocator;
         private readonly IConfigurationWriter configurationWriter;
         private ToolStripMenuItem menuItem;
 
         public ConfigureMenuHandler(
             ILogger<ConfigureMenuHandler> logger,
             ConfigurationStore configurationStore,
-            ILocatorService locatorService,
+            IMachineLocator machineLocator,
             IConfigurationWriter configurationWriter
         )
         {
@@ -27,7 +27,7 @@ namespace TrayApp.Menu.Handler
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
-            this.locatorService = locatorService ?? throw new ArgumentNullException(nameof(locatorService));
+            this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
             this.configurationWriter = configurationWriter ?? throw new ArgumentNullException(nameof(configurationWriter));
         }
 
@@ -48,7 +48,7 @@ namespace TrayApp.Menu.Handler
         {
             configurationStore.UpdateConfiguration();
 
-            using var form = new ConfigureForm(configurationStore.GetConfiguration(), locatorService.LocateMachines(false));
+            using var form = new ConfigureForm(configurationStore.GetConfiguration(), machineLocator.LocateMachines(false));
 
             var result = form.ShowDialog();
 
