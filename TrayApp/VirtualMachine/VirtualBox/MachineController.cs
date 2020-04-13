@@ -68,7 +68,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             }
 
             using var process = new VBoxManageProcess($"controlvm {machine.Uuid} savestate");
-            var output = process.GetOuput();
+            var output = process.GetOuput(-1, -35, logger);
 
             foreach (var line in output.OutputData)
             {
@@ -89,7 +89,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             }
 
             using var process = new VBoxManageProcess($"controlvm {machine.Uuid} poweroff");
-            var output = process.GetOuput();
+            var output = process.GetOuput(-1, -35, logger);
 
             foreach (var line in output.OutputData)
             {

@@ -1,13 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace TrayApp.Helpers
 {
     public static class ProcessExtensions
     {
-        public static ProcessOutput GetOuput(this Process process, int timeoutInMs = -1, int timeoutExitCode = -35)
+        public static ProcessOutput GetOuput(
+            this Process process,
+            int timeoutInMs = -1,
+            int timeoutExitCode = -35,
+            ILogger logger = null
+        )
         {
             if (process == null)
             {
@@ -39,7 +46,25 @@ namespace TrayApp.Helpers
                 }
             });
 
-            process.Start();
+            if (!process.Start())
+            {
+                if (logger != null)
+                {
+                    var logOutput = new
+                    {
+                        process.StartInfo.FileName,
+                        process.StartInfo.Arguments,
+                        LastError = Marshal.GetLastWin32Error(),
+                    };
+                    logger.LogTrace($"Failed to execute process {logOutput}");
+                }
+
+                return new ProcessOutput(
+                    -1,
+                    null,
+                    null
+                );
+            }
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
@@ -47,6 +72,19 @@ namespace TrayApp.Helpers
             if (process.WaitForExit(timeoutInMs))
             {
                 exitCode = process.ExitCode;
+            }
+
+            if (logger != null)
+            {
+                var logOutput = new
+                {
+                    process.StartInfo.FileName,
+                    process.StartInfo.Arguments,
+                    ExitCode = exitCode,
+                    OutputData = string.Join("\r\n", outputData.ToArray()),
+                    ErrorData = string.Join("\r\n", errorData.ToArray()),
+                };
+                logger.LogTrace($"Process executed {logOutput}");
             }
 
             return new ProcessOutput(
