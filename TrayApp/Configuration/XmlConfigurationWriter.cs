@@ -7,7 +7,7 @@ namespace TrayApp.Configuration
 {
     public class XmlConfigurationWriter : IConfigurationWriter
     {
-        public void WriteConfiguration(TrayConfiguration configuration)
+        public void WriteConfiguration(AppConfiguration configuration)
         {
             if (configuration == null)
             {
@@ -16,14 +16,14 @@ namespace TrayApp.Configuration
 
             var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
 
-            var configuratingMapping = new TrayConfigurationXmlMapping()
+            var configuratingMapping = new AppConfigurationXmlMapping()
             {
                 LogLevel = configuration.LogLevel,
                 ShowKeepAwakeMenu = configuration.ShowKeepAwakeMenu,
                 Machines = configuration.Machines.ToArray(),
             };
 
-            var writer = new XmlSerializer(typeof(TrayConfigurationXmlMapping));
+            var writer = new XmlSerializer(typeof(AppConfigurationXmlMapping));
             var stream = File.Create(configurationFile);
             writer.Serialize(stream, configuratingMapping);
             stream.Close();

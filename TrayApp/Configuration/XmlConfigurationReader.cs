@@ -17,7 +17,7 @@ namespace TrayApp.Configuration
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public TrayConfiguration ReadConfiguration()
+        public AppConfiguration ReadConfiguration()
         {
             var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
 
@@ -26,7 +26,7 @@ namespace TrayApp.Configuration
                 var document = new XmlDocument();
                 document.Load(configurationFile);
 
-                return new TrayConfiguration()
+                return new AppConfiguration()
                 {
                     LogLevel = ReadLogLevel(document),
                     ShowKeepAwakeMenu = ReadShowKeepAwakeMenu(document),

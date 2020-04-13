@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace TrayApp.Configuration
 {
-    public class TrayConfiguration : IEquatable<TrayConfiguration>
+    public class AppConfiguration : IEquatable<AppConfiguration>
     {
         public LogLevel LogLevel { get; internal set; }
 
@@ -13,7 +13,7 @@ namespace TrayApp.Configuration
 
         public ReadOnlyCollection<MachineConfiguration> Machines { get; internal set; }
 
-        public bool Equals(TrayConfiguration other)
+        public bool Equals(AppConfiguration other)
         {
             return other != null
                 && LogLevel == other.LogLevel
@@ -23,7 +23,7 @@ namespace TrayApp.Configuration
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as TrayConfiguration);
+            return Equals(obj as AppConfiguration);
         }
 
         public override int GetHashCode()

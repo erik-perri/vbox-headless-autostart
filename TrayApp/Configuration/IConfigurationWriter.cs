@@ -2,6 +2,6 @@
 {
     public interface IConfigurationWriter
     {
-        void WriteConfiguration(TrayConfiguration configuration);
+        void WriteConfiguration(AppConfiguration configuration);
     }
 }

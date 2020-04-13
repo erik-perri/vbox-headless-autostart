@@ -23,9 +23,9 @@ namespace TrayApp.Forms
 
         private List<MachineRow> currentRows;
 
-        public TrayConfiguration UpdatedConfiguration { get; private set; }
+        public AppConfiguration UpdatedConfiguration { get; private set; }
 
-        public ConfigureForm(TrayConfiguration configuration, IMachine[] machines)
+        public ConfigureForm(AppConfiguration configuration, IMachine[] machines)
         {
             InitializeComponent();
             SetLocationBottomRight();
@@ -42,7 +42,7 @@ namespace TrayApp.Forms
             Location = new Point(workingArea.Right - Size.Width - offset, workingArea.Bottom - Size.Height - offset);
         }
 
-        private void SetupConfiguration(TrayConfiguration configuration)
+        private void SetupConfiguration(AppConfiguration configuration)
         {
             var index = comboBoxLogLevel.FindStringExact(configuration.LogLevel.ToString());
             if (index != -1)
@@ -136,7 +136,7 @@ namespace TrayApp.Forms
                 throw new InvalidOperationException("Unknwon log level specified");
             }
 
-            UpdatedConfiguration = new TrayConfiguration()
+            UpdatedConfiguration = new AppConfiguration()
             {
                 LogLevel = logLevel,
                 ShowKeepAwakeMenu = checkBoxKeepAwakeMenu.Checked,

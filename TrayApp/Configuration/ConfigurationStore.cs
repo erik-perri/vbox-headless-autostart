@@ -10,7 +10,7 @@ namespace TrayApp.Configuration
     public class ConfigurationStore
     {
         private readonly ILogger<ConfigurationStore> logger;
-        private TrayConfiguration configuration;
+        private AppConfiguration configuration;
         private readonly IConfigurationReader configurationReader;
 
         public event EventHandler OnConfigurationChange;
@@ -21,7 +21,7 @@ namespace TrayApp.Configuration
             this.configurationReader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
-        public TrayConfiguration GetConfiguration()
+        public AppConfiguration GetConfiguration()
         {
             return configuration;
         }
@@ -32,7 +32,7 @@ namespace TrayApp.Configuration
 
             if (configuration == null)
             {
-                configuration = new TrayConfiguration()
+                configuration = new AppConfiguration()
                 {
                     LogLevel = LogLevelConfigurationManager.DefaultLevel,
                     ShowKeepAwakeMenu = false,
@@ -43,7 +43,7 @@ namespace TrayApp.Configuration
             SetConfiguration(configuration);
         }
 
-        private void SetConfiguration(TrayConfiguration newConfiguration)
+        private void SetConfiguration(AppConfiguration newConfiguration)
         {
             var previousConfiguration = configuration;
 
@@ -57,7 +57,7 @@ namespace TrayApp.Configuration
             }
         }
 
-        private void DumpChanges(TrayConfiguration oldConfiguration, TrayConfiguration newConfiguration)
+        private void DumpChanges(AppConfiguration oldConfiguration, AppConfiguration newConfiguration)
         {
             if (newConfiguration == null)
             {

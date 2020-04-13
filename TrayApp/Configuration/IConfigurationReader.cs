@@ -2,6 +2,6 @@
 {
     public interface IConfigurationReader
     {
-        TrayConfiguration ReadConfiguration();
+        AppConfiguration ReadConfiguration();
     }
 }
