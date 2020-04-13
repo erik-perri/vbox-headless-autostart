@@ -71,10 +71,12 @@ namespace ServiceApp
         {
             try
             {
-                var acceptedCommands = typeof(ServiceBase).GetField(
-                    "acceptedCommands",
-                    BindingFlags.Instance | BindingFlags.NonPublic
-                );
+                const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+
+                // acceptedCommands is used in .NET Framework, _acceptedCommands is used in .NET Core
+                var acceptedCommands = typeof(ServiceBase).GetField("acceptedCommands", bindingFlags)
+                                    ?? typeof(ServiceBase).GetField("_acceptedCommands", bindingFlags);
+
                 if (acceptedCommands == null)
                 {
                     logger.LogError("Cannot enable pre-shutdown notifications, acceptedCommands field not found");
