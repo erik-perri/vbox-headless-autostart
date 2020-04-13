@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 
 namespace TrayApp.VirtualMachine.VirtualBox
 {
@@ -6,8 +7,14 @@ namespace TrayApp.VirtualMachine.VirtualBox
     {
         public static string FindInstallPath()
         {
-            return (string)Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Oracle\VirtualBox")
-                .GetValue("InstallDir", null, RegistryValueOptions.None);
+            using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Oracle\VirtualBox");
+
+            if (key == null)
+            {
+                throw new InvalidOperationException("Failed to find VirtualBox install location");
+            }
+
+            return (string)key.GetValue("InstallDir", null, RegistryValueOptions.None);
         }
     }
 }
