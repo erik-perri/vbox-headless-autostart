@@ -18,6 +18,9 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="NLog.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
