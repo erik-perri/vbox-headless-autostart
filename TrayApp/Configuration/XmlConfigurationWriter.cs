@@ -16,14 +16,14 @@ namespace TrayApp.Configuration
 
             var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
 
-            var configuratingMapping = new TrayConfigurationXml()
+            var configuratingMapping = new TrayConfigurationXmlMapping()
             {
                 LogLevel = configuration.LogLevel,
                 ShowKeepAwakeMenu = configuration.ShowKeepAwakeMenu,
                 Machines = configuration.Machines.ToArray(),
             };
 
-            var writer = new XmlSerializer(typeof(TrayConfigurationXml));
+            var writer = new XmlSerializer(typeof(TrayConfigurationXmlMapping));
             var stream = File.Create(configurationFile);
             writer.Serialize(stream, configuratingMapping);
             stream.Close();

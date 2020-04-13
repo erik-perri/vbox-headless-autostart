@@ -6,7 +6,7 @@ namespace TrayApp.Configuration
 {
     [XmlType(TypeName = "Configuration")]
     [Serializable]
-    public class TrayConfigurationXml
+    public class TrayConfigurationXmlMapping
     {
         public LogLevel LogLevel { get; set; }
 
