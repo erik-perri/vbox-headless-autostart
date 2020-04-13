@@ -14,6 +14,8 @@ namespace ServiceApp
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InitializeComponent();
+
+            CanPauseAndContinue = false;
         }
 
         protected override void OnStart(string[] args)
