@@ -10,8 +10,8 @@ namespace TrayApp.Configuration
     public class ConfigurationStore
     {
         private readonly ILogger<ConfigurationStore> logger;
-        private AppConfiguration configuration;
         private readonly IConfigurationReader configurationReader;
+        private AppConfiguration configuration;
 
         public event EventHandler OnConfigurationChange;
 
