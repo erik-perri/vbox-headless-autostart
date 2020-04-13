@@ -6,15 +6,15 @@ using TrayApp.VirtualMachine;
 
 namespace TrayApp.AutoControl
 {
-    public class MachineStarter
+    public class AutoController
     {
-        private readonly ILogger<MachineStarter> logger;
+        private readonly ILogger<AutoController> logger;
         private readonly MachineStore machineStore;
         private readonly ConfigurationStore configurationStore;
         private readonly IMachineController machineController;
 
-        public MachineStarter(
-            ILogger<MachineStarter> logger,
+        public AutoController(
+            ILogger<AutoController> logger,
             MachineStore machineStore,
             ConfigurationStore configurationStore,
             IMachineController machineController
@@ -67,6 +67,9 @@ namespace TrayApp.AutoControl
             return machinesControlled > 0;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Simplification", "RCS1021:Simplify lambda expression.", Justification = "Line too long"
+        )]
         public void StopMachines()
         {
             var machines = machineStore.GetMachines();

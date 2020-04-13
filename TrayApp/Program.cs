@@ -60,7 +60,7 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
-                .AddSingleton<MachineStarter>()
+                .AddSingleton<AutoController>()
 
                 .BuildServiceProvider();
 
@@ -76,10 +76,7 @@ namespace TrayApp
                 var machineStore = serviceProvider.GetService<MachineStore>();
                 machineStore.UpdateMachines();
 
-                if (serviceProvider.GetService<MachineStarter>().StartMachines())
-                {
-                    machineStore.UpdateMachines(); // Update again so the tray is created with the correct state
-                }
+                serviceProvider.GetService<AutoController>().StartMachines();
             }
 
             // Start the machine state monitor
