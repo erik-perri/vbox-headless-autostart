@@ -55,7 +55,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
         private bool ParseInfoRow(string infoName, string infoValue, MachineMetadata metadata)
         {
-            switch(infoName.ToUpperInvariant())
+            switch (infoName.ToUpperInvariant())
             {
                 case "STATE":
                     return ParseState(infoValue, metadata);
