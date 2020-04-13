@@ -87,6 +87,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             return state switch
             {
                 "running" => MachineState.Running,
+                "starting" => MachineState.Starting,
                 "aborted" => MachineState.Aborted,
                 "powered off" => MachineState.PoweredOff,
                 "saved" => MachineState.StateSaved,
