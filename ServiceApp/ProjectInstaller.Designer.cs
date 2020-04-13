@@ -33,12 +33,18 @@
             // 
             // serviceProcessInstaller
             // 
+            this.serviceProcessInstaller.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
             this.serviceProcessInstaller.Password = null;
             this.serviceProcessInstaller.Username = null;
             // 
             // serviceInstaller
             // 
+            this.serviceInstaller.DelayedAutoStart = true;
+            this.serviceInstaller.Description = "Launches VirtualBox machines in headless mode on startup.  The service portion ha" +
+    "ndles shutting them down with the computer.";
+            this.serviceInstaller.DisplayName = "VBox Headless AutoStart";
             this.serviceInstaller.ServiceName = "VBoxHeadlessAutoStart";
+            this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 
