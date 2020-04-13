@@ -14,7 +14,7 @@ namespace TrayApp.Menu
 
         public int GetUpdateSpeed()
         {
-            return notifyIconManager.NotifyIcon.ContextMenuStrip.Visible ? 1000 : 10000;
+            return notifyIconManager.NotifyIcon.ContextMenuStrip?.Visible == true ? 1000 : 10000;
         }
     }
 }
