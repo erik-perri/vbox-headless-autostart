@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 
@@ -16,6 +17,11 @@ namespace ServiceApp
             InitializeComponent();
 
             CanPauseAndContinue = false;
+
+            // Since we start and stop VirtualBox with VBoxManage.exe the service shutdown event is too late.  By
+            // that point process creation will fail with ERROR_SHUTDOWN_IN_PROGRESS.  To get around this we register
+            // for pre-shutdown notification and stop there instead.
+            AcceptPreShutdownCommand();
         }
 
         protected override void OnStart(string[] args)
@@ -34,6 +40,22 @@ namespace ServiceApp
             SetServiceState(NativeMethods.ServiceState.SERVICE_STOPPED);
         }
 
+        protected override void OnCustomCommand(int command)
+        {
+            logger.LogDebug("Entered OnCustomCommand({command})", command);
+
+            switch (command)
+            {
+                case NativeMethods.SERVICE_CONTROL_PRESHUTDOWN:
+                    logger.LogInformation("Pre-Shutdown detected");
+                    break;
+
+                default:
+                    base.OnCustomCommand(command);
+                    break;
+            }
+        }
+
         private bool SetServiceState(NativeMethods.ServiceState state, int waitHint = 0)
         {
             var status = new NativeMethods.ServiceStatus() { dwCurrentState = state };
@@ -43,6 +65,34 @@ namespace ServiceApp
             }
 
             return NativeMethods.SetServiceStatus(ServiceHandle, ref status);
+        }
+
+        private void AcceptPreShutdownCommand()
+        {
+            try
+            {
+                var acceptedCommands = typeof(ServiceBase).GetField(
+                    "acceptedCommands",
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                );
+                if (acceptedCommands == null)
+                {
+                    logger.LogError("Cannot enable pre-shutdown notifications, acceptedCommands field not found");
+                    return;
+                }
+
+                var newCommands = (int)acceptedCommands.GetValue(this) | NativeMethods.SERVICE_ACCEPT_PRESHUTDOWN;
+                acceptedCommands.SetValue(this, newCommands);
+            }
+            catch (Exception e) when (
+                e is ArgumentException ||
+                e is NotSupportedException ||
+                e is TargetException ||
+                e is FieldAccessException
+            )
+            {
+                logger.LogError(e, "Failed to adjust acceptedCommands");
+            }
         }
 
         private static class NativeMethods
@@ -74,6 +124,12 @@ namespace ServiceApp
 
             [DllImport("advapi32.dll", SetLastError = true)]
             public static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
+
+            // https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status_process
+            public const int SERVICE_ACCEPT_PRESHUTDOWN = 0x00000100;
+
+            // https://docs.microsoft.com/en-us/windows/win32/api/winsvc/nc-winsvc-lphandler_function_ex
+            public const int SERVICE_CONTROL_PRESHUTDOWN = 0x0000000F;
         }
     }
 }
