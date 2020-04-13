@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using TrayApp.AutoControl;
 using TrayApp.Configuration;
-using TrayApp.Forms;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
 using TrayApp.Menu;
@@ -63,13 +62,6 @@ namespace TrayApp
 
                 .AddSingleton<AutoController>()
 
-                .AddSingleton<ShutdownMonitorForm>()
-                .AddSingleton<ShutdownMonitor>()
-                    .AddSingleton(provider => new ShutdownBlock(
-                        provider.GetService<ILogger<ShutdownBlock>>(),
-                        provider.GetService<TrayContextMenuStrip>()
-                    ))
-
                 .BuildServiceProvider();
 
             // Load the configuration into the store
@@ -89,8 +81,6 @@ namespace TrayApp
 
             // Start the machine state monitor
             serviceProvider.GetService<MachineStoreUpdater>().StartMonitor();
-
-            serviceProvider.GetService<ShutdownMonitorForm>().Show();
 
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
