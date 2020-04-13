@@ -43,7 +43,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
             foreach (var machine in machines)
             {
                 tasks.Add(Task.Factory.StartNew(
-                    () => machine.Metadata = metadataReader.ReadMetadata(machine) ?? new MachineMetadata(MachineState.Unknown, DateTime.MinValue),
+                    () => machine.Metadata = metadataReader.ReadMetadata(machine) ?? new MachineMetadata(),
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     TaskScheduler.Default
