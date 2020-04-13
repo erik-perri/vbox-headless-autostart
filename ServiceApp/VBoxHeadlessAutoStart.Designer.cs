@@ -1,6 +1,6 @@
 ﻿namespace ServiceApp
 {
-    partial class Service1
+    partial class VBoxHeadlessAutoStart
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            // 
+            // VBoxHeadlessAutoStart
+            // 
+            this.ServiceName = "VBoxHeadlessAutoStart";
+
         }
 
         #endregion

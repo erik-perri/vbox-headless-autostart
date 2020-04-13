@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace ServiceApp
 {
-    public partial class Service1 : ServiceBase
+    public partial class VBoxHeadlessAutoStart : ServiceBase
     {
-        public Service1()
+        public VBoxHeadlessAutoStart()
         {
             InitializeComponent();
         }

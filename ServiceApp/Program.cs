@@ -17,7 +17,7 @@ namespace ServiceApp
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new VBoxHeadlessAutoStart()
             };
             ServiceBase.Run(ServicesToRun);
         }
