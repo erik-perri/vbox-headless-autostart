@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServiceApp
 {
     public partial class VBoxHeadlessAutoStart : ServiceBase
     {
-        public VBoxHeadlessAutoStart()
+        private readonly ILogger<VBoxHeadlessAutoStart> logger;
+
+        public VBoxHeadlessAutoStart(ILogger<VBoxHeadlessAutoStart> logger)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
+            logger.LogTrace("Service start requested");
         }
 
         protected override void OnStop()
         {
+            logger.LogTrace("Service stop requested");
         }
     }
 }
