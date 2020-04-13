@@ -91,12 +91,11 @@ namespace TrayApp.VirtualMachine.VirtualBox
 
             metadata.State = state;
 
-            var lastAction = DateTime.MinValue;
             if (DateTime.TryParse(
                 foundDate,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal,
-                out lastAction
+                out var lastAction
             ))
             {
                 metadata.LastAction = lastAction;
