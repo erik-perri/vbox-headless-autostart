@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommonLib.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -136,12 +137,11 @@ namespace TrayApp.Forms
                 throw new InvalidOperationException("Unknwon log level specified");
             }
 
-            UpdatedConfiguration = new AppConfiguration()
-            {
-                LogLevel = logLevel,
-                ShowKeepAwakeMenu = checkBoxKeepAwakeMenu.Checked,
-                Machines = new ReadOnlyCollection<MachineConfiguration>(machines.ToArray()),
-            };
+            UpdatedConfiguration = new AppConfiguration(
+                logLevel,
+                checkBoxKeepAwakeMenu.Checked,
+                new ReadOnlyCollection<MachineConfiguration>(machines.ToArray())
+            );
 
             DialogResult = DialogResult.OK;
             Close();

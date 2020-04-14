@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CommonLib.Configuration;
+using System;
 using System.Collections.Generic;
-using TrayApp.Configuration;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp.Helpers

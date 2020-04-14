@@ -3,15 +3,22 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace TrayApp.Configuration
+namespace CommonLib.Configuration
 {
     public class AppConfiguration : IEquatable<AppConfiguration>
     {
-        public LogLevel LogLevel { get; internal set; }
+        public LogLevel LogLevel { get; }
 
-        public bool ShowKeepAwakeMenu { get; internal set; }
+        public bool ShowKeepAwakeMenu { get; }
 
-        public ReadOnlyCollection<MachineConfiguration> Machines { get; internal set; }
+        public ReadOnlyCollection<MachineConfiguration> Machines { get; }
+
+        public AppConfiguration(LogLevel logLevel, bool showKeepAwakeMenu, ReadOnlyCollection<MachineConfiguration> machines)
+        {
+            LogLevel = logLevel;
+            ShowKeepAwakeMenu = showKeepAwakeMenu;
+            Machines = machines;
+        }
 
         public bool Equals(AppConfiguration other)
         {

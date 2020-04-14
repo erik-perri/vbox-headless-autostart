@@ -2,7 +2,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace TrayApp.Configuration
+namespace CommonLib.Configuration
 {
     [XmlType(TypeName = "Configuration")]
     [Serializable]

@@ -3,10 +3,17 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace TrayApp.Configuration
+namespace CommonLib.Configuration
 {
     public class XmlConfigurationWriter : IConfigurationWriter
     {
+        private readonly IConfigurationFileLocator fileLocator;
+
+        public XmlConfigurationWriter(IConfigurationFileLocator fileLocator)
+        {
+            this.fileLocator = fileLocator ?? throw new ArgumentNullException(nameof(fileLocator));
+        }
+
         public void WriteConfiguration(AppConfiguration configuration)
         {
             if (configuration == null)
@@ -14,7 +21,7 @@ namespace TrayApp.Configuration
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
+            var configurationFile = fileLocator.LocateFile();
 
             var configuratingMapping = new AppConfigurationXmlMapping()
             {

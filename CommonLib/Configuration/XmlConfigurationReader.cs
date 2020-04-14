@@ -6,32 +6,33 @@ using System.IO;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace TrayApp.Configuration
+namespace CommonLib.Configuration
 {
     public class XmlConfigurationReader : IConfigurationReader
     {
         private readonly ILogger<XmlConfigurationReader> logger;
+        private readonly IConfigurationFileLocator fileLocator;
 
-        public XmlConfigurationReader(ILogger<XmlConfigurationReader> logger)
+        public XmlConfigurationReader(ILogger<XmlConfigurationReader> logger, IConfigurationFileLocator fileLocator)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.fileLocator = fileLocator ?? throw new ArgumentNullException(nameof(fileLocator));
         }
 
         public AppConfiguration ReadConfiguration()
         {
-            var configurationFile = XmlConfigurationFileLocator.LocateConfigurationFile();
+            var configurationFile = fileLocator.LocateFile();
 
             try
             {
                 var document = new XmlDocument();
                 document.Load(configurationFile);
 
-                return new AppConfiguration()
-                {
-                    LogLevel = ReadLogLevel(document),
-                    ShowKeepAwakeMenu = ReadShowKeepAwakeMenu(document),
-                    Machines = new ReadOnlyCollection<MachineConfiguration>(ReadMachines(document)),
-                };
+                return new AppConfiguration(
+                    ReadLogLevel(document),
+                    ReadShowKeepAwakeMenu(document),
+                    new ReadOnlyCollection<MachineConfiguration>(ReadMachines(document))
+                );
             }
             catch (Exception e) when (
                 e is XmlException ||

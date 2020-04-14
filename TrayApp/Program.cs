@@ -1,3 +1,4 @@
+using CommonLib.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -57,6 +58,7 @@ namespace TrayApp
 
                 // Configuration
                 .AddSingleton<ConfigurationStore>()
+                .AddSingleton<IConfigurationFileLocator, UserProfileFileLocator>()
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 

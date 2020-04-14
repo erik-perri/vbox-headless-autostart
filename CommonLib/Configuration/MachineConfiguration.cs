@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrayApp.Configuration
+namespace CommonLib.Configuration
 {
     public class MachineConfiguration : IEquatable<MachineConfiguration>
     {

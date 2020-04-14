@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommonLib.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -32,12 +33,11 @@ namespace TrayApp.Configuration
 
             if (configuration == null)
             {
-                configuration = new AppConfiguration()
-                {
-                    LogLevel = LogLevelConfigurationManager.DefaultLevel,
-                    ShowKeepAwakeMenu = false,
-                    Machines = new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>()),
-                };
+                configuration = new AppConfiguration(
+                    LogLevelConfigurationManager.DefaultLevel,
+                    false,
+                    new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>())
+                );
             }
 
             SetConfiguration(configuration);
