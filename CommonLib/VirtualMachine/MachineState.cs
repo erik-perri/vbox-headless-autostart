@@ -8,7 +8,7 @@
         PoweredOff,
         Aborted,
         Saving,
+        Saved,
         Restoring,
-        StateSaved,
     };
 }

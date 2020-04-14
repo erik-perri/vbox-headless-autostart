@@ -159,7 +159,7 @@ namespace TrayApp.Menu.Handler
                 case MachineState.PoweredOff:
                     return Properties.Resources.VirtualMachineStop;
 
-                case MachineState.StateSaved:
+                case MachineState.Saved:
                     return Properties.Resources.VirtualMachinePause;
 
                 case MachineState.Running:

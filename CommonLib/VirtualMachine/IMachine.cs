@@ -22,7 +22,7 @@
             {
                 return Metadata.State == MachineState.Aborted
                     || Metadata.State == MachineState.PoweredOff
-                    || Metadata.State == MachineState.StateSaved;
+                    || Metadata.State == MachineState.Saved;
             }
         }
     }
