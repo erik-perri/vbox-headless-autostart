@@ -1,5 +1,7 @@
 using CommonLib.Configuration;
+using CommonLib.Processes;
 using CommonLib.VirtualMachine;
+using CommonLib.VirtualMachine.VirtualBox;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -45,16 +47,15 @@ namespace TrayApp
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
-                        .AddSingleton<IMachineController, VirtualMachine.VirtualBox.MachineController>()
+                        .AddSingleton<IMachineController, VBoxManageOutputFactory>()
                     .AddSingleton<IMenuHandler, KeepAwakeMenuHandler>()
                         .AddSingleton<KeepAwakeTask>()
 
                 // Machine locator
                 .AddSingleton<MachineStore>()
-                .AddSingleton<MachineStoreUpdater>()
-                .AddSingleton<IMachineLocator, VirtualMachine.VirtualBox.MachineLocator>()
-                    .AddSingleton<VirtualMachine.VirtualBox.MetadataReader>()
+                    .AddSingleton<IMachineLocator, VBoxManageOutputFactory>()
                     .AddSingleton<MonitoredMachineFilter>()
+                .AddSingleton<MachineStoreUpdater>()
                     .AddSingleton<IUpdateSpeedLocator, MenuVisibleUpdateSpeedLocator>()
 
                 // Configuration
@@ -64,6 +65,9 @@ namespace TrayApp
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
                 .AddSingleton<AutoController>()
+
+                // Tell VBoxManageOutputFactory to use the standard Process output factory
+                .AddSingleton<IProcessOutputFactory, ProcessOutputFactory>()
 
                 .BuildServiceProvider();
 

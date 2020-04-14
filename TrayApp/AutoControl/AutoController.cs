@@ -51,7 +51,7 @@ namespace TrayApp.AutoControl
 
                     logger.LogInformation($"Auto-starting {new { machine.Uuid, machine.Name }}");
 
-                    if (!machineController.StartMachineHeadless(machine))
+                    if (!machineController.StartMachine(machine, true))
                     {
                         logger.LogError($"Failed to start {new { machine.Uuid, machine.Name }}");
                     }

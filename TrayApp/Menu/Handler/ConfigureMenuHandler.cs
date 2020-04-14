@@ -49,7 +49,7 @@ namespace TrayApp.Menu.Handler
         {
             configurationStore.UpdateConfiguration();
 
-            using var form = new ConfigureForm(configurationStore.GetConfiguration(), machineLocator.LocateMachines(false));
+            using var form = new ConfigureForm(configurationStore.GetConfiguration(), machineLocator.ListMachines());
 
             var result = form.ShowDialog();
 

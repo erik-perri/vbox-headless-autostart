@@ -2,8 +2,8 @@
 {
     public interface IMachineLocator
     {
-        IMachine[] LocateMachines(IMachineFilter filter, bool loadMetadata);
+        IMachine[] ListMachines(IMachineFilter filter = null);
 
-        IMachine[] LocateMachines(bool loadMetadata);
+        IMachine[] ListMachinesWithMetadata(IMachineFilter filter = null);
     }
 }

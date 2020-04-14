@@ -117,12 +117,12 @@ namespace TrayApp.Menu.Handler
                 new ToolStripMenuItem(
                     "Headless start",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.StartMachineHeadless(machine)).Start()
+                    (object _, EventArgs __) => new Task(() => machineController.StartMachine(machine, true)).Start()
                 ),
                 new ToolStripMenuItem(
                     "Normal start",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.StartMachine(machine)).Start()
+                    (object _, EventArgs __) => new Task(() => machineController.StartMachine(machine, false)).Start()
                 ),
                 new ToolStripSeparator(),
                 new ToolStripMenuItem(

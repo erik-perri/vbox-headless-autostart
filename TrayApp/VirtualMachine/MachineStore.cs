@@ -39,7 +39,7 @@ namespace TrayApp.VirtualMachine
         {
             logger.LogTrace("Updating machine states");
 
-            SetMachines(machineLocator.LocateMachines(machineFilter, true));
+            SetMachines(machineLocator.ListMachinesWithMetadata(machineFilter));
         }
 
         private void SetMachines(IMachine[] newMachines)

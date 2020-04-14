@@ -4,9 +4,7 @@ namespace CommonLib.VirtualMachine
 {
     public interface IMachineController
     {
-        bool StartMachineHeadless(IMachine machine);
-
-        bool StartMachine(IMachine machine);
+        bool StartMachine(IMachine machine, bool headless);
 
         bool SaveState(IMachine machine);
 
@@ -14,6 +12,6 @@ namespace CommonLib.VirtualMachine
 
         bool AcpiPowerOff(IMachine machine, int waitLimitInMilliseconds, Action onWaitAction);
 
-        void Reset(IMachine machine);
+        bool Reset(IMachine machine);
     }
 }
