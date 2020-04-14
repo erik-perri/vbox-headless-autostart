@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommonLib.VirtualMachine;
+using CommonLib.VirtualMachine.VirtualBox;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -25,7 +27,10 @@ namespace TrayApp.VirtualMachine.VirtualBox
             using var process = new VBoxManageProcess($"showvminfo {machine.Uuid}");
 
             var output = process.GetOuput();
-            var metadata = new MachineMetadata();
+
+            var state = MachineState.Unknown;
+            var lastAction = DateTime.MinValue;
+            string sessionName = null;
 
             foreach (var line in output.OutputData)
             {
@@ -36,39 +41,36 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 }
 
                 var infoKey = match.Groups[1].Value.Trim();
+                var infoValue = match.Groups[2].Value.Trim();
 
-                if (!ParseInfoRow(infoKey, match.Groups[2].Value.Trim(), metadata))
+                switch (infoKey.ToUpperInvariant())
                 {
-                    logger.LogWarning($"Failed to parse info line for machine { new { machine.Uuid, machine.Name }}");
+                    case "STATE":
+                        var parsed = ParseState(infoValue);
+                        if (parsed != null)
+                        {
+                            state = parsed.Item1;
+                            lastAction = parsed.Item2;
+                        }
+                        break;
+
+                    case "SESSION NAME":
+                        sessionName = infoValue.Trim();
+                        break;
                 }
             }
 
-            if (metadata.State == MachineState.Unknown)
+            if (state == MachineState.Unknown)
             {
                 logger.LogWarning($"Failed to find state {new { machine.Uuid, machine.Name }}");
 
                 return null;
             }
 
-            return metadata;
+            return new MachineMetadata(state, lastAction, sessionName);
         }
 
-        private bool ParseInfoRow(string infoName, string infoValue, MachineMetadata metadata)
-        {
-            switch (infoName.ToUpperInvariant())
-            {
-                case "STATE":
-                    return ParseState(infoValue, metadata);
-
-                case "SESSION NAME":
-                    metadata.SessionName = infoValue.Trim();
-                    return true;
-            }
-
-            return true;
-        }
-
-        private bool ParseState(string infoValue, MachineMetadata metadata)
+        private Tuple<MachineState, DateTime> ParseState(string infoValue)
         {
             var stateMatch = Regex.Match(infoValue, @"^([A-Za-z\s]+)\s\(since ([0-9:\-\.T]+)\)$");
             if (!stateMatch.Success)
@@ -76,7 +78,7 @@ namespace TrayApp.VirtualMachine.VirtualBox
                 logger.LogWarning(
                     $"Failed to parse state {new { State = infoValue }}"
                 );
-                return false;
+                return null;
             }
 
             var foundState = stateMatch.Groups[1].Value.Trim();
@@ -86,26 +88,20 @@ namespace TrayApp.VirtualMachine.VirtualBox
             if (state == MachineState.Unknown)
             {
                 logger.LogWarning($"Unknown state {new { State = foundState }}");
-                return false;
+                return null;
             }
 
-            metadata.State = state;
-
-            if (DateTime.TryParse(
+            if (!DateTime.TryParse(
                 foundDate,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal,
                 out var lastAction
             ))
             {
-                metadata.LastAction = lastAction;
-            }
-            else
-            {
                 logger.LogWarning($"Failed to parse date {new { Date = foundDate }}");
             }
 
-            return true;
+            return new Tuple<MachineState, DateTime>(state, lastAction);
         }
 
         private static MachineState ParseVirtualBoxState(string state)

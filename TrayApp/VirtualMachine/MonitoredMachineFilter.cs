@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonLib.VirtualMachine;
+using System;
 using System.Linq;
 using TrayApp.Configuration;
 

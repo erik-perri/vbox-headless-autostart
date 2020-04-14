@@ -1,11 +1,11 @@
 ﻿using CommonLib.Configuration;
+using CommonLib.VirtualMachine;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Windows.Forms;
 using TrayApp.Configuration;
 using TrayApp.Forms;
-using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu.Handler
 {

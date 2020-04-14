@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 
-namespace TrayApp.VirtualMachine.VirtualBox
+namespace CommonLib.VirtualMachine.VirtualBox
 {
     public static class InstallPathLocator
     {

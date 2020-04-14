@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrayApp.VirtualMachine
+namespace CommonLib.VirtualMachine
 {
     public interface IMachineController
     {

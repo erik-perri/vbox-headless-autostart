@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrayApp.VirtualMachine.VirtualBox
+namespace CommonLib.VirtualMachine.VirtualBox
 {
     public class Machine : IMachine, IEquatable<Machine>
     {

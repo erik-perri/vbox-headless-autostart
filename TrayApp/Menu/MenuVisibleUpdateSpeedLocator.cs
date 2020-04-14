@@ -1,5 +1,5 @@
-﻿using System;
-using TrayApp.VirtualMachine;
+﻿using CommonLib.VirtualMachine;
+using System;
 
 namespace TrayApp.Menu
 {

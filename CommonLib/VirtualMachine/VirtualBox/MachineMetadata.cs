@@ -1,14 +1,26 @@
 ﻿using System;
 
-namespace TrayApp.VirtualMachine.VirtualBox
+namespace CommonLib.VirtualMachine.VirtualBox
 {
     public class MachineMetadata : IMachineMetadata, IEquatable<MachineMetadata>
     {
-        public MachineState State { get; internal set; } = MachineState.Unknown;
+        public MachineState State { get; }
 
-        public DateTime LastAction { get; internal set; } = DateTime.MinValue;
+        public DateTime LastAction { get; }
 
-        public string SessionName { get; internal set; } = null;
+        public string SessionName { get; }
+
+        public MachineMetadata(MachineState state, DateTime lastAction, string sessionName)
+        {
+            State = state;
+            LastAction = lastAction;
+            SessionName = sessionName;
+        }
+
+        public MachineMetadata()
+            : this(MachineState.Unknown, DateTime.MinValue, null)
+        {
+        }
 
         public override string ToString()
         {

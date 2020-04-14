@@ -1,7 +1,7 @@
 ﻿using CommonLib.Configuration;
+using CommonLib.VirtualMachine;
 using System;
 using System.Collections.Generic;
-using TrayApp.VirtualMachine;
 
 namespace TrayApp.Helpers
 {

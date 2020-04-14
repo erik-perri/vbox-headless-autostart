@@ -1,4 +1,5 @@
 ﻿using CommonLib.Configuration;
+using CommonLib.VirtualMachine;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using TrayApp.Configuration;
-using TrayApp.VirtualMachine;
 
 namespace TrayApp.Forms
 {
