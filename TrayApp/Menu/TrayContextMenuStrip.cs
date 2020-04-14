@@ -22,7 +22,7 @@ namespace TrayApp.Menu
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
 
-            if (machineStoreUpdater is null)
+            if (machineStoreUpdater == null)
             {
                 throw new ArgumentNullException(nameof(machineStoreUpdater));
             }
