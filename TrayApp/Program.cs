@@ -70,6 +70,8 @@ namespace TrayApp
 
                 .BuildServiceProvider();
 
+            serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp started");
+
             // Load the configuration and machines into the store
             var appState = serviceProvider.GetService<AppState>();
             appState.UpdateConfiguration();
@@ -90,6 +92,10 @@ namespace TrayApp
 
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
+
+            serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp finished");
+
+            NLog.LogManager.Shutdown();
         }
 
         private static bool IsAutoStarting()
