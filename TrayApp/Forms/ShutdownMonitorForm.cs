@@ -1,21 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
-using TrayApp.AutoControl;
+using TrayApp.Shutdown;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.Forms
 {
     public partial class ShutdownMonitorForm : Form
     {
         private readonly ILogger<ShutdownMonitorForm> logger;
-        private readonly ShutdownMonitor shutdownMonitor;
-        private readonly AutoController autoController;
+        private readonly ShutdownLocker shutdownMonitor;
+        private readonly MassController autoController;
 
         public ShutdownMonitorForm(
             ILogger<ShutdownMonitorForm> logger,
-            ShutdownMonitor shutdownMonitor,
-            AutoController autoController
+            ShutdownLocker shutdownMonitor,
+            MassController autoController
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -23,42 +23,32 @@ namespace TrayApp.Forms
             this.autoController = autoController ?? throw new ArgumentNullException(nameof(autoController));
 
             InitializeComponent();
-
-            SystemEvents.SessionEnding += SystemEvents_SessionEnding;
-        }
-
-        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
-        {
-            logger.LogDebug($"SystemEvents_SessionEnding {new { e.Reason }}");
-
-            if (shutdownMonitor.Blocking)
-            {
-                e.Cancel = true;
-            }
         }
 
         protected override void WndProc(ref Message m)
         {
             switch (m.Msg)
             {
+                // When Windows asks if we're ready to end the session create a block and tell it no
                 case (int)NativeMethods.WM.QUERYENDSESSION:
-                case (int)NativeMethods.WM.ENDSESSION:
-                    var Msg = $"{m.Msg}";
-                    if (Enum.TryParse($"{Msg}", out NativeMethods.WM messageName))
+                    logger.LogDebug($"WndProc received {new { Msg = "WM_QUERYENDSESSION", m.WParam, m.LParam }}");
+
+                    if (shutdownMonitor.CreateLock(this))
                     {
-                        Msg = messageName.ToString();
-                    }
-
-                    logger.LogDebug($"WndProc received {new { Msg, m.WParam, m.LParam }}");
-
-                    shutdownMonitor.UpdateLock();
-                    if (shutdownMonitor.Blocking)
-                    {
-                        autoController.StopMachines();
-
-                        // Don't run base.WndProc to let Windows know we want to block shutdown
+                        m.Result = new IntPtr(1);
                         return;
                     }
+                    break;
+
+                // When Windows is actually ending the session stop all machines, remove the lock, and exit
+                case (int)NativeMethods.WM.ENDSESSION:
+                    logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
+
+                    autoController.StopAll();
+                    shutdownMonitor.RemoveLock(this);
+
+                    Close();
+                    Application.Exit();
                     break;
             }
 

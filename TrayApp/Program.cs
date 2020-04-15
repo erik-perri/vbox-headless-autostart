@@ -4,13 +4,13 @@ using NLog.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using TrayApp.AutoControl;
 using TrayApp.Configuration;
 using TrayApp.Forms;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
+using TrayApp.Shutdown;
 using TrayApp.State;
 using TrayApp.VirtualMachine;
 
@@ -66,11 +66,7 @@ namespace TrayApp
                     .AddSingleton(new VirtualBox.VirtualBox())
 
                 .AddSingleton<ShutdownMonitorForm>()
-                .AddSingleton<ShutdownMonitor>()
-                    .AddSingleton(provider => new ShutdownBlock(
-                        provider.GetService<ILogger<ShutdownBlock>>(),
-                        provider.GetService<TrayContextMenuStrip>()
-                    ))
+                .AddSingleton<ShutdownLocker>()
 
                 .BuildServiceProvider();
 
