@@ -2,18 +2,17 @@
 using System;
 using System.Linq;
 using TrayApp.State;
-using TrayApp.VirtualMachine;
 
-namespace TrayApp.AutoControl
+namespace TrayApp.VirtualMachine
 {
-    public class AutoController
+    public class MassController
     {
-        private readonly ILogger<AutoController> logger;
+        private readonly ILogger<MassController> logger;
         private readonly AppState appState;
         private readonly IMachineController machineController;
 
-        public AutoController(
-            ILogger<AutoController> logger,
+        public MassController(
+            ILogger<MassController> logger,
             AppState appState,
             IMachineController machineController
         )
@@ -23,7 +22,7 @@ namespace TrayApp.AutoControl
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
         }
 
-        public bool StartMachines()
+        public bool StartAll()
         {
             var machines = appState.Machines;
             var configurationMachines = appState.Configuration.Machines;
@@ -64,7 +63,7 @@ namespace TrayApp.AutoControl
             return machinesControlled > 0;
         }
 
-        public void StopMachines()
+        public void StopAll()
         {
             var machines = appState.Machines;
             var configurationMachines = appState.Configuration.Machines;

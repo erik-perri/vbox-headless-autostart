@@ -57,7 +57,7 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
-                .AddSingleton<AutoController>()
+                .AddSingleton<MassController>()
 
                 .AddSingleton<AppState>()
                 .AddSingleton<MachineStateUpdater>()
@@ -84,7 +84,7 @@ namespace TrayApp
 
             if (IsAutoStarting())
             {
-                serviceProvider.GetService<AutoController>().StartMachines();
+                serviceProvider.GetService<MassController>().StartAll();
             }
 
             // Start the machine state monitor

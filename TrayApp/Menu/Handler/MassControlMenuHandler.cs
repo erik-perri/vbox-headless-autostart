@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TrayApp.AutoControl;
 using TrayApp.State;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu.Handler
 {
     public class MassControlMenuHandler : IMenuHandler, IMenuHandlerUpdateAware, IDisposable
     {
         private readonly Dictionary<string, ToolStripItem> menuItems = new Dictionary<string, ToolStripItem>();
-        private readonly AutoController autoController;
+        private readonly MassController autoController;
         private readonly AppState appState;
 
-        public MassControlMenuHandler(AutoController autoController, AppState appState)
+        public MassControlMenuHandler(MassController autoController, AppState appState)
         {
             this.autoController = autoController ?? throw new ArgumentNullException(nameof(autoController));
             this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
@@ -39,13 +39,13 @@ namespace TrayApp.Menu.Handler
             menuItems["start"] = new ToolStripMenuItem(
                 "&Start All",
                 null,
-                (object _, EventArgs __) => new Task(() => autoController.StartMachines()).Start()
+                (object _, EventArgs __) => new Task(() => autoController.StartAll()).Start()
             );
 
             menuItems["stop"] = new ToolStripMenuItem(
                 "S&top All",
                 null,
-                (object _, EventArgs __) => new Task(() => autoController.StopMachines()).Start()
+                (object _, EventArgs __) => new Task(() => autoController.StopAll()).Start()
             );
 
             UpdateMenuItems();
