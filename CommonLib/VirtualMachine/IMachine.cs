@@ -12,7 +12,7 @@
         {
             get
             {
-                return Metadata.State == MachineState.Running;
+                return Metadata?.State == MachineState.Running;
             }
         }
 
@@ -20,9 +20,9 @@
         {
             get
             {
-                return Metadata.State == MachineState.Aborted
-                    || Metadata.State == MachineState.PoweredOff
-                    || Metadata.State == MachineState.Saved;
+                return Metadata?.State == MachineState.Aborted
+                    || Metadata?.State == MachineState.PoweredOff
+                    || Metadata?.State == MachineState.Saved;
             }
         }
     }
