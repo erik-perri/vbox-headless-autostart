@@ -95,6 +95,7 @@ namespace TrayApp
 
             serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp finished");
 
+            NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
         }
 
