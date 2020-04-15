@@ -44,12 +44,7 @@ namespace TrayApp.VirtualMachine
                         continue;
                     }
 
-                    logger.LogInformation($"Auto-starting {machine}");
-
-                    if (!machineController.StartMachine(machine, true))
-                    {
-                        logger.LogError($"Failed to start {machine}");
-                    }
+                    machineController.StartMachine(machine, true);
 
                     // We want to include failed machines so the state is updated (likely to Aborted)
                     machinesControlled++;
@@ -86,25 +81,15 @@ namespace TrayApp.VirtualMachine
 
                 if (configuration.SaveState)
                 {
-                    logger.LogInformation($"Saving state {machine}");
-
-                    if (!machineController.SaveState(machine))
-                    {
-                        logger.LogError($"Failed to save state {machine}");
-                    }
+                    machineController.SaveState(machine);
                 }
-                else
+                else if (!machineController.AcpiPowerOff(
+                    machine,
+                    90000,
+                    () => logger.LogDebug($"Waiting for power off {machine}")
+                ))
                 {
-                    logger.LogInformation($"Powering off {machine}");
-
-                    if (!machineController.AcpiPowerOff(
-                        machine,
-                        90000,
-                        () => logger.LogDebug($"Waiting for power off {machine}")
-                    ))
-                    {
-                        logger.LogError($"Failed to power off {machine}");
-                    }
+                    logger.LogError($"Failed to power off {machine}");
                 }
             }
         }
