@@ -22,11 +22,10 @@ namespace TrayApp.VirtualMachine
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
         }
 
-        public bool StartAll()
+        public void StartAll()
         {
             var machines = appState.Machines;
             var configurationMachines = appState.Configuration.Machines;
-            int machinesControlled = 0;
 
             var autoStartMachines = machines
                 .Where(a => configurationMachines.Any(b => b.Uuid == a.Uuid && b.AutoStart))
@@ -45,17 +44,12 @@ namespace TrayApp.VirtualMachine
                     }
 
                     machineController.StartMachine(machine, true);
-
-                    // We want to include failed machines so the state is updated (likely to Aborted)
-                    machinesControlled++;
                 }
             }
             else
             {
                 logger.LogInformation("No machines found to auto-start");
             }
-
-            return machinesControlled > 0;
         }
 
         public void StopAll()
