@@ -114,8 +114,8 @@ namespace TrayApp.Forms
                 throw new InvalidOperationException("Missing current rows");
             }
 
+            // Build the new configuration machine list
             var machines = new List<MachineConfiguration>();
-
             foreach (var machineRow in currentRows)
             {
                 if (!machineRow.Monitored)
@@ -136,6 +136,7 @@ namespace TrayApp.Forms
                 throw new InvalidOperationException("Unknwon log level specified");
             }
 
+            // Save the new configuration for the caller
             UpdatedConfiguration = new AppConfiguration(
                 logLevel,
                 checkBoxKeepAwakeMenu.Checked,
@@ -148,7 +149,7 @@ namespace TrayApp.Forms
 
         private void Machines_SelectionChanged(object sender, EventArgs e)
         {
-            // Prevent rows from being selected
+            // Prevent rows from being selected, we don't allow the user to edit anything where selection makes sense
             dataGridMachines.ClearSelection();
         }
 
@@ -159,6 +160,7 @@ namespace TrayApp.Forms
                 return;
             }
 
+            // Change the row background on hover
             foreach (DataGridViewCell cell in dataGridMachines.Rows[e.RowIndex].Cells)
             {
                 cell.Style.BackColor = Color.FromArgb(0xEE, 0xEE, 0xEE);
@@ -172,6 +174,7 @@ namespace TrayApp.Forms
                 return;
             }
 
+            // Change the row background back from the hover
             foreach (DataGridViewCell cell in dataGridMachines.Rows[e.RowIndex].Cells)
             {
                 cell.Style.BackColor = Color.White;
@@ -201,6 +204,8 @@ namespace TrayApp.Forms
 
         private void Machines_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
+            // Render the name and UUID columns as gray when the row is disabled (found in the configuration but not
+            // in the VirtualBox machine list)
             foreach (var index in new int[] { columnName.Index, columnUuid.Index })
             {
                 if (dataGridMachines.Rows[e.RowIndex].Cells[index] is DataGridViewTextBoxCell textBoxCell)
@@ -209,6 +214,8 @@ namespace TrayApp.Forms
                 }
             }
 
+            // Draw a disabled checkbox over the auto-start and save state columns when the row is disabled or not
+            // monitored
             foreach (var index in new int[] { columnAutoStart.Index, columnSaveState.Index })
             {
                 var cell = dataGridMachines.Rows[e.RowIndex].Cells[index] as DataGridViewCheckBoxCell;
@@ -277,6 +284,7 @@ namespace TrayApp.Forms
             public bool Disabled { get; set; }
         }
 
+        // Prevent some of the flickering that occurs when hovering or changing states
         internal class DoubleBufferedDataGridView : DataGridView
         {
             public new bool DoubleBuffered
