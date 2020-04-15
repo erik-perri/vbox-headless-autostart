@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrayApp.State;
-using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu.Handler
 {

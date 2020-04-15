@@ -77,6 +77,14 @@ namespace TrayApp.AutoControl
                     continue;
                 }
 
+                if (!machine.IsPoweredOn)
+                {
+                    logger.LogInformation(
+                        $"Skipping auto-stop {machine}"
+                    );
+                    continue;
+                }
+
                 if (configuration.SaveState)
                 {
                     logger.LogInformation($"Saving state {machine}");
