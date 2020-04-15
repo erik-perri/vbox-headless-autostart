@@ -1,7 +1,5 @@
 using CommonLib.Configuration;
-using CommonLib.Processes;
 using CommonLib.VirtualMachine;
-using CommonLib.VirtualMachine.VirtualBox;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -40,23 +38,22 @@ namespace TrayApp
 
                 // Menu
                 .AddSingleton(provider => new TrayContextMenuStrip(
-                    provider.GetService<ILogger<TrayContextMenuStrip>>(),
                     provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray(),
                     provider.GetService<MachineStoreUpdater>()
                 ))
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
-                        .AddSingleton<IMachineController, VBoxManageOutputFactory>()
+                        .AddSingleton<IMachineController, VirtualBoxController>()
                     .AddSingleton<IMenuHandler, KeepAwakeMenuHandler>()
                         .AddSingleton<KeepAwakeTask>()
 
                 // Machine locator
                 .AddSingleton<MachineStore>()
-                    .AddSingleton<IMachineLocator, VBoxManageOutputFactory>()
+                    .AddSingleton<IMachineLocator, VirtualBoxController>()
                     .AddSingleton<MonitoredMachineFilter>()
                 .AddSingleton<MachineStoreUpdater>()
-                    .AddSingleton<IUpdateSpeedLocator, MenuVisibleUpdateSpeedLocator>()
+                    .AddSingleton<MenuVisibleUpdateSpeedLocator>()
 
                 // Configuration
                 .AddSingleton<ConfigurationStore>()
@@ -66,8 +63,9 @@ namespace TrayApp
 
                 .AddSingleton<AutoController>()
 
-                // Tell VBoxManageOutputFactory to use the standard Process output factory
-                .AddSingleton<IProcessOutputFactory, ProcessOutputFactory>()
+                .AddSingleton<VirtualBoxController>()
+                    .AddSingleton(new VirtualBox.VirtualBox())
+                    .AddSingleton(new VirtualBox.Session())
 
                 .BuildServiceProvider();
 

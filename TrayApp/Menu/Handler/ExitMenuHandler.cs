@@ -1,21 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace TrayApp.Menu.Handler
 {
     public class ExitMenuHandler : IMenuHandler, IDisposable
     {
-        private readonly ILogger<ExitMenuHandler> logger;
         private readonly NotifyIconManager notifyIconManager;
         private ToolStripItem menuItemSeparator;
         private ToolStripItem menuItemExit;
 
-        public ExitMenuHandler(ILogger<ExitMenuHandler> logger, NotifyIconManager notifyIconManager)
+        public ExitMenuHandler(NotifyIconManager notifyIconManager)
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.notifyIconManager = notifyIconManager ?? throw new ArgumentNullException(nameof(notifyIconManager));
         }
 
@@ -54,8 +49,6 @@ namespace TrayApp.Menu.Handler
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 menuItemSeparator?.Dispose();

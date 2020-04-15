@@ -44,16 +44,16 @@ namespace TrayApp.AutoControl
                     if (!machine.IsPoweredOff)
                     {
                         logger.LogInformation(
-                            $"Skipping auto-start {new { machine.Uuid, machine.Name, machine.Metadata.State }}"
+                            $"Skipping auto-start {machine}"
                         );
                         continue;
                     }
 
-                    logger.LogInformation($"Auto-starting {new { machine.Uuid, machine.Name }}");
+                    logger.LogInformation($"Auto-starting {machine}");
 
                     if (!machineController.StartMachine(machine, true))
                     {
-                        logger.LogError($"Failed to start {new { machine.Uuid, machine.Name }}");
+                        logger.LogError($"Failed to start {machine}");
                     }
 
                     // We want to include failed machines so the state is updated (likely to Aborted)
@@ -68,9 +68,6 @@ namespace TrayApp.AutoControl
             return machinesControlled > 0;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Simplification", "RCS1021:Simplify lambda expression.", Justification = "Line too long"
-        )]
         public void StopMachines()
         {
             var machines = machineStore.GetMachines();
@@ -90,25 +87,23 @@ namespace TrayApp.AutoControl
 
                 if (configuration.SaveState)
                 {
-                    logger.LogInformation($"Saving state {new { machine.Uuid, machine.Name }}");
+                    logger.LogInformation($"Saving state {machine}");
 
                     if (!machineController.SaveState(machine))
                     {
-                        logger.LogError($"Failed to save state {new { machine.Uuid, machine.Name }}");
+                        logger.LogError($"Failed to save state {machine}");
                     }
                 }
                 else
                 {
-                    logger.LogInformation($"Powering off {new { machine.Uuid, machine.Name }}");
+                    logger.LogInformation($"Powering off {machine}");
 
-                    const int waitLimit = 90000;
-
-                    if (!machineController.AcpiPowerOff(machine, waitLimit, () =>
+                    if (!machineController.AcpiPowerOff(machine, 90000, () =>
                     {
-                        logger.LogDebug($"Waiting for power off {new { machine.Uuid, machine.Name }}");
+                        logger.LogDebug($"Waiting for power off {machine}");
                     }))
                     {
-                        logger.LogError($"Failed to power off {new { machine.Uuid, machine.Name }}");
+                        logger.LogError($"Failed to power off {machine}");
                     }
                 }
             }

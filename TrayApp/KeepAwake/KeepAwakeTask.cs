@@ -16,8 +16,6 @@ namespace TrayApp.KeepAwake
 
         public KeepAwakeTask(ILogger<KeepAwakeTask> logger)
         {
-            logger.LogTrace(".ctor");
-
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -81,8 +79,6 @@ namespace TrayApp.KeepAwake
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 if (keepAwakeTask?.IsCompleted == false)

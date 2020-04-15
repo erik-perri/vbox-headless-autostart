@@ -25,13 +25,13 @@ namespace TrayApp.Forms
 
         public AppConfiguration UpdatedConfiguration { get; private set; }
 
-        public ConfigureForm(AppConfiguration configuration, IMachine[] machines)
+        public ConfigureForm(AppConfiguration configuration, IMachineMetadata[] machines)
         {
             InitializeComponent();
             SetLocationBottomRight();
 
             SetupConfiguration(configuration ?? throw new ArgumentNullException(nameof(configuration)));
-            SetupDataGrid(machines ?? Array.Empty<IMachine>(), configuration.Machines.ToArray());
+            SetupDataGrid(machines ?? Array.Empty<IMachineMetadata>(), configuration.Machines.ToArray());
         }
 
         private void SetLocationBottomRight()
@@ -53,7 +53,7 @@ namespace TrayApp.Forms
             checkBoxKeepAwakeMenu.Checked = configuration.ShowKeepAwakeMenu;
         }
 
-        private void SetupDataGrid(IMachine[] machines, MachineConfiguration[] machineConfigurations)
+        private void SetupDataGrid(IMachineMetadata[] machines, MachineConfiguration[] machineConfigurations)
         {
             currentRows = new List<MachineRow>();
 

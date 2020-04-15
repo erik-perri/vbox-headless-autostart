@@ -19,8 +19,6 @@ namespace TrayApp
             MachineStore machineStore
         )
         {
-            logger.LogTrace(".ctor");
-
             if (notifyIconManager == null)
             {
                 throw new ArgumentNullException(nameof(notifyIconManager));
@@ -73,13 +71,6 @@ namespace TrayApp
 
                 contextMenu.UpdateContextMenu();
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            logger.LogTrace($"Dispose({disposing})");
-
-            base.Dispose(disposing);
         }
     }
 }

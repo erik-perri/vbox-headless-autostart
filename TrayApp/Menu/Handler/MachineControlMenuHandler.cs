@@ -1,5 +1,4 @@
 ﻿using CommonLib.VirtualMachine;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +11,11 @@ namespace TrayApp.Menu.Handler
     public class MachineControlMenuHandler : IMenuHandler, IMenuHandlerUpdateAware, IDisposable
     {
         private readonly Dictionary<string, ToolStripItem> menuItems = new Dictionary<string, ToolStripItem>();
-        private readonly ILogger<MachineControlMenuHandler> logger;
         private readonly IMachineController machineController;
         private readonly MachineStore machineStore;
 
-        public MachineControlMenuHandler(
-            ILogger<MachineControlMenuHandler> logger,
-            IMachineController machineController,
-            MachineStore machineStore
-        )
+        public MachineControlMenuHandler(IMachineController machineController, MachineStore machineStore)
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
         }
@@ -50,7 +41,7 @@ namespace TrayApp.Menu.Handler
             {
                 menuItems[machine.Uuid] = new ToolStripMenuItem(
                     machine.Name,
-                    GetMenuImage(machine.Metadata.State),
+                    GetMenuImage(machine.State),
                     BuildSubMenu(machine)
                 );
             }
@@ -83,7 +74,7 @@ namespace TrayApp.Menu.Handler
                     continue;
                 }
 
-                menuItems[machine.Uuid].Image = GetMenuImage(machine.Metadata.State);
+                menuItems[machine.Uuid].Image = GetMenuImage(machine.State);
                 if (menuItems[machine.Uuid] is ToolStripMenuItem toolStripMenuItem)
                 {
                     foreach (ToolStripItem item in toolStripMenuItem.DropDownItems)
@@ -110,7 +101,7 @@ namespace TrayApp.Menu.Handler
             }
         }
 
-        private ToolStripItem[] BuildSubMenu(IMachine machine)
+        private ToolStripItem[] BuildSubMenu(IMachineMetadata machine)
         {
             return new ToolStripItem[]
             {
@@ -193,8 +184,6 @@ namespace TrayApp.Menu.Handler
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 DisposeMenuItems();

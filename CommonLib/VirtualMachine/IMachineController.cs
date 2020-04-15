@@ -4,14 +4,14 @@ namespace CommonLib.VirtualMachine
 {
     public interface IMachineController
     {
-        bool StartMachine(IMachine machine, bool headless);
+        bool StartMachine(IMachineMetadata machine, bool headless);
 
-        bool SaveState(IMachine machine);
+        bool SaveState(IMachineMetadata machine);
 
-        bool PowerOff(IMachine machine);
+        bool PowerOff(IMachineMetadata machine);
 
-        bool AcpiPowerOff(IMachine machine, int waitLimitInMilliseconds, Action onWaitAction);
+        bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds, Action onWaitAction);
 
-        bool Reset(IMachine machine);
+        bool Reset(IMachineMetadata machine);
     }
 }

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace TrayApp.Helpers
 {
-    public class UuidEqualityComparer : IEqualityComparer<IMachine>, IEqualityComparer<MachineConfiguration>
+    public class UuidEqualityComparer : IEqualityComparer<IMachineMetadata>, IEqualityComparer<MachineConfiguration>
     {
-        public bool Equals(IMachine a, IMachine b)
+        public bool Equals(IMachineMetadata a, IMachineMetadata b)
         {
             return a?.Uuid == b?.Uuid;
         }
@@ -17,7 +17,7 @@ namespace TrayApp.Helpers
             return a?.Uuid == b?.Uuid;
         }
 
-        public int GetHashCode(IMachine machine)
+        public int GetHashCode(IMachineMetadata machine)
         {
             if (machine == null)
             {

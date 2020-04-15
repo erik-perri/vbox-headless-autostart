@@ -1,21 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace TrayApp
 {
     public class NotifyIconManager : IDisposable
     {
-        private readonly ILogger<NotifyIconManager> logger;
-
         public NotifyIcon NotifyIcon { get; private set; }
 
-        public NotifyIconManager(ILogger<NotifyIconManager> logger)
+        public NotifyIconManager()
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.NotifyIcon = new NotifyIcon()
+            NotifyIcon = new NotifyIcon()
             {
                 Icon = Properties.Resources.TrayIcon,
                 Text = Properties.Resources.TrayTitle,
@@ -35,8 +29,6 @@ namespace TrayApp
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing && NotifyIcon != null)
             {
                 NotifyIcon.Visible = false;

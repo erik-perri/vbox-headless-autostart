@@ -24,8 +24,6 @@ namespace TrayApp.Menu.Handler
             IConfigurationWriter configurationWriter
         )
         {
-            logger.LogTrace(".ctor");
-
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
             this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
@@ -95,8 +93,6 @@ namespace TrayApp.Menu.Handler
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 menuItem?.Dispose();

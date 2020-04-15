@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using TrayApp.Configuration;
 using TrayApp.KeepAwake;
@@ -8,20 +7,12 @@ namespace TrayApp.Menu.Handler
 {
     public class KeepAwakeMenuHandler : IMenuHandler, IDisposable
     {
-        private readonly ILogger<KeepAwakeMenuHandler> logger;
         private readonly KeepAwakeTask keepAwakeTask;
         private readonly ConfigurationStore configurationStore;
         private ToolStripMenuItem menuItem;
 
-        public KeepAwakeMenuHandler(
-            ILogger<KeepAwakeMenuHandler> logger,
-            KeepAwakeTask keepAwakeTask,
-            ConfigurationStore configurationStore
-        )
+        public KeepAwakeMenuHandler(KeepAwakeTask keepAwakeTask, ConfigurationStore configurationStore)
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.keepAwakeTask = keepAwakeTask ?? throw new ArgumentNullException(nameof(keepAwakeTask));
             this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
 
@@ -73,8 +64,6 @@ namespace TrayApp.Menu.Handler
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 menuItem?.Dispose();

@@ -9,7 +9,7 @@ namespace TrayApp.VirtualMachine
 {
     public class MachineStore
     {
-        private readonly List<IMachine> machines = new List<IMachine>();
+        private readonly List<IMachineMetadata> machines = new List<IMachineMetadata>();
 
         private readonly ILogger<MachineStore> logger;
         private readonly IMachineLocator machineLocator;
@@ -30,19 +30,17 @@ namespace TrayApp.VirtualMachine
             this.machineFilter = machineFilter ?? throw new ArgumentNullException(nameof(machineFilter));
         }
 
-        public IMachine[] GetMachines()
+        public IMachineMetadata[] GetMachines()
         {
             return machines.ToArray();
         }
 
         public void UpdateMachines()
         {
-            logger.LogTrace("Updating machine states");
-
-            SetMachines(machineLocator.ListMachinesWithMetadata(machineFilter));
+            SetMachines(machineLocator.ListMachines(machineFilter));
         }
 
-        private void SetMachines(IMachine[] newMachines)
+        private void SetMachines(IMachineMetadata[] newMachines)
         {
             if (newMachines == null)
             {
@@ -66,7 +64,7 @@ namespace TrayApp.VirtualMachine
             }
         }
 
-        private static bool WasMachineListChanged(IMachine[] oldMachines, IMachine[] newMachines)
+        private static bool WasMachineListChanged(IMachineMetadata[] oldMachines, IMachineMetadata[] newMachines)
         {
             if (oldMachines == null)
             {
@@ -83,7 +81,7 @@ namespace TrayApp.VirtualMachine
                 || oldMachines.Except(newMachines, new UuidEqualityComparer()).Any();
         }
 
-        private void DumpMachineListChanges(IMachine[] oldMachines, IMachine[] newMachines)
+        private void DumpMachineListChanges(IMachineMetadata[] oldMachines, IMachineMetadata[] newMachines)
         {
             if (oldMachines == null)
             {
@@ -102,12 +100,12 @@ namespace TrayApp.VirtualMachine
 
             foreach (var machine in added)
             {
-                logger.LogDebug($" - Added {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                logger.LogDebug($" - Added {machine}");
             }
 
             foreach (var machine in removed)
             {
-                logger.LogDebug($" - Removed {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                logger.LogDebug($" - Removed {machine}");
             }
 
             foreach (var newMachine in newMachines)
@@ -116,8 +114,8 @@ namespace TrayApp.VirtualMachine
                 if (oldMachine?.Equals(newMachine) == false)
                 {
                     logger.LogDebug($" - Changed");
-                    logger.LogDebug($"     Old {new { oldMachine.Uuid, oldMachine.Name, oldMachine.Metadata }}");
-                    logger.LogDebug($"     New {new { newMachine.Uuid, newMachine.Name, newMachine.Metadata }}");
+                    logger.LogDebug($"     Old {oldMachine}");
+                    logger.LogDebug($"     New {newMachine}");
                 }
             }
         }

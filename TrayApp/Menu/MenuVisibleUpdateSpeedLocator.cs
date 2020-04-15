@@ -1,9 +1,8 @@
-﻿using CommonLib.VirtualMachine;
-using System;
+﻿using System;
 
 namespace TrayApp.Menu
 {
-    public class MenuVisibleUpdateSpeedLocator : IUpdateSpeedLocator
+    public class MenuVisibleUpdateSpeedLocator
     {
         private readonly NotifyIconManager notifyIconManager;
 
@@ -14,7 +13,7 @@ namespace TrayApp.Menu
 
         public int GetUpdateSpeed()
         {
-            return notifyIconManager.NotifyIcon.ContextMenuStrip?.Visible == true ? 1000 : 10000;
+            return notifyIconManager.NotifyIcon.ContextMenuStrip?.Visible == true ? 100 : 5000;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using TrayApp.Menu.Handler;
 using TrayApp.VirtualMachine;
@@ -8,18 +7,10 @@ namespace TrayApp.Menu
 {
     public class TrayContextMenuStrip : ContextMenuStrip
     {
-        private readonly ILogger<TrayContextMenuStrip> logger;
         private readonly IMenuHandler[] handlers;
 
-        public TrayContextMenuStrip(
-            ILogger<TrayContextMenuStrip> logger,
-            IMenuHandler[] handlers,
-            MachineStoreUpdater machineStoreUpdater
-        )
+        public TrayContextMenuStrip(IMenuHandler[] handlers, MachineStoreUpdater machineStoreUpdater)
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
 
             if (machineStoreUpdater == null)
@@ -28,13 +19,6 @@ namespace TrayApp.Menu
             }
 
             Opening += (object sender, System.ComponentModel.CancelEventArgs e) => machineStoreUpdater.RequestUpdate();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            logger.LogTrace($"Dispose({disposing})");
-
-            base.Dispose(disposing);
         }
 
         public void CreateContextMenu()

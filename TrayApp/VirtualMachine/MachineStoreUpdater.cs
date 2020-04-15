@@ -1,9 +1,8 @@
-﻿using CommonLib.VirtualMachine;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TrayApp.Configuration;
+using TrayApp.Menu;
 
 namespace TrayApp.VirtualMachine
 {
@@ -11,22 +10,17 @@ namespace TrayApp.VirtualMachine
     {
         private readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
         private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
-        private readonly ILogger<MachineStoreUpdater> logger;
         private readonly MachineStore machineStore;
-        private readonly IUpdateSpeedLocator updateSpeedLocator;
+        private readonly MenuVisibleUpdateSpeedLocator updateSpeedLocator;
 
         private Task updateTask;
 
         public MachineStoreUpdater(
-            ILogger<MachineStoreUpdater> logger,
             MachineStore machineStore,
             ConfigurationStore configurationStore,
-            IUpdateSpeedLocator updateSpeedLocator
+            MenuVisibleUpdateSpeedLocator updateSpeedLocator
         )
         {
-            logger.LogTrace(".ctor");
-
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
             this.updateSpeedLocator = updateSpeedLocator ?? throw new ArgumentNullException(nameof(updateSpeedLocator));
 
@@ -76,8 +70,6 @@ namespace TrayApp.VirtualMachine
 
         protected virtual void Dispose(bool disposing)
         {
-            logger.LogTrace($"Dispose({disposing})");
-
             if (disposing)
             {
                 if (updateTask?.IsCompleted == false)
