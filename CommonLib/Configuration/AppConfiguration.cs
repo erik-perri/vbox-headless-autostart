@@ -20,6 +20,11 @@ namespace CommonLib.Configuration
             Machines = machines;
         }
 
+        public override string ToString()
+        {
+            return $"{new { LogLevel, ShowKeepAwakeMenu, MachineCount = Machines.Count }}";
+        }
+
         public bool Equals(AppConfiguration other)
         {
             return other != null

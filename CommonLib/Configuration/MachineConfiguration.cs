@@ -19,6 +19,11 @@ namespace CommonLib.Configuration
                 && AutoStart == other.AutoStart;
         }
 
+        public override string ToString()
+        {
+            return $"{new { Uuid, SaveState, AutoStart }}";
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as MachineConfiguration);
