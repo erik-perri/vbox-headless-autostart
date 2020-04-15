@@ -98,10 +98,11 @@ namespace TrayApp.AutoControl
                 {
                     logger.LogInformation($"Powering off {machine}");
 
-                    if (!machineController.AcpiPowerOff(machine, 90000, () =>
-                    {
-                        logger.LogDebug($"Waiting for power off {machine}");
-                    }))
+                    if (!machineController.AcpiPowerOff(
+                        machine,
+                        90000,
+                        () => logger.LogDebug($"Waiting for power off {machine}")
+                    ))
                     {
                         logger.LogError($"Failed to power off {machine}");
                     }
