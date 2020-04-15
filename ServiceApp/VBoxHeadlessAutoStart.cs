@@ -1,5 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommonLib.Configuration;
+using CommonLib.Processes;
+using CommonLib.VirtualMachine;
+using Microsoft.Extensions.Logging;
+using ServiceApp.Configuration;
+using ServiceApp.Processes;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -9,10 +17,27 @@ namespace ServiceApp
     public partial class VBoxHeadlessAutoStart : ServiceBase
     {
         private readonly ILogger<VBoxHeadlessAutoStart> logger;
+        private readonly UserProfileLocator profileLocator;
+        private readonly XmlConfigurationReaderFactory readerFactory;
+        private readonly IMachineLocator machineLocator;
+        private readonly IProcessOutputFactory processOutputFactory;
+        private readonly IMachineController machineController;
 
-        public VBoxHeadlessAutoStart(ILogger<VBoxHeadlessAutoStart> logger)
+        public VBoxHeadlessAutoStart(
+            ILogger<VBoxHeadlessAutoStart> logger,
+            UserProfileLocator profileLocator,
+            XmlConfigurationReaderFactory readerFactory,
+            IProcessOutputFactory processOutputFactory,
+            IMachineLocator machineLocator,
+            IMachineController machineController
+        )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.profileLocator = profileLocator ?? throw new ArgumentNullException(nameof(profileLocator));
+            this.readerFactory = readerFactory ?? throw new ArgumentNullException(nameof(readerFactory));
+            this.processOutputFactory = processOutputFactory ?? throw new ArgumentNullException(nameof(processOutputFactory));
+            this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
+            this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
 
             InitializeComponent();
 
@@ -27,8 +52,6 @@ namespace ServiceApp
         protected override void OnStart(string[] args)
         {
             logger.LogTrace("Service start requested");
-
-            SetServiceState(NativeMethods.ServiceState.SERVICE_START_PENDING);
 
             SetServiceState(NativeMethods.ServiceState.SERVICE_RUNNING);
         }
@@ -48,12 +71,125 @@ namespace ServiceApp
             {
                 case NativeMethods.SERVICE_CONTROL_PRESHUTDOWN:
                     logger.LogInformation("Pre-Shutdown detected");
+
+                    SetServiceState(NativeMethods.ServiceState.SERVICE_STOP_PENDING, 10000);
+
+                    StopMachines();
+
+                    SetServiceState(NativeMethods.ServiceState.SERVICE_STOPPED);
                     break;
 
                 default:
                     base.OnCustomCommand(command);
                     break;
             }
+        }
+
+        private void StopMachines()
+        {
+            foreach (var process in Process.GetProcessesByName("explorer"))
+            {
+                logger.LogDebug($"Found explorer process running with ID {process.Id}");
+
+                try
+                {
+                    var configuration = FindConfigurationFromProcess(process);
+                    if (configuration == null)
+                    {
+                        logger.LogDebug($"Configuration not found for user running process ID {process.Id}");
+                        continue;
+                    }
+
+                    if (!((ImpersonatedProcessOutputFactory)processOutputFactory).ImpersonateUserFromProcess(process))
+                    {
+                        logger.LogDebug($"Failed to impersonate user running process ID {process.Id}");
+                        continue;
+                    }
+
+                    RequestAdditionalTime(5000);
+
+                    var machines = machineLocator.ListMachinesWithMetadata().Where(
+                        m => configuration.Machines.Any(c => c.Uuid == m.Uuid)
+                    );
+                    foreach (var machine in machines)
+                    {
+                        if (!machine.IsPoweredOn)
+                        {
+                            logger.LogDebug($"Skipping power off due to state {new { machine.Uuid, machine.Name, machine.Metadata }}");
+                            continue;
+                        }
+
+                        var machineConfiguration = configuration.Machines.First(c => c.Uuid == machine.Uuid);
+
+                        if (machineConfiguration.SaveState)
+                        {
+                            logger.LogInformation($"Saving state {new { machine.Uuid, machine.Name }}");
+
+                            RequestAdditionalTime(10000);
+
+                            if (!machineController.SaveState(machine))
+                            {
+                                logger.LogError($"Failed to save state {new { machine.Uuid, machine.Name }}");
+                            }
+                        }
+                        else
+                        {
+                            logger.LogInformation($"Powering off {new { machine.Uuid, machine.Name }}");
+
+                            const int waitLimit = 90000;
+
+                            if (!machineController.AcpiPowerOff(
+                                machine,
+                                waitLimit,
+                                () =>
+                                {
+                                    logger.LogDebug($"Waiting for power off {new { machine.Uuid, machine.Name }}");
+                                    RequestAdditionalTime(1000);
+                                }
+                            ))
+                            {
+                                logger.LogError($"Failed to power off {new { machine.Uuid, machine.Name }}");
+                            }
+                        }
+                    }
+                }
+                catch (Exception e) when (
+                    e is ArgumentException ||
+                    e is InvalidOperationException ||
+                    e is Win32Exception
+                )
+                {
+                    logger.LogError(e, "Caught exception while stopping machine");
+                }
+            }
+        }
+
+        private AppConfiguration FindConfigurationFromProcess(Process process)
+        {
+            var profilePath = profileLocator.LocatePathFromProcess(process);
+            if (profilePath == null)
+            {
+                logger.LogError($"Failed to locate profile path for process {process.Id}");
+                return null;
+            }
+
+            var reader = readerFactory.CreateReader(profilePath);
+            if (reader == null)
+            {
+                logger.LogDebug($"Failed to create configuration reader for user running process {process.Id}");
+                return null;
+            }
+
+            var configuration = reader.ReadConfiguration();
+            if (configuration == null)
+            {
+                logger.LogDebug($"Failed to load configuration for user running process {process.Id}");
+                return null;
+            }
+
+            logger.LogDebug($"Loaded configuration {new { configuration.LogLevel, configuration.ShowKeepAwakeMenu, MachineCount = configuration.Machines.Count }}");
+
+            return configuration;
         }
 
         private bool SetServiceState(NativeMethods.ServiceState state, int waitHint = 0)

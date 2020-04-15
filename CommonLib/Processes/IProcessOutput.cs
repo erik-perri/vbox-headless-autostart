@@ -5,7 +5,7 @@ namespace CommonLib.Processes
 {
     public interface IProcessOutput
     {
-        int ProcessId { get; }
+        uint ProcessId { get; }
 
         int ExitCode { get; }
 

@@ -1,6 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommonLib.Configuration;
+using CommonLib.Processes;
+using CommonLib.VirtualMachine;
+using CommonLib.VirtualMachine.VirtualBox;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
+using ServiceApp.Configuration;
+using ServiceApp.Processes;
 using System;
 using System.ServiceProcess;
 
@@ -21,6 +27,14 @@ namespace ServiceApp
                 })
 
                 .AddSingleton<VBoxHeadlessAutoStart>()
+                    .AddSingleton<UserProfileLocator>()
+
+                    .AddSingleton<XmlConfigurationReaderFactory>()
+                        .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
+
+                .AddSingleton<IMachineController, VBoxManageOutputFactory>()
+                .AddSingleton<IMachineLocator, VBoxManageOutputFactory>()
+                    .AddSingleton<IProcessOutputFactory, ImpersonatedProcessOutputFactory>()
 
                 .BuildServiceProvider();
 

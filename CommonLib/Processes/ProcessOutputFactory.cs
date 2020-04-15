@@ -31,7 +31,7 @@ namespace CommonLib.Processes
 
             process.WaitForExit();
 
-            return new ProcessOutput(process.Id, process.ExitCode, standardOutput, standardError);
+            return new ProcessOutput((uint)process.Id, process.ExitCode, standardOutput, standardError);
         }
     }
 }
