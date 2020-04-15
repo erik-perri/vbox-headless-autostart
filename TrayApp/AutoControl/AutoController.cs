@@ -2,35 +2,31 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using TrayApp.Configuration;
-using TrayApp.VirtualMachine;
+using TrayApp.State;
 
 namespace TrayApp.AutoControl
 {
     public class AutoController
     {
         private readonly ILogger<AutoController> logger;
-        private readonly MachineStore machineStore;
-        private readonly ConfigurationStore configurationStore;
+        private readonly AppState appState;
         private readonly IMachineController machineController;
 
         public AutoController(
             ILogger<AutoController> logger,
-            MachineStore machineStore,
-            ConfigurationStore configurationStore,
+            AppState appState,
             IMachineController machineController
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
-            this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
         }
 
         public bool StartMachines()
         {
-            var machines = machineStore.GetMachines();
-            var configurationMachines = configurationStore.GetConfiguration().Machines;
+            var machines = appState.Machines;
+            var configurationMachines = appState.Configuration.Machines;
             int machinesControlled = 0;
 
             var autoStartMachines = machines
@@ -70,14 +66,10 @@ namespace TrayApp.AutoControl
 
         public void StopMachines()
         {
-            var machines = machineStore.GetMachines();
-            var configurationMachines = configurationStore.GetConfiguration().Machines;
+            var machines = appState.Machines;
+            var configurationMachines = appState.Configuration.Machines;
 
-            var monitoredMachines = machines
-                .Where(a => configurationMachines.Any(b => b.Uuid == a.Uuid))
-                .ToArray();
-
-            foreach (var machine in monitoredMachines)
+            foreach (var machine in machines)
             {
                 var configuration = configurationMachines.FirstOrDefault(c => c.Uuid == machine.Uuid);
                 if (configuration == null)

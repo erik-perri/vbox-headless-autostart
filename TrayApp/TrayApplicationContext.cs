@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Forms;
 using TrayApp.Menu;
-using TrayApp.VirtualMachine;
+using TrayApp.State;
 
 namespace TrayApp
 {
@@ -16,7 +16,7 @@ namespace TrayApp
             ILogger<TrayApplicationContext> logger,
             TrayContextMenuStrip contextMenu,
             NotifyIconManager notifyIconManager,
-            MachineStore machineStore
+            AppState appState
         )
         {
             if (notifyIconManager == null)
@@ -24,9 +24,9 @@ namespace TrayApp
                 throw new ArgumentNullException(nameof(notifyIconManager));
             }
 
-            if (machineStore == null)
+            if (appState == null)
             {
-                throw new ArgumentNullException(nameof(machineStore));
+                throw new ArgumentNullException(nameof(appState));
             }
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,8 +35,8 @@ namespace TrayApp
             notifyIconManager.NotifyIcon.ContextMenuStrip = contextMenu;
             notifyIconManager.ShowIcon();
 
-            machineStore.OnMachineChange += (object _, EventArgs __) => CreateContextMenu();
-            machineStore.OnStateChange += (object _, EventArgs __) => UpdateContextMenu();
+            appState.OnMachineListChange += (object _, EventArgs __) => CreateContextMenu();
+            appState.OnMachineStateChange += (object _, EventArgs __) => UpdateContextMenu();
 
             CreateContextMenu();
         }

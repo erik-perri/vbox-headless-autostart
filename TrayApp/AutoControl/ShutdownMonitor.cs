@@ -2,33 +2,29 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using TrayApp.Configuration;
-using TrayApp.VirtualMachine;
+using TrayApp.State;
 
 namespace TrayApp.AutoControl
 {
     public class ShutdownMonitor
     {
         private readonly ILogger<ShutdownMonitor> logger;
-        private readonly MachineStore machineStore;
-        private readonly ConfigurationStore configurationStore;
+        private readonly AppState appState;
         private readonly ShutdownBlock shutdownBlock;
 
         public bool Blocking { get; private set; }
 
         public ShutdownMonitor(
             ILogger<ShutdownMonitor> logger,
-            MachineStore machineStore,
-            ConfigurationStore configurationStore,
+            AppState appState,
             ShutdownBlock shutdownBlock
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
-            this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
             this.shutdownBlock = shutdownBlock ?? throw new ArgumentNullException(nameof(shutdownBlock));
 
-            machineStore.OnStateChange += UpdateLock;
+            appState.OnMachineStateChange += UpdateLock;
         }
 
         public void UpdateLock()
@@ -76,9 +72,7 @@ namespace TrayApp.AutoControl
 
         private IMachineMetadata[] FindBlockingMachines()
         {
-            return machineStore.GetMachines()
-                .Where(v => !v.IsPoweredOff && configurationStore.GetConfiguration().Machines.Any(c => c.Uuid == v.Uuid))
-                .ToArray();
+            return appState.Machines.Where(v => !v.IsPoweredOff).ToArray();
         }
     }
 }

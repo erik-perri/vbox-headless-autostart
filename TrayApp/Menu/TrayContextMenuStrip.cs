@@ -1,24 +1,24 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using TrayApp.Menu.Handler;
-using TrayApp.VirtualMachine;
+using TrayApp.State;
 
 namespace TrayApp.Menu
 {
     public class TrayContextMenuStrip : ContextMenuStrip
     {
-        private readonly IMenuHandler[] handlers;
+        private readonly ReadOnlyCollection<IMenuHandler> handlers;
 
-        public TrayContextMenuStrip(IMenuHandler[] handlers, MachineStoreUpdater machineStoreUpdater)
+        public TrayContextMenuStrip(TrayHandlerCollection handlerCollection, MachineStateUpdater stateUpdater)
         {
-            this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
+            handlers = handlerCollection?.Handlers ?? throw new ArgumentNullException(nameof(handlerCollection));
 
-            if (machineStoreUpdater == null)
-            {
-                throw new ArgumentNullException(nameof(machineStoreUpdater));
-            }
+            Opening += (object sender, System.ComponentModel.CancelEventArgs e) =>
+                stateUpdater.RequestFastUpdates("ContextMenuOpen");
 
-            Opening += (object sender, System.ComponentModel.CancelEventArgs e) => machineStoreUpdater.RequestUpdate();
+            Closing += (object sender, ToolStripDropDownClosingEventArgs e) =>
+                stateUpdater.RemoveFastUpdateRequest("ContextMenuOpen");
         }
 
         public void CreateContextMenu()

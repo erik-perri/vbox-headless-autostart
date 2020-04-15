@@ -7,12 +7,12 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using TrayApp.AutoControl;
-using TrayApp.Configuration;
 using TrayApp.Forms;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
 using TrayApp.Menu;
 using TrayApp.Menu.Handler;
+using TrayApp.State;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp
@@ -38,10 +38,10 @@ namespace TrayApp
                     .AddSingleton<TrayContextMenuStrip>()
 
                 // Menu
-                .AddSingleton(provider => new TrayContextMenuStrip(
-                    provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray(),
-                    provider.GetService<MachineStoreUpdater>()
-                ))
+                .AddSingleton<TrayContextMenuStrip>()
+                    .AddSingleton(provider => new TrayHandlerCollection(
+                        provider.GetServices<IMenuHandler>().OrderBy(m => m.GetSortOrder()).ToArray()
+                    ))
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
@@ -50,23 +50,20 @@ namespace TrayApp
                         .AddSingleton<KeepAwakeTask>()
 
                 // Machine locator
-                .AddSingleton<MachineStore>()
-                    .AddSingleton<IMachineLocator, VirtualBoxController>()
-                    .AddSingleton<MonitoredMachineFilter>()
-                .AddSingleton<MachineStoreUpdater>()
-                    .AddSingleton<MenuVisibleUpdateSpeedLocator>()
+                .AddSingleton<IMachineLocator, VirtualBoxController>()
 
                 // Configuration
-                .AddSingleton<ConfigurationStore>()
                 .AddSingleton<IConfigurationFileLocator, UserProfileFileLocator>()
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
                 .AddSingleton<AutoController>()
 
+                .AddSingleton<AppState>()
+                .AddSingleton<MachineStateUpdater>()
+
                 .AddSingleton<VirtualBoxController>()
                     .AddSingleton(new VirtualBox.VirtualBox())
-                    .AddSingleton(new VirtualBox.Session())
 
                 .AddSingleton<ShutdownMonitorForm>()
                 .AddSingleton<ShutdownMonitor>()
@@ -77,23 +74,21 @@ namespace TrayApp
 
                 .BuildServiceProvider();
 
-            // Load the configuration into the store
-            var configurationStore = serviceProvider.GetService<ConfigurationStore>();
-            configurationStore.UpdateConfiguration();
+            // Load the configuration and machines into the store
+            var appState = serviceProvider.GetService<AppState>();
+            appState.UpdateConfiguration();
+            appState.UpdateMachines();
 
             // Set the log level from the configuration
-            LogLevelConfigurationManager.SetLogLevel(configurationStore.GetConfiguration().LogLevel);
+            LogLevelConfigurationManager.SetLogLevel(appState.Configuration.LogLevel);
 
             if (IsAutoStarting())
             {
-                var machineStore = serviceProvider.GetService<MachineStore>();
-                machineStore.UpdateMachines();
-
                 serviceProvider.GetService<AutoController>().StartMachines();
             }
 
             // Start the machine state monitor
-            serviceProvider.GetService<MachineStoreUpdater>().StartMonitor();
+            serviceProvider.GetService<MachineStateUpdater>().StartMonitor();
 
             serviceProvider.GetService<ShutdownMonitorForm>().Show();
 

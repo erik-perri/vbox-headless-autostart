@@ -1,36 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TrayApp.Configuration;
-using TrayApp.Menu;
 
-namespace TrayApp.VirtualMachine
+namespace TrayApp.State
 {
-    public class MachineStoreUpdater : IDisposable
+    public class MachineStateUpdater : IDisposable
     {
         private readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
         private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
-        private readonly MachineStore machineStore;
-        private readonly MenuVisibleUpdateSpeedLocator updateSpeedLocator;
+        private readonly List<string> fastUpdateReasons = new List<string>();
+
+        private readonly AppState appState;
 
         private Task updateTask;
 
-        public MachineStoreUpdater(
-            MachineStore machineStore,
-            ConfigurationStore configurationStore,
-            MenuVisibleUpdateSpeedLocator updateSpeedLocator
-        )
+        public MachineStateUpdater(AppState appState)
         {
-            this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
-            this.updateSpeedLocator = updateSpeedLocator ?? throw new ArgumentNullException(nameof(updateSpeedLocator));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
 
-            if (configurationStore == null)
-            {
-                throw new ArgumentNullException(nameof(configurationStore));
-            }
-
-            configurationStore.OnConfigurationChange += (object _, EventArgs __) => RequestUpdate();
+            appState.OnConfigurationChange += (object _, EventArgs __) => RequestUpdate();
         }
+
+        public void RequestFastUpdates(string reason)
+        {
+            fastUpdateReasons.Add(reason);
+            RequestUpdate();
+        }
+
+        public void RemoveFastUpdateRequest(string reason) => fastUpdateReasons.Remove(reason);
 
         public void RequestUpdate()
         {
@@ -50,9 +48,9 @@ namespace TrayApp.VirtualMachine
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    machineStore.UpdateMachines();
+                    appState.UpdateMachines();
 
-                    waitEvent.WaitOne(updateSpeedLocator.GetUpdateSpeed());
+                    waitEvent.WaitOne(fastUpdateReasons.Count > 0 ? 250 : 5000);
                 }
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }

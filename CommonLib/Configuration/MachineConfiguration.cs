@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CommonLib.Helpers;
+using System;
 
 namespace CommonLib.Configuration
 {
-    public class MachineConfiguration : IEquatable<MachineConfiguration>
+    public class MachineConfiguration : IEquatable<MachineConfiguration>, IUuidContainer
     {
         public string Uuid { get; set; }
 

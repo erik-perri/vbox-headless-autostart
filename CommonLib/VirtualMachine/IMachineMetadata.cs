@@ -1,9 +1,9 @@
-﻿namespace CommonLib.VirtualMachine
-{
-    public interface IMachineMetadata
-    {
-        string Uuid { get; }
+﻿using CommonLib.Helpers;
 
+namespace CommonLib.VirtualMachine
+{
+    public interface IMachineMetadata : IUuidContainer
+    {
         string Name { get; }
 
         public MachineState State { get; }

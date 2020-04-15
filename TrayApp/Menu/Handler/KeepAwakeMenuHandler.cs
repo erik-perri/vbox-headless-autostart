@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Windows.Forms;
-using TrayApp.Configuration;
 using TrayApp.KeepAwake;
+using TrayApp.State;
 
 namespace TrayApp.Menu.Handler
 {
     public class KeepAwakeMenuHandler : IMenuHandler, IDisposable
     {
         private readonly KeepAwakeTask keepAwakeTask;
-        private readonly ConfigurationStore configurationStore;
+        private readonly AppState appState;
         private ToolStripMenuItem menuItem;
 
-        public KeepAwakeMenuHandler(KeepAwakeTask keepAwakeTask, ConfigurationStore configurationStore)
+        public KeepAwakeMenuHandler(KeepAwakeTask keepAwakeTask, AppState appState)
         {
             this.keepAwakeTask = keepAwakeTask ?? throw new ArgumentNullException(nameof(keepAwakeTask));
-            this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
 
-            configurationStore.OnConfigurationChange += OnConfigurationChange;
+            appState.OnConfigurationChange += OnConfigurationChange;
         }
 
         private void OnConfigurationChange(object sender, EventArgs e)
         {
             // TODO Should this instead be handled by TrayApplicationContext recreating the menu OnConfigurationChange?
-            menuItem.Visible = configurationStore.GetConfiguration().ShowKeepAwakeMenu;
+            menuItem.Visible = appState.Configuration.ShowKeepAwakeMenu;
         }
 
         public int GetSortOrder()
@@ -36,7 +36,7 @@ namespace TrayApp.Menu.Handler
             menuItem = new ToolStripMenuItem("Keep host &awake", null, OnKeepAwake)
             {
                 Checked = keepAwakeTask.IsRunning,
-                Visible = configurationStore.GetConfiguration().ShowKeepAwakeMenu,
+                Visible = appState.Configuration.ShowKeepAwakeMenu,
             };
 
             return new ToolStripItem[] { menuItem };

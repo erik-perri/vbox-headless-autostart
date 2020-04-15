@@ -4,28 +4,28 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Windows.Forms;
-using TrayApp.Configuration;
 using TrayApp.Forms;
+using TrayApp.State;
 
 namespace TrayApp.Menu.Handler
 {
     public class ConfigureMenuHandler : IMenuHandler, IDisposable
     {
         private readonly ILogger<ConfigureMenuHandler> logger;
-        private readonly ConfigurationStore configurationStore;
+        private readonly AppState appState;
         private readonly IMachineLocator machineLocator;
         private readonly IConfigurationWriter configurationWriter;
         private ToolStripMenuItem menuItem;
 
         public ConfigureMenuHandler(
             ILogger<ConfigureMenuHandler> logger,
-            ConfigurationStore configurationStore,
+            AppState appState,
             IMachineLocator machineLocator,
             IConfigurationWriter configurationWriter
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.configurationStore = configurationStore ?? throw new ArgumentNullException(nameof(configurationStore));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
             this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
             this.configurationWriter = configurationWriter ?? throw new ArgumentNullException(nameof(configurationWriter));
         }
@@ -45,15 +45,15 @@ namespace TrayApp.Menu.Handler
 
         private void OnConfigure(object sender, EventArgs eventArgs)
         {
-            configurationStore.UpdateConfiguration();
+            appState.UpdateConfiguration();
 
-            using var form = new ConfigureForm(configurationStore.GetConfiguration(), machineLocator.ListMachines());
+            using var form = new ConfigureForm(appState.Configuration, machineLocator.ListMachines());
 
             var result = form.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                if (form.UpdatedConfiguration.Equals(configurationStore.GetConfiguration()))
+                if (form.UpdatedConfiguration.Equals(appState.Configuration))
                 {
                     MessageBox.Show(
                         $"Nothing changed.",
@@ -81,7 +81,7 @@ namespace TrayApp.Menu.Handler
                     );
                 }
 
-                configurationStore.UpdateConfiguration();
+                appState.UpdateConfiguration();
             }
         }
 

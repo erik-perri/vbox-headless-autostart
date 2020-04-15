@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TrayApp.State;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp.Menu.Handler
@@ -12,12 +13,12 @@ namespace TrayApp.Menu.Handler
     {
         private readonly Dictionary<string, ToolStripItem> menuItems = new Dictionary<string, ToolStripItem>();
         private readonly IMachineController machineController;
-        private readonly MachineStore machineStore;
+        private readonly AppState appState;
 
-        public MachineControlMenuHandler(IMachineController machineController, MachineStore machineStore)
+        public MachineControlMenuHandler(IMachineController machineController, AppState appState)
         {
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
-            this.machineStore = machineStore ?? throw new ArgumentNullException(nameof(machineStore));
+            this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
         }
 
         public int GetSortOrder()
@@ -31,7 +32,7 @@ namespace TrayApp.Menu.Handler
 
             menuItems["separator"] = new ToolStripSeparator();
 
-            var machines = machineStore.GetMachines();
+            var machines = appState.Machines;
             if (machines == null)
             {
                 return Array.Empty<ToolStripItem>();
@@ -61,7 +62,7 @@ namespace TrayApp.Menu.Handler
 
         public void UpdateMenuItems()
         {
-            var machines = machineStore.GetMachines();
+            var machines = appState.Machines;
             if (machines == null)
             {
                 return;
