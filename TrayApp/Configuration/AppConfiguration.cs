@@ -3,7 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace CommonLib.Configuration
+namespace TrayApp.Configuration
 {
     public class AppConfiguration : IEquatable<AppConfiguration>
     {

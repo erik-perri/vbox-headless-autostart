@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="VirtualBox">
       <HintPath>..\VirtualBoxSdk\VirtualBox.dll</HintPath>
     </Reference>

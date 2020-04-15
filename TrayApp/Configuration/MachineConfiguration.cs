@@ -1,7 +1,7 @@
-﻿using CommonLib.Helpers;
-using System;
+﻿using System;
+using TrayApp.Helpers;
 
-namespace CommonLib.Configuration
+namespace TrayApp.Configuration
 {
     public class MachineConfiguration : IEquatable<MachineConfiguration>, IUuidContainer
     {

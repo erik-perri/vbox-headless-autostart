@@ -1,4 +1,4 @@
-﻿namespace CommonLib.Helpers
+﻿namespace TrayApp.Helpers
 {
     public interface IUuidContainer
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommonLib.VirtualMachine.VirtualBox
+namespace TrayApp.VirtualMachine
 {
     public class MachineMetadata : IMachineMetadata, IEquatable<MachineMetadata>
     {

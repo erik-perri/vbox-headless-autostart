@@ -1,6 +1,6 @@
-﻿using CommonLib.Helpers;
+﻿using TrayApp.Helpers;
 
-namespace CommonLib.VirtualMachine
+namespace TrayApp.VirtualMachine
 {
     public interface IMachineMetadata : IUuidContainer
     {

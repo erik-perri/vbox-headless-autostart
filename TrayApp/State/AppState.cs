@@ -1,12 +1,11 @@
-﻿using CommonLib.Configuration;
-using CommonLib.Helpers;
-using CommonLib.VirtualMachine;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using TrayApp.Configuration;
 using TrayApp.Helpers;
 using TrayApp.Logging;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.State
 {

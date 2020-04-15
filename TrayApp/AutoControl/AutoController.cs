@@ -1,8 +1,8 @@
-﻿using CommonLib.VirtualMachine;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using TrayApp.State;
+using TrayApp.VirtualMachine;
 
 namespace TrayApp.AutoControl
 {

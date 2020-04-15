@@ -1,4 +1,4 @@
-﻿namespace CommonLib.Configuration
+﻿namespace TrayApp.Configuration
 {
     public interface IConfigurationWriter
     {

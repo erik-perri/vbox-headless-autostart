@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrayApp", "TrayApp\TrayApp.csproj", "{EDAF9B23-6C22-4C71-A212-B6CF108640C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLib", "CommonLib\CommonLib.csproj", "{0493F7DF-E4F9-4C14-8099-C77586C4756E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{EDAF9B23-6C22-4C71-A212-B6CF108640C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDAF9B23-6C22-4C71-A212-B6CF108640C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDAF9B23-6C22-4C71-A212-B6CF108640C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0493F7DF-E4F9-4C14-8099-C77586C4756E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0493F7DF-E4F9-4C14-8099-C77586C4756E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0493F7DF-E4F9-4C14-8099-C77586C4756E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0493F7DF-E4F9-4C14-8099-C77586C4756E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

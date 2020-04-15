@@ -1,4 +1,4 @@
-﻿namespace CommonLib.VirtualMachine
+﻿namespace TrayApp.VirtualMachine
 {
     public enum MachineState
     {

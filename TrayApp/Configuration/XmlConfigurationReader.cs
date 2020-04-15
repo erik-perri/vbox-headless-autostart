@@ -6,7 +6,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace CommonLib.Configuration
+namespace TrayApp.Configuration
 {
     public class XmlConfigurationReader : IConfigurationReader
     {

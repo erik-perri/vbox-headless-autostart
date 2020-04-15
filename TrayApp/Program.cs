@@ -1,5 +1,3 @@
-using CommonLib.Configuration;
-using CommonLib.VirtualMachine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
@@ -7,6 +5,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using TrayApp.AutoControl;
+using TrayApp.Configuration;
 using TrayApp.Forms;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
