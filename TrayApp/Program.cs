@@ -47,6 +47,7 @@ namespace TrayApp
                         .AddSingleton<IMachineController, VirtualBoxController>()
                     .AddSingleton<IMenuHandler, KeepAwakeMenuHandler>()
                         .AddSingleton<KeepAwakeTask>()
+                    .AddSingleton<IMenuHandler, MassControlMenuHandler>()
 
                 // Machine locator
                 .AddSingleton<IMachineLocator, VirtualBoxController>()
