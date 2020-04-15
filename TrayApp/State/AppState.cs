@@ -115,7 +115,7 @@ namespace TrayApp.State
 
             logger.LogDebug("Configuration changes");
 
-            logger.LogDebug($" - Old: {oldConfiguration}");
+            logger.LogDebug($" - Old: {(oldConfiguration == null ? "null" : oldConfiguration.ToString())}");
             logger.LogDebug($" - New: {newConfiguration}");
 
             logger.LogDebug("Configuration machine changes");
