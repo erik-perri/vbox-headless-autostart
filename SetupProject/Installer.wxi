@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Variables.wxi?>
+
+  <Product Id="*"
+           Name="$(var.Name)"
+           Manufacturer="$(var.Manufacturer)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Version="$(var.Version)"
+           Language="1033">
+
+    <Package Keywords="Installer"
+             InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perUser"
+             InstallPrivileges="limited"
+             Manufacturer="$(var.Manufacturer)"
+             Description="$(var.Name) $(var.Version)" />
+
+    <!--Embed Cabinet into single MSI file-->
+    <Media Id="1" Cabinet="$(var.CabName)" EmbedCab="yes" />
+
+    <!-- Allow upgrades and prevent downgrades -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!-- Set the icon in the Add & Remove programs view -->
+    <Icon Id="I.TrayIcon" SourceFile="..\TrayApp\Resources\TrayIcon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="I.TrayIcon" />
+
+    <!-- Describe the complete selection -->
+    <Feature Id="F.Complete"
+             Title="$(var.Name) $(var.Version)"
+             Description="Install everything"
+             Display="expand"
+             Level="1"
+             ConfigurableDirectory="INSTALLFOLDER">
+
+      <Feature Id="F.TrayApp"
+               Level="1"
+               Title="Main app"
+               Description="The application that starts and stops the machines."
+               AllowAdvertise="no"
+               Absent="disallow">
+        <ComponentGroupRef Id="CG_VBoxHeadlessTrayApp" />
+        <ComponentGroupRef Id="CG.RegistryEntries" />
+      </Feature>
+    </Feature>
+    
+    <!-- Attempt to load the install folder from the registry -->
+    <Property Id="INSTALLFOLDER">
+      <RegistrySearch Id="RA.InstallFolder"
+                      Type="raw"
+                      Root="HKCU"
+                      Win64="$(var.Win64)"
+                      Key="Software\$(var.RegistryKey)"
+                      Name="InstallFolder" />
+    </Property>
+
+    <!-- Ensure the perUser setting works correctly, see https://stackoverflow.com/a/18700393 -->
+    <Property Id="ALLUSERS" Secure="yes" Value="2" />
+    <Property Id="MSIINSTALLPERUSER" Secure="yes" Value="1" />
+
+    <!-- Set the default install folder for the WixUI_InstallDir dialog -->
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- Set the checkbox text for the launch on finish dialog -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.Name)" />
+    
+    <!-- Set the launch checkbox to be checked -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"/>
+
+    <!-- Set the application to launch at the end of the install -->
+    <CustomAction Id="CA.LaunchApplication"
+                  Impersonate="yes"
+                  Return="asyncNoWait"
+                  FileKey="$(var.LaunchFileKey)"
+                  ExeCommand="" />
+
+    <!-- Setup the UI -->
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+
+      <!-- Add the exit dialog launch action -->
+      <!-- https://wixtoolset.org/documentation/manual/v3/howtos/ui_and_localization/run_program_after_install.html -->
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="CA.LaunchApplication">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
+    </UI>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.Name)" />
+      </Directory>
+    </Directory>
+
+    <ComponentGroup Id="CG.RegistryEntries" Directory="INSTALLFOLDER">
+      <!-- Add the application to the Windows auto-start registry key -->
+      <Component Id="C.VBoxHeadlessStartWithWindowsRegistryEntry" Guid="979c1989-341e-40b7-8890-8158237eaa86">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run">
+          <RegistryValue Type="string"
+                         Name="$(var.RegistryKey)"
+                         KeyPath="yes"
+                         Value="&quot;[INSTALLFOLDER]VBoxHeadlessAutoStart.exe&quot; --auto-start" />
+        </RegistryKey>
+      </Component>
+
+      <!-- Save the install folder to the registry -->
+      <Component Id="C.VBoxHeadlessInstallLocationStore" Guid="b9b60c38-2ebb-40e1-b642-c4d86bc251a5">
+        <RegistryKey Root="HKCU" Key="Software\$(var.RegistryKey)">
+          <RegistryValue Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" Action="write" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Product>
+</Include>

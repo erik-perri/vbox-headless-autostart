@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define Name = "VBox Headless AutoStart" ?>
+  <?define Manufacturer = "Erik Perri" ?>
+  <?define Version = "1.0.0" ?>
+  <?define UpgradeCode = "{0ab9f9a5-3982-4f23-acf5-5fc3e295b69b}" ?>
+  <?define CabName = "VBoxHeadlessAutoStart.cab" ?>
+
+  <?if $(var.Platform) = x64 ?>
+    <?define Win64 = "yes" ?>
+  <?else ?>
+    <?define Win64 = "no" ?>
+  <?endif ?>
+
+  <?define RegistryKey = "VBoxHeadlessAutoStart" ?>
+  <?define LaunchFileKey = "file_ID_FROM_PARAFFIN" ?>
+</Include>
