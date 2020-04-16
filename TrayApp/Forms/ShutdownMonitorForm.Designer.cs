@@ -51,7 +51,7 @@
             this.Icon = Properties.Resources.TrayIcon;
             this.Name = "ShutdownMonitorForm";
             this.ShowInTaskbar = false;
-            this.Text = "VBox Headless AutoStart Shutdown Monitor";
+            this.Text = "VBox Headless AutoStart";
             this.ResumeLayout(false);
 
         }
