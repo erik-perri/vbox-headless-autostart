@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <ApplicationIcon>Resources\TrayIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,5 +47,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
