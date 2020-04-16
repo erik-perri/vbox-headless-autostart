@@ -8,8 +8,23 @@ namespace TrayApp.Logging
 
         public static void SetLogLevel(LogLevel level)
         {
-            NLog.GlobalDiagnosticsContext.Set("LogLevel", level.ToString());
+            NLog.GlobalDiagnosticsContext.Set("LogLevel", ConvertLogLevelToNLog(level));
             NLog.LogManager.ReconfigExistingLoggers();
+        }
+
+        public static string ConvertLogLevelToNLog(LogLevel level)
+        {
+            return level switch
+            {
+                LogLevel.Trace => "Trace",
+                LogLevel.Debug => "Debug",
+                LogLevel.Information => "Info",
+                LogLevel.Warning => "Warn",
+                LogLevel.Error => "Error",
+                LogLevel.Critical => "Fatal",
+                LogLevel.None => "None",
+                _ => null,
+            };
         }
     }
 }
