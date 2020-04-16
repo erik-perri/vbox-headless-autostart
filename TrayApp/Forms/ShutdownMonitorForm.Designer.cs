@@ -48,6 +48,7 @@
             this.ClientSize = new System.Drawing.Size(244, 61);
             this.ControlBox = false;
             this.Controls.Add(this.labelReasonForExisting);
+            this.Icon = Properties.Resources.TrayIcon;
             this.Name = "ShutdownMonitorForm";
             this.ShowInTaskbar = false;
             this.Text = "VBox Headless AutoStart Shutdown Monitor";

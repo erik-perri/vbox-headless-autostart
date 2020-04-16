@@ -77,13 +77,20 @@ namespace TrayApp.Forms
             public enum WM
             {
                 /// <summary>
-                /// The WM_QUERYENDSESSION message is sent when the user chooses to end the session or when an application calls one of the system shutdown functions. If any application returns zero, the session is not ended. The system stops sending WM_QUERYENDSESSION messages as soon as one application returns zero.
-                /// After processing this message, the system sends the WM_ENDSESSION message with the wParam parameter set to the results of the WM_QUERYENDSESSION message.
+                /// The WM_QUERYENDSESSION message is sent when the user chooses to end the session or when an
+                /// application calls one of the system shutdown functions. If any application returns zero, the
+                /// session is not ended. The system stops sending WM_QUERYENDSESSION messages as soon as one
+                /// application returns zero.
+                ///
+                /// After processing this message, the system sends the WM_ENDSESSION message with the wParam parameter
+                /// set to the results of the WM_QUERYENDSESSION message.
                 /// </summary>
                 QUERYENDSESSION = 0x0011,
 
                 /// <summary>
-                /// The WM_ENDSESSION message is sent to an application after the system processes the results of the WM_QUERYENDSESSION message. The WM_ENDSESSION message informs the application whether the session is ending.
+                /// The WM_ENDSESSION message is sent to an application after the system processes the results of the
+                /// WM_QUERYENDSESSION message. The WM_ENDSESSION message informs the application whether the session
+                /// is ending.
                 /// </summary>
                 ENDSESSION = 0x0016,
             }
