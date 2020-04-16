@@ -33,6 +33,8 @@ namespace TrayApp
             using var serviceProvider = new ServiceCollection()
                 .AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddNLog("NLog.config.xml"))
 
+                .AddSingleton<AppState>()
+
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
                     .AddSingleton<NotifyIconManager>()
@@ -51,22 +53,18 @@ namespace TrayApp
                         .AddSingleton<KeepAwakeTask>()
                     .AddSingleton<IMenuHandler, MassControlMenuHandler>()
 
-                // Machine locator
+                // Virtual machines
                 .AddSingleton<IMachineLocator, VirtualBoxController>()
+                .AddSingleton<MachineStateUpdater>()
+                .AddSingleton<MassController>()
+                .AddSingleton(new VirtualBox.VirtualBox())
 
                 // Configuration
                 .AddSingleton<IConfigurationFileLocator, UserProfileFileLocator>()
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
 
-                .AddSingleton<MassController>()
-
-                .AddSingleton<AppState>()
-                .AddSingleton<MachineStateUpdater>()
-
-                .AddSingleton<VirtualBoxController>()
-                    .AddSingleton(new VirtualBox.VirtualBox())
-
+                // Shutdown monitor
                 .AddSingleton<ShutdownMonitorForm>()
                 .AddSingleton<ShutdownLocker>()
 
@@ -74,13 +72,14 @@ namespace TrayApp
 
             serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp started");
 
-            // Load the configuration and machines into the store
             var appState = serviceProvider.GetService<AppState>();
+            appState.OnConfigurationChange += (object sender, EventArgs e) =>
+                // Set the log level from the configuration
+                LogLevelConfigurationManager.SetLogLevel(appState.Configuration.LogLevel);
+
+            // Load the configuration and machines into the store
             appState.UpdateConfiguration();
             appState.UpdateMachines();
-
-            // Set the log level from the configuration
-            LogLevelConfigurationManager.SetLogLevel(appState.Configuration.LogLevel);
 
             if (IsAutoStarting())
             {
@@ -95,6 +94,7 @@ namespace TrayApp
             // Start the machine state monitor
             serviceProvider.GetService<MachineStateUpdater>().StartMonitor();
 
+            // Show the shutdown monitor form so it can listen for shutdown events
             serviceProvider.GetService<ShutdownMonitorForm>().Show();
 
             // Run the application
