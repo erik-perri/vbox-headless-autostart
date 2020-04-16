@@ -23,6 +23,7 @@
     <Content Include="Installer.wxi" />
     <Content Include="Variables.wxi" />
     <EmbeddedResource Include="Strings.wxl" />
+    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
