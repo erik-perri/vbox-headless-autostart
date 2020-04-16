@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using TrayApp.Shutdown;
@@ -45,11 +47,13 @@ namespace TrayApp.Forms
                 case NativeMethods.WM_ENDSESSION:
                     logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
+                    logger.LogInformation("Stopping down machines due to system shutdown");
                     autoController.StopAll();
 
                     // If we don't wait here we end up with VirtualBox hanging the shutdown complaining about open
                     // connections
-                    Thread.Sleep(7500);
+                    logger.LogInformation("Machine stop complete, waiting for VirtualBox");
+                    WaitForVirtualBoxToFinish();
 
                     shutdownMonitor.RemoveLock(this);
                     Close();
@@ -58,6 +62,20 @@ namespace TrayApp.Forms
             }
 
             base.WndProc(ref m);
+        }
+
+        private void WaitForVirtualBoxToFinish()
+        {
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            while (stopwatch.ElapsedMilliseconds < 20000 && Process.GetProcesses().Any(
+                p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
+            ))
+            {
+                Thread.Sleep(100);
+            }
         }
 
         protected override void SetVisibleCore(bool value)
