@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +71,8 @@ namespace TrayApp
 
                 .BuildServiceProvider();
 
-            serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp started");
+            var logger = serviceProvider.GetService<ILogger<TrayApplicationContext>>();
+            logger.LogTrace("TrayApp started");
 
             var appState = serviceProvider.GetService<AppState>();
             appState.OnConfigurationChange += (object sender, EventArgs e) =>
@@ -100,7 +102,17 @@ namespace TrayApp
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
 
-            serviceProvider.GetService<ILogger<TrayApplicationContext>>().LogTrace("TrayApp finished");
+            var processes = Process.GetProcesses().Where(p => p.ProcessName.StartsWith("VB", StringComparison.OrdinalIgnoreCase)).ToList();
+            logger.LogDebug($"Processes beginning with VB {processes.Count}");
+            if (processes.Count > 0)
+            {
+                foreach (var process in processes)
+                {
+                    logger.LogDebug($" - {process.ProcessName}.exe:{process.Id}");
+                }
+            }
+
+            logger.LogTrace("TrayApp finished");
 
             NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
