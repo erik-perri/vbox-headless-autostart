@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 using System.Windows.Forms;
 using TrayApp.Shutdown;
 using TrayApp.VirtualMachine;
@@ -45,8 +46,12 @@ namespace TrayApp.Forms
                     logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
                     autoController.StopAll();
-                    shutdownMonitor.RemoveLock(this);
 
+                    // If we don't wait here we end up with VirtualBox hanging the shutdown complaining about open
+                    // connections
+                    Thread.Sleep(7500);
+
+                    shutdownMonitor.RemoveLock(this);
                     Close();
                     Application.Exit();
                     break;
