@@ -31,7 +31,7 @@ namespace TrayApp.Forms
             switch (m.Msg)
             {
                 // When Windows asks if we're ready to end the session create a block and tell it no
-                case (int)NativeMethods.WM.QUERYENDSESSION:
+                case NativeMethods.WM_QUERYENDSESSION:
                     logger.LogDebug($"WndProc received {new { Msg = "WM_QUERYENDSESSION", m.WParam, m.LParam }}");
 
                     if (shutdownMonitor.CreateLock(this))
@@ -42,7 +42,7 @@ namespace TrayApp.Forms
                     break;
 
                 // When Windows is actually ending the session stop all machines, remove the lock, and exit
-                case (int)NativeMethods.WM.ENDSESSION:
+                case NativeMethods.WM_ENDSESSION:
                     logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
                     autoController.StopAll();
@@ -74,29 +74,26 @@ namespace TrayApp.Forms
 
         private static class NativeMethods
         {
-            public enum WM
-            {
-                /// <summary>
-                /// <para>
-                /// The WM_QUERYENDSESSION message is sent when the user chooses to end the session or when an
-                /// application calls one of the system shutdown functions. If any application returns zero, the
-                /// session is not ended. The system stops sending WM_QUERYENDSESSION messages as soon as one
-                /// application returns zero.
-                /// </para>
-                /// <para>
-                /// After processing this message, the system sends the WM_ENDSESSION message with the wParam parameter
-                /// set to the results of the WM_QUERYENDSESSION message.
-                /// </para>
-                /// </summary>
-                QUERYENDSESSION = 0x0011,
+            /// <summary>
+            /// <para>
+            /// The WM_QUERYENDSESSION message is sent when the user chooses to end the session or when an
+            /// application calls one of the system shutdown functions. If any application returns zero, the
+            /// session is not ended. The system stops sending WM_QUERYENDSESSION messages as soon as one
+            /// application returns zero.
+            /// </para>
+            /// <para>
+            /// After processing this message, the system sends the WM_ENDSESSION message with the wParam parameter
+            /// set to the results of the WM_QUERYENDSESSION message.
+            /// </para>
+            /// </summary>
+            public const int WM_QUERYENDSESSION = 0x0011;
 
-                /// <summary>
-                /// The WM_ENDSESSION message is sent to an application after the system processes the results of the
-                /// WM_QUERYENDSESSION message. The WM_ENDSESSION message informs the application whether the session
-                /// is ending.
-                /// </summary>
-                ENDSESSION = 0x0016,
-            }
+            /// <summary>
+            /// The WM_ENDSESSION message is sent to an application after the system processes the results of the
+            /// WM_QUERYENDSESSION message. The WM_ENDSESSION message informs the application whether the session
+            /// is ending.
+            /// </summary>
+            public const int WM_ENDSESSION = 0x0016;
         }
     }
 }
