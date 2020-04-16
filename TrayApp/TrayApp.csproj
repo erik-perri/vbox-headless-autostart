@@ -6,6 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <NeutralLanguage>en-US</NeutralLanguage>
     <ApplicationIcon>Resources\TrayIcon.ico</ApplicationIcon>
+    <AssemblyName>VBoxHeadlessAutoStart</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
