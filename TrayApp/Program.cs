@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrayApp.Configuration;
 using TrayApp.Forms;
@@ -82,7 +84,12 @@ namespace TrayApp
 
             if (IsAutoStarting())
             {
-                serviceProvider.GetService<MassController>().StartAll();
+                Task.Factory.StartNew(
+                    () => serviceProvider.GetService<MassController>().StartAll(),
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    TaskScheduler.Default
+                );
             }
 
             // Start the machine state monitor
