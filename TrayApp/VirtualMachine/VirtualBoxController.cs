@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+// TODO Investigate using 'tlbimp /namespace:VirtualBox616 /out:VirtualBox616.dll VirtualBox.tlb' to make versioned
+//      namespaces to support multiple versions of VirtualBox
+
 namespace TrayApp.VirtualMachine
 {
     public class VirtualBoxController : IMachineController, IMachineLocator
