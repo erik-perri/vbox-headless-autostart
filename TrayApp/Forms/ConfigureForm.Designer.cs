@@ -195,7 +195,7 @@
             this.columnUuid.HeaderText = "UUID";
             this.columnUuid.Name = "columnUuid";
             this.columnUuid.ReadOnly = true;
-            this.columnUuid.Width = 210;
+            this.columnUuid.Width = 225;
             // 
             // buttonSave
             // 
