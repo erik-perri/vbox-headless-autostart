@@ -45,7 +45,7 @@
         <ComponentGroupRef Id="CG.RegistryEntries" />
       </Feature>
     </Feature>
-    
+
     <!-- Attempt to load the install folder from the registry -->
     <Property Id="INSTALLFOLDER">
       <RegistrySearch Id="RA.InstallFolder"
@@ -65,9 +65,9 @@
 
     <!-- Set the checkbox text for the launch on finish dialog -->
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.Name)" />
-    
+
     <!-- Set the launch checkbox to be checked -->
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"/>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
 
     <!-- Set the application to launch at the end of the install -->
     <CustomAction Id="CA.LaunchApplication"
@@ -76,6 +76,9 @@
                   FileKey="$(var.LaunchFileKey)"
                   ExeCommand="" />
 
+    <!-- Set the EULA document -->
+    <WixVariable Id="WixUILicenseRtf" Value="Resources/EULA.rtf" />
+    
     <!-- Setup the UI -->
     <UI>
       <UIRef Id="WixUI_InstallDir" />
