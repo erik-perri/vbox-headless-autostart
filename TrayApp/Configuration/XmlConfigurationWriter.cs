@@ -1,7 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace TrayApp.Configuration
 {
@@ -23,17 +22,10 @@ namespace TrayApp.Configuration
 
             var configurationFile = fileLocator.LocateFile();
 
-            var configuratingMapping = new AppConfigurationXmlMapping()
-            {
-                LogLevel = configuration.LogLevel,
-                ShowKeepAwakeMenu = configuration.ShowKeepAwakeMenu,
-                Machines = configuration.Machines.ToArray(),
-            };
+            using var writer = XmlWriter.Create(configurationFile, new XmlWriterSettings { Indent = true });
+            var serializer = new DataContractSerializer(typeof(AppConfiguration));
 
-            var writer = new XmlSerializer(typeof(AppConfigurationXmlMapping));
-            var stream = File.Create(configurationFile);
-            writer.Serialize(stream, configuratingMapping);
-            stream.Close();
+            serializer.WriteObject(writer, configuration);
         }
     }
 }

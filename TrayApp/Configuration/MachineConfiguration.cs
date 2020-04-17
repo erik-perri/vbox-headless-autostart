@@ -1,15 +1,32 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using TrayApp.Helpers;
 
 namespace TrayApp.Configuration
 {
+    [DataContract]
     public class MachineConfiguration : IEquatable<MachineConfiguration>, IUuidContainer
     {
-        public string Uuid { get; set; }
+        [DataMember]
+        public string Uuid { get; private set; }
 
-        public bool SaveState { get; set; }
+        [DataMember]
+        public bool SaveState { get; private set; }
 
-        public bool AutoStart { get; set; }
+        [DataMember]
+        public bool AutoStart { get; private set; }
+
+        public MachineConfiguration(string uuid, bool saveState, bool autoStart)
+        {
+            Uuid = uuid;
+            SaveState = saveState;
+            AutoStart = autoStart;
+        }
+
+        public static MachineConfiguration GetDefaultConfiguration(string uuid)
+        {
+            return new MachineConfiguration(uuid, false, true);
+        }
 
         public bool Equals(MachineConfiguration other)
         {
@@ -32,16 +49,6 @@ namespace TrayApp.Configuration
         public override int GetHashCode()
         {
             return HashCode.Combine(Uuid.GetHashCode(StringComparison.Ordinal), SaveState, AutoStart);
-        }
-
-        public static MachineConfiguration GetDefaultConfiguration(string uuid)
-        {
-            return new MachineConfiguration()
-            {
-                Uuid = uuid,
-                AutoStart = false,
-                SaveState = true,
-            };
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace TrayApp.Configuration
 {
@@ -25,106 +23,20 @@ namespace TrayApp.Configuration
 
             try
             {
-                var document = new XmlDocument();
-                document.Load(configurationFile);
+                using var reader = XmlReader.Create(configurationFile);
+                var serializer = new DataContractSerializer(typeof(AppConfiguration));
 
-                return new AppConfiguration(
-                    ReadLogLevel(document),
-                    ReadShowKeepAwakeMenu(document),
-                    new ReadOnlyCollection<MachineConfiguration>(ReadMachines(document))
-                );
+                return (AppConfiguration)serializer.ReadObject(reader);
             }
-            catch (Exception e) when (
-                e is XmlException ||
-                e is FileNotFoundException ||
-                e is DirectoryNotFoundException
-            )
-            {
-                logger.LogError(e, $"Failed to parse XML file {new { File = configurationFile, Error = e.Message }}");
-            }
-
-            return null;
-        }
-
-        private LogLevel ReadLogLevel(XmlDocument document)
-        {
-            var level = ReadString(document, "/Configuration/LogLevel");
-
-            if (!Enum.TryParse(level, out LogLevel logLevel))
-            {
-                logger.LogError($"Unknown LogLevel {new { Level = level }}");
-            }
-
-            return logLevel;
-        }
-
-        private bool ReadShowKeepAwakeMenu(XmlDocument document)
-        {
-            var show = ReadString(document, "/Configuration/ShowKeepAwakeMenu");
-
-            return show.Equals("true", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static string ReadString(XmlDocument document, string path)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException(nameof(document));
-            }
-
-            var node = document.DocumentElement.SelectSingleNode(path);
-            if (node == null)
+            catch (FileNotFoundException)
             {
                 return null;
             }
-
-            return node.InnerText.Trim();
-        }
-
-        private MachineConfiguration[] ReadMachines(XmlDocument document)
-        {
-            if (document == null)
+            catch (Exception e) when (e is XmlException || e is SerializationException)
             {
-                throw new ArgumentNullException(nameof(document));
+                logger.LogError(e, "Failed to read configuration file");
+                return null;
             }
-
-            List<MachineConfiguration> found = new List<MachineConfiguration>();
-
-            var machinesNodes = document.DocumentElement.SelectSingleNode("/Configuration/Machines");
-
-            if (machinesNodes == null)
-            {
-                return found.ToArray();
-            }
-
-            foreach (XmlNode machineNode in machinesNodes.ChildNodes)
-            {
-                try
-                {
-                    var uuid = machineNode.SelectSingleNode("Uuid")?.InnerText;
-                    var saveState = machineNode.SelectSingleNode("SaveState")?.InnerText == "true";
-                    var autoStart = machineNode.SelectSingleNode("AutoStart")?.InnerText == "true";
-
-                    if (uuid == null || uuid.Trim().Length < 1)
-                    {
-                        logger.LogWarning("Skipping machine specified with no UUID");
-                        continue;
-                    }
-
-                    found.Add(new MachineConfiguration()
-                    {
-                        Uuid = uuid,
-                        SaveState = saveState,
-                        AutoStart = autoStart,
-                    });
-                }
-                catch (XPathException e)
-                {
-                    logger.LogError(e, $"Failed to parse machine config {new { Error = e.Message }}");
-                }
-            }
-
-            return found.ToArray();
         }
     }
 }

@@ -2,16 +2,21 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace TrayApp.Configuration
 {
+    [DataContract(Name = "AppConfiguration")]
     public class AppConfiguration : IEquatable<AppConfiguration>
     {
-        public LogLevel LogLevel { get; }
+        [DataMember]
+        public LogLevel LogLevel { get; private set; }
 
-        public bool ShowKeepAwakeMenu { get; }
+        [DataMember]
+        public bool ShowKeepAwakeMenu { get; private set; }
 
-        public ReadOnlyCollection<MachineConfiguration> Machines { get; }
+        [DataMember]
+        public ReadOnlyCollection<MachineConfiguration> Machines { get; private set; }
 
         public AppConfiguration(LogLevel logLevel, bool showKeepAwakeMenu, ReadOnlyCollection<MachineConfiguration> machines)
         {

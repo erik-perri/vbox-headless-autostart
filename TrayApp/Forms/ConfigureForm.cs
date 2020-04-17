@@ -123,12 +123,7 @@ namespace TrayApp.Forms
                     continue;
                 }
 
-                machines.Add(new MachineConfiguration()
-                {
-                    Uuid = machineRow.Uuid,
-                    SaveState = machineRow.SaveState,
-                    AutoStart = machineRow.AutoStart,
-                });
+                machines.Add(new MachineConfiguration(machineRow.Uuid, machineRow.SaveState, machineRow.AutoStart));
             }
 
             if (!Enum.TryParse(comboBoxLogLevel.SelectedItem?.ToString(), out LogLevel logLevel))
