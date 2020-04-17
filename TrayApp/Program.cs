@@ -90,9 +90,26 @@ namespace TrayApp
                 // Set the log level from the configuration
                 LogLevelConfigurationManager.SetLogLevel(appState.Configuration.LogLevel);
 
-            // Load the configuration and machines into the store
-            appState.UpdateConfiguration();
-            appState.UpdateMachines();
+            try
+            {
+                // Load the configuration and machines into the store
+                appState.UpdateConfiguration();
+                appState.UpdateMachines();
+            }
+            catch (InvalidInstallException e)
+            {
+                if (!IsAutoStarting())
+                {
+                    MessageBox.Show(
+                        $"Could not continue, {e.Message}",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+
+                return;
+            }
 
             if (IsAutoStarting())
             {
