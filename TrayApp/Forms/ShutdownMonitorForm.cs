@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -53,7 +52,6 @@ namespace TrayApp.Forms
 
                     // If we don't wait here we end up with VirtualBox hanging the shutdown complaining about open
                     // connections
-                    logger.LogInformation("Machine stop complete, waiting for VirtualBox");
                     WaitForVirtualBoxToFinish();
 
                     shutdownMonitor.RemoveLock(this);
@@ -67,36 +65,27 @@ namespace TrayApp.Forms
 
         private void WaitForVirtualBoxToFinish()
         {
+            logger.LogInformation("Machine stop complete, waiting for VirtualBox");
+
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
 
-            List<Process> processes;
-
-            while (stopwatch.ElapsedMilliseconds < 20000)
+            while (stopwatch.ElapsedMilliseconds < 10000)
             {
-                processes = Process.GetProcesses().Where(
-                    p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
-                ).ToList();
+                var processes = Process.GetProcesses().Count(
+                    p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase) &&
+                        !p.ProcessName.Equals("VBoxHeadlessAutoStart", StringComparison.OrdinalIgnoreCase) &&
+                        !p.ProcessName.Equals("VBoxSDS", StringComparison.OrdinalIgnoreCase)
+                );
 
-                if (processes.Count < 1)
+                if (processes < 1)
                 {
                     break;
                 }
 
-                logger.LogDebug($"Processes beginning with VBox: {processes.Count}");
+                logger.LogDebug($"Still waiting for VirtualBox, processes left: {processes}");
                 Thread.Sleep(1000);
-            }
-
-            processes = Process.GetProcesses().Where(
-                p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
-            ).ToList();
-            if (processes.Count > 0)
-            {
-                foreach (var process in processes)
-                {
-                    logger.LogDebug($" - {process.ProcessName}.exe:{process.Id}");
-                }
             }
         }
 
