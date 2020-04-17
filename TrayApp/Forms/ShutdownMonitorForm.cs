@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -70,12 +71,34 @@ namespace TrayApp.Forms
 
             stopwatch.Start();
 
-            while (stopwatch.ElapsedMilliseconds < 20000 && Process.GetProcesses().Any(
-                p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
-            ))
+            List<Process> processes;
+
+            while (stopwatch.ElapsedMilliseconds < 20000)
             {
-                Thread.Sleep(100);
+                processes = Process.GetProcesses().Where(
+                    p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+
+                if (processes.Count < 1)
+                {
+                    break;
+                }
+
+                logger.LogDebug($"Processes beginning with VBox: {processes.Count}");
+                Thread.Sleep(1000);
             }
+
+            processes = Process.GetProcesses().Where(
+                p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+            if (processes.Count > 0)
+            {
+                foreach (var process in processes)
+                {
+                    logger.LogDebug($" - {process.ProcessName}.exe:{process.Id}");
+                }
+            }
+
         }
 
         protected override void SetVisibleCore(bool value)

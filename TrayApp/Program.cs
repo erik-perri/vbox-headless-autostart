@@ -102,16 +102,6 @@ namespace TrayApp
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
 
-            var processes = Process.GetProcesses().Where(p => p.ProcessName.StartsWith("VB", StringComparison.OrdinalIgnoreCase)).ToList();
-            logger.LogDebug($"Processes beginning with VB {processes.Count}");
-            if (processes.Count > 0)
-            {
-                foreach (var process in processes)
-                {
-                    logger.LogDebug($" - {process.ProcessName}.exe:{process.Id}");
-                }
-            }
-
             logger.LogTrace("TrayApp finished");
 
             NLog.LogManager.Flush();
