@@ -46,6 +46,16 @@
       </Feature>
     </Feature>
 
+    <!-- Check if VirtualBox is installed -->
+    <!-- TODO Figure out a good way to check the version based on what TrayApp supports -->
+    <Property Id="VIRUALBOXINSTALLED">
+      <RegistrySearch Id="x64" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="InstallDir" Type="raw" Win64="yes" />
+      <RegistrySearch Id="x32" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="InstallDir" Type="raw" Win64="no" />
+    </Property>
+    <Condition Message="This application requires VirtualBox. Please install VirtualBox then run this again.">
+      <![CDATA[Installed OR VIRUALBOXINSTALLED]]>
+    </Condition>
+
     <!-- Attempt to load the install folder from the registry -->
     <Property Id="INSTALLFOLDER">
       <RegistrySearch Id="RA.InstallFolder"
