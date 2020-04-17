@@ -62,6 +62,10 @@
     <GetVersion SolutionDirectory="$(SolutionDir)">
       <Output TaskParameter="SemVer" PropertyName="AppVersion" />
     </GetVersion>
+    <!-- Rename the output file to include the version -->
+    <CreateProperty Value="$(SolutionName)-$(AppVersion)">
+      <Output TaskParameter="Value" PropertyName="TargetName" />
+    </CreateProperty>
     <!-- Add an environment variable with the version -->
     <SetEnvironmentVariableTask Name="AppVersion" Value="$(AppVersion)" />
   </Target>
