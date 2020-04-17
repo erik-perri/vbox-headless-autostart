@@ -11,7 +11,6 @@
     <?define Win64 = "no" ?>
   <?endif ?>
 
-  <?define RegistryKey = "VBoxHeadlessAutoStart" ?>
   <?define LaunchFileKey = "file_ID_FROM_PARAFFIN" ?>
 
   <?define Version = "!(bind.fileVersion.$(var.LaunchFileKey))" ?>

@@ -52,7 +52,7 @@
                       Type="raw"
                       Root="HKCU"
                       Win64="$(var.Win64)"
-                      Key="Software\$(var.RegistryKey)"
+                      Key="Software\VBoxHeadlessAutoStart"
                       Name="InstallFolder" />
     </Property>
 
@@ -101,7 +101,7 @@
       <Component Id="C.VBoxHeadlessStartWithWindowsRegistryEntry" Guid="979c1989-341e-40b7-8890-8158237eaa86">
         <RegistryKey Root="HKCU" Key="Software\Microsoft\Windows\CurrentVersion\Run">
           <RegistryValue Type="string"
-                         Name="$(var.RegistryKey)"
+                         Name="VBoxHeadlessAutoStart"
                          KeyPath="yes"
                          Value="&quot;[INSTALLFOLDER]VBoxHeadlessAutoStart.exe&quot; --auto-start" />
         </RegistryKey>
@@ -109,7 +109,7 @@
 
       <!-- Save the install folder to the registry -->
       <Component Id="C.VBoxHeadlessInstallLocationStore" Guid="b9b60c38-2ebb-40e1-b642-c4d86bc251a5">
-        <RegistryKey Root="HKCU" Key="Software\$(var.RegistryKey)">
+        <RegistryKey Root="HKCU" Key="Software\VBoxHeadlessAutoStart">
           <RegistryValue Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" Action="write" KeyPath="yes" />
         </RegistryKey>
       </Component>
