@@ -4,7 +4,7 @@ namespace TrayApp.VirtualMachine
 {
     public interface IMachineController
     {
-        bool StartMachine(IMachineMetadata machine, bool headless);
+        bool Start(IMachineMetadata machine, bool headless);
 
         bool SaveState(IMachineMetadata machine);
 

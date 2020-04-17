@@ -43,7 +43,7 @@ namespace TrayApp.VirtualMachine
                         continue;
                     }
 
-                    machineController.StartMachine(machine, true);
+                    machineController.Start(machine, true);
                 }
             }
             else

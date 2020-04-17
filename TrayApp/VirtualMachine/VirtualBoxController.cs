@@ -66,7 +66,7 @@ namespace TrayApp.VirtualMachine
             }
         }
 
-        public bool StartMachine(IMachineMetadata machine, bool headless)
+        public bool Start(IMachineMetadata machine, bool headless)
         {
             if (machine == null)
             {
