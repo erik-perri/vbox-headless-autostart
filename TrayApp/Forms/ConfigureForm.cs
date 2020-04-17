@@ -51,6 +51,7 @@ namespace TrayApp.Forms
             }
 
             checkBoxKeepAwakeMenu.Checked = configuration.ShowKeepAwakeMenu;
+            checkBoxStartWithWindows.Checked = configuration.StartWithWindows;
         }
 
         private void SetupDataGrid(IMachineMetadata[] machines, MachineConfiguration[] machineConfigurations)
@@ -64,7 +65,7 @@ namespace TrayApp.Forms
 
                 if (configuration == null)
                 {
-                    configuration = MachineConfiguration.GetDefaultConfiguration(machine.Uuid);
+                    configuration = ConfigurationFactory.GetDefaultMachineConfiguration(machine.Uuid);
                 }
 
                 currentRows.Add(new MachineRow()
@@ -135,6 +136,7 @@ namespace TrayApp.Forms
             UpdatedConfiguration = new AppConfiguration(
                 logLevel,
                 checkBoxKeepAwakeMenu.Checked,
+                checkBoxStartWithWindows.Checked,
                 new ReadOnlyCollection<MachineConfiguration>(machines.ToArray())
             );
 

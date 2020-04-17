@@ -13,6 +13,7 @@ namespace TrayApp.State
         private readonly ILogger<AppState> logger;
         private readonly IMachineLocator machineLocator;
         private readonly IConfigurationReader configurationReader;
+        private readonly ConfigurationFactory configurationFactory;
 
         public AppConfiguration Configuration { get; private set; }
 
@@ -27,19 +28,22 @@ namespace TrayApp.State
         public AppState(
             ILogger<AppState> logger,
             IMachineLocator machineLocator,
-            IConfigurationReader configurationReader
+            IConfigurationReader configurationReader,
+            ConfigurationFactory configurationFactory
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
             this.configurationReader = configurationReader ?? throw new ArgumentNullException(nameof(configurationReader));
+            this.configurationFactory = configurationFactory ?? throw new ArgumentNullException(nameof(configurationFactory));
 
             Machines = new ReadOnlyCollection<IMachineMetadata>(Array.Empty<IMachineMetadata>());
         }
 
         public void UpdateConfiguration()
         {
-            var configuration = configurationReader.ReadConfiguration() ?? AppConfiguration.GetDefaultConfiguration();
+            var configuration = configurationReader.ReadConfiguration()
+                            ?? configurationFactory.GetDefaultAppConfiguration();
 
             if (!configuration.Equals(Configuration))
             {

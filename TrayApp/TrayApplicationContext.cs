@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Windows.Forms;
+using TrayApp.Helpers;
 using TrayApp.Menu;
 using TrayApp.State;
 
@@ -16,7 +17,8 @@ namespace TrayApp
             ILogger<TrayApplicationContext> logger,
             TrayContextMenuStrip contextMenu,
             NotifyIconManager notifyIconManager,
-            AppState appState
+            AppState appState,
+            StartupManager startupManager
         )
         {
             if (notifyIconManager == null)
@@ -37,6 +39,20 @@ namespace TrayApp
 
             appState.OnMachineListChange += (object _, EventArgs __) => CreateContextMenu();
             appState.OnMachineStateChange += (object _, EventArgs __) => UpdateContextMenu();
+            appState.OnConfigurationChange += (object _, EventArgs __) =>
+            {
+                if (appState.Configuration.StartWithWindows != startupManager.IsEnabled())
+                {
+                    if (appState.Configuration.StartWithWindows)
+                    {
+                        startupManager.EnableStartup();
+                    }
+                    else
+                    {
+                        startupManager.DisableStartup();
+                    }
+                }
+            };
 
             CreateContextMenu();
         }

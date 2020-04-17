@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TrayApp.Configuration;
 using TrayApp.Configuration.FileLocator;
 using TrayApp.Forms;
+using TrayApp.Helpers;
 using TrayApp.KeepAwake;
 using TrayApp.Logging;
 using TrayApp.Menu;
@@ -64,10 +65,19 @@ namespace TrayApp
                 .AddSingleton<IConfigurationFileLocator, UserProfileFileLocator>()
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
+                .AddSingleton<ConfigurationFactory>()
 
                 // Shutdown monitor
                 .AddSingleton<ShutdownMonitorForm>()
                 .AddSingleton<ShutdownLocker>()
+
+                .AddSingleton(_ =>
+                {
+                    var currentFile = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    var command = $"\"{currentFile}\" --auto-start";
+
+                    return new StartupManager("VBoxHeadlessAutoStart", command);
+                })
 
                 .BuildServiceProvider();
 

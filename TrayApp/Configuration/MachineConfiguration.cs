@@ -23,11 +23,6 @@ namespace TrayApp.Configuration
             AutoStart = autoStart;
         }
 
-        public static MachineConfiguration GetDefaultConfiguration(string uuid)
-        {
-            return new MachineConfiguration(uuid, false, true);
-        }
-
         public bool Equals(MachineConfiguration other)
         {
             return other != null

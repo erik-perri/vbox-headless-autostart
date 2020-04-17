@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.labelLogLevel = new System.Windows.Forms.Label();
             this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
             this.checkBoxKeepAwakeMenu = new System.Windows.Forms.CheckBox();
-            this.labelShutdownWaitLimit = new System.Windows.Forms.Label();
             this.comboBoxLogLevel = new System.Windows.Forms.ComboBox();
             this.Machines = new System.Windows.Forms.GroupBox();
+            this.labelDescription = new System.Windows.Forms.Label();
             this.dataGridMachines = new TrayApp.Forms.ConfigureForm.DoubleBufferedDataGridView();
             this.columnMonitored = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnAutoStart = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -42,7 +43,8 @@
             this.columnUuid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.labelDescription = new System.Windows.Forms.Label();
+            this.checkBoxStartWithWindows = new System.Windows.Forms.CheckBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.groupBoxServiceConfiguration.SuspendLayout();
             this.Machines.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).BeginInit();
@@ -50,55 +52,47 @@
             // 
             // labelLogLevel
             // 
+            this.labelLogLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLogLevel.AutoSize = true;
-            this.labelLogLevel.Location = new System.Drawing.Point(82, 28);
+            this.labelLogLevel.Location = new System.Drawing.Point(316, 26);
             this.labelLogLevel.Name = "labelLogLevel";
             this.labelLogLevel.Size = new System.Drawing.Size(54, 13);
-            this.labelLogLevel.TabIndex = 3;
+            this.labelLogLevel.TabIndex = 6;
             this.labelLogLevel.Text = "Log Level";
             // 
             // groupBoxServiceConfiguration
             // 
             this.groupBoxServiceConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxKeepAwakeMenu);
-            this.groupBoxServiceConfiguration.Controls.Add(this.labelShutdownWaitLimit);
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxStartWithWindows);
             this.groupBoxServiceConfiguration.Controls.Add(this.comboBoxLogLevel);
             this.groupBoxServiceConfiguration.Controls.Add(this.labelLogLevel);
-            this.groupBoxServiceConfiguration.Location = new System.Drawing.Point(12, 219);
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxKeepAwakeMenu);
+            this.groupBoxServiceConfiguration.Location = new System.Drawing.Point(12, 303);
             this.groupBoxServiceConfiguration.Name = "groupBoxServiceConfiguration";
-            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(485, 93);
-            this.groupBoxServiceConfiguration.TabIndex = 2;
+            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(485, 58);
+            this.groupBoxServiceConfiguration.TabIndex = 3;
             this.groupBoxServiceConfiguration.TabStop = false;
             this.groupBoxServiceConfiguration.Text = "Configuration";
             // 
             // checkBoxKeepAwakeMenu
             // 
-            this.checkBoxKeepAwakeMenu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxKeepAwakeMenu.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.checkBoxKeepAwakeMenu.AutoSize = true;
             this.checkBoxKeepAwakeMenu.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(142, 58);
+            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(150, 24);
             this.checkBoxKeepAwakeMenu.Name = "checkBoxKeepAwakeMenu";
-            this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(332, 24);
-            this.checkBoxKeepAwakeMenu.TabIndex = 6;
-            this.checkBoxKeepAwakeMenu.Text = "This will show an option in the system tray menu to prevent the host from going t" +
-    "o sleep.";
+            this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(144, 17);
+            this.checkBoxKeepAwakeMenu.TabIndex = 5;
+            this.checkBoxKeepAwakeMenu.Text = "Show keep awake menu";
             this.checkBoxKeepAwakeMenu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.toolTip.SetToolTip(this.checkBoxKeepAwakeMenu, "If enabled an option to keep the host from going to sleep will be added to the tr" +
+        "ay menu.");
             this.checkBoxKeepAwakeMenu.UseVisualStyleBackColor = true;
-            // 
-            // labelShutdownWaitLimit
-            // 
-            this.labelShutdownWaitLimit.AutoSize = true;
-            this.labelShutdownWaitLimit.Location = new System.Drawing.Point(11, 59);
-            this.labelShutdownWaitLimit.Name = "labelShutdownWaitLimit";
-            this.labelShutdownWaitLimit.Size = new System.Drawing.Size(125, 13);
-            this.labelShutdownWaitLimit.TabIndex = 5;
-            this.labelShutdownWaitLimit.Text = "Show keep awake menu";
             // 
             // comboBoxLogLevel
             // 
-            this.comboBoxLogLevel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxLogLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxLogLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLogLevel.FormattingEnabled = true;
             this.comboBoxLogLevel.Items.AddRange(new object[] {
@@ -108,10 +102,10 @@
             "Warning",
             "Error",
             "Critical"});
-            this.comboBoxLogLevel.Location = new System.Drawing.Point(142, 24);
+            this.comboBoxLogLevel.Location = new System.Drawing.Point(376, 22);
             this.comboBoxLogLevel.Name = "comboBoxLogLevel";
-            this.comboBoxLogLevel.Size = new System.Drawing.Size(331, 21);
-            this.comboBoxLogLevel.TabIndex = 4;
+            this.comboBoxLogLevel.Size = new System.Drawing.Size(97, 21);
+            this.comboBoxLogLevel.TabIndex = 7;
             // 
             // Machines
             // 
@@ -122,10 +116,22 @@
             this.Machines.Controls.Add(this.dataGridMachines);
             this.Machines.Location = new System.Drawing.Point(12, 12);
             this.Machines.Name = "Machines";
-            this.Machines.Size = new System.Drawing.Size(485, 196);
+            this.Machines.Size = new System.Drawing.Size(485, 280);
             this.Machines.TabIndex = 0;
             this.Machines.TabStop = false;
             this.Machines.Text = "Virtual Machines";
+            // 
+            // labelDescription
+            // 
+            this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelDescription.Location = new System.Drawing.Point(11, 241);
+            this.labelDescription.Name = "labelDescription";
+            this.labelDescription.Size = new System.Drawing.Size(462, 26);
+            this.labelDescription.TabIndex = 2;
+            this.labelDescription.Text = "Unmonitored virtual machines will not be started or stopped with the host machine" +
+    " and will not show up in the system tray menu.";
+            this.labelDescription.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // dataGridMachines
             // 
@@ -148,7 +154,7 @@
             this.dataGridMachines.Location = new System.Drawing.Point(12, 25);
             this.dataGridMachines.Name = "dataGridMachines";
             this.dataGridMachines.RowHeadersVisible = false;
-            this.dataGridMachines.Size = new System.Drawing.Size(462, 124);
+            this.dataGridMachines.Size = new System.Drawing.Size(462, 208);
             this.dataGridMachines.TabIndex = 1;
             this.dataGridMachines.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.Machines_CellMouseLeave);
             this.dataGridMachines.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Machines_CellMouseMove);
@@ -200,10 +206,10 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(407, 323);
+            this.buttonSave.Location = new System.Drawing.Point(407, 373);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(90, 23);
-            this.buttonSave.TabIndex = 7;
+            this.buttonSave.TabIndex = 8;
             this.buttonSave.Text = "Save Changes";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.OnSave);
@@ -212,25 +218,25 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(326, 323);
+            this.buttonCancel.Location = new System.Drawing.Point(326, 373);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 8;
+            this.buttonCancel.TabIndex = 9;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.OnCancel);
             // 
-            // labelDescription
+            // checkBoxStartWithWindows
             // 
-            this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelDescription.Location = new System.Drawing.Point(11, 157);
-            this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(462, 26);
-            this.labelDescription.TabIndex = 9;
-            this.labelDescription.Text = "Unmonitored virtual machines will not be started or stopped with the host machine" +
-    " and will not show up in the system tray menu.";
-            this.labelDescription.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.checkBoxStartWithWindows.AutoSize = true;
+            this.checkBoxStartWithWindows.Location = new System.Drawing.Point(12, 24);
+            this.checkBoxStartWithWindows.Name = "checkBoxStartWithWindows";
+            this.checkBoxStartWithWindows.Size = new System.Drawing.Size(117, 17);
+            this.checkBoxStartWithWindows.TabIndex = 4;
+            this.checkBoxStartWithWindows.Text = "Start with Windows";
+            this.toolTip.SetToolTip(this.checkBoxStartWithWindows, "If enabled this application will start with Windows.  If this is disabled virtual" +
+        " machines will not start with the host.");
+            this.checkBoxStartWithWindows.UseVisualStyleBackColor = true;
             // 
             // ConfigureForm
             // 
@@ -238,12 +244,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(509, 361);
+            this.ClientSize = new System.Drawing.Size(509, 411);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.Machines);
             this.Controls.Add(this.groupBoxServiceConfiguration);
-            this.MinimumSize = new System.Drawing.Size(525, 400);
+            this.MinimumSize = new System.Drawing.Size(525, 450);
             this.Name = "ConfigureForm";
             this.Text = "Configure";
             this.groupBoxServiceConfiguration.ResumeLayout(false);
@@ -269,7 +275,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn columnUuid;
         private System.Windows.Forms.Label labelDescription;
         private System.Windows.Forms.CheckBox checkBoxKeepAwakeMenu;
-        private System.Windows.Forms.Label labelShutdownWaitLimit;
         private DoubleBufferedDataGridView dataGridMachines;
+        private System.Windows.Forms.CheckBox checkBoxStartWithWindows;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
