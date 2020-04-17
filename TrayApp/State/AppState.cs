@@ -154,7 +154,7 @@ namespace TrayApp.State
                 if (oldMachine?.Equals(newMachine) == false)
                 {
                     logger.LogDebug("    - Changed");
-                    logger.LogDebug($"        Old {oldMachines}");
+                    logger.LogDebug($"        Old {oldMachine}");
                     logger.LogDebug($"        New {newMachine}");
                 }
             }
