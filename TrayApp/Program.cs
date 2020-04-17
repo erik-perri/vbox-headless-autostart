@@ -17,6 +17,7 @@ using TrayApp.Menu.Handler;
 using TrayApp.Shutdown;
 using TrayApp.State;
 using TrayApp.VirtualMachine;
+using TrayApp.VirtualMachine.VirtualBoxSdk;
 
 namespace TrayApp
 {
@@ -59,7 +60,7 @@ namespace TrayApp
                 .AddSingleton<IMachineLocator, VirtualBoxController>()
                 .AddSingleton<MachineStateUpdater>()
                 .AddSingleton<MassController>()
-                .AddSingleton(new VirtualBox.VirtualBox())
+                .AddSingleton<VirtualBoxInterfaceFactory>()
 
                 // Configuration
                 .AddSingleton<IConfigurationFileLocator, UserProfileFileLocator>()
