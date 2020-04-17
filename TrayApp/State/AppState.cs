@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using TrayApp.Configuration;
 using TrayApp.Helpers;
-using TrayApp.Logging;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp.State
@@ -40,15 +39,7 @@ namespace TrayApp.State
 
         public void UpdateConfiguration()
         {
-            var configuration = configurationReader.ReadConfiguration();
-            if (configuration == null)
-            {
-                configuration = new AppConfiguration(
-                    LogLevelConfigurationManager.DefaultLevel,
-                    false,
-                    new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>())
-                );
-            }
+            var configuration = configurationReader.ReadConfiguration() ?? AppConfiguration.GetDefaultConfiguration();
 
             if (!configuration.Equals(Configuration))
             {

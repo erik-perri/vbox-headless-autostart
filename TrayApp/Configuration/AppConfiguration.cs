@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using TrayApp.Logging;
 
 namespace TrayApp.Configuration
 {
@@ -23,6 +24,15 @@ namespace TrayApp.Configuration
             LogLevel = logLevel;
             ShowKeepAwakeMenu = showKeepAwakeMenu;
             Machines = machines;
+        }
+
+        public static AppConfiguration GetDefaultConfiguration()
+        {
+            return new AppConfiguration(
+                LogLevelConfigurationManager.DefaultLevel,
+                false,
+                new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>())
+            );
         }
 
         public override string ToString()
