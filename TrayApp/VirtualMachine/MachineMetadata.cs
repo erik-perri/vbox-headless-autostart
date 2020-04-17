@@ -23,11 +23,6 @@ namespace TrayApp.VirtualMachine
             SessionName = sessionName;
         }
 
-        public MachineMetadata(string uuid, string name)
-            : this(uuid, name, MachineState.Unknown, DateTime.MinValue, null)
-        {
-        }
-
         public override string ToString()
         {
             return $"{new { Uuid, Name, State, LastAction, SessionName }}";
