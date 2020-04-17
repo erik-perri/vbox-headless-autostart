@@ -48,7 +48,7 @@ namespace TrayApp.Forms
                 case NativeMethods.WM_ENDSESSION:
                     logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
-                    logger.LogInformation("Stopping down machines due to system shutdown");
+                    logger.LogInformation("Stopping machines due to system shutdown");
                     autoController.StopAll();
 
                     // If we don't wait here we end up with VirtualBox hanging the shutdown complaining about open
