@@ -55,14 +55,16 @@ namespace TrayApp.Configuration
 
         public override int GetHashCode()
         {
-            var hashCode = HashCode.Combine(LogLevel.GetHashCode(), ShowKeepAwakeMenu);
+            var hashCode = new HashCode();
+            hashCode.Add(LogLevel);
+            hashCode.Add(ShowKeepAwakeMenu);
 
             foreach (var machine in Machines)
             {
-                hashCode = HashCode.Combine(hashCode, machine.GetHashCode());
+                hashCode.Add(machine);
             }
 
-            return hashCode;
+            return hashCode.ToHashCode();
         }
     }
 }
