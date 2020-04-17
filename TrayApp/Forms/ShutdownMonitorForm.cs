@@ -98,7 +98,6 @@ namespace TrayApp.Forms
                     logger.LogDebug($" - {process.ProcessName}.exe:{process.Id}");
                 }
             }
-
         }
 
         protected override void SetVisibleCore(bool value)

@@ -49,12 +49,12 @@ namespace TrayApp
                     .AddSingleton<IMenuHandler, ExitMenuHandler>()
                     .AddSingleton<IMenuHandler, ConfigureMenuHandler>()
                     .AddSingleton<IMenuHandler, MachineControlMenuHandler>()
-                        .AddSingleton<IMachineController, VirtualBoxController>()
                     .AddSingleton<IMenuHandler, KeepAwakeMenuHandler>()
                         .AddSingleton<KeepAwakeTask>()
                     .AddSingleton<IMenuHandler, MassControlMenuHandler>()
 
                 // Virtual machines
+                .AddSingleton<IMachineController, VirtualBoxController>()
                 .AddSingleton<IMachineLocator, VirtualBoxController>()
                 .AddSingleton<MachineStateUpdater>()
                 .AddSingleton<MassController>()
@@ -93,10 +93,10 @@ namespace TrayApp
                 );
             }
 
-            // Start the machine state monitor
+            // Start the machine state monitor to update the machine state occasionally
             serviceProvider.GetService<MachineStateUpdater>().StartMonitor();
 
-            // Show the shutdown monitor form so it can listen for shutdown events
+            // Show the shutdown monitor form so it can listen for shutdown events and block them if needed
             serviceProvider.GetService<ShutdownMonitorForm>().Show();
 
             // Run the application
