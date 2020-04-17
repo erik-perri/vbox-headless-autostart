@@ -103,9 +103,6 @@ namespace TrayApp
                 );
             }
 
-            // Start the machine state monitor to update the machine state occasionally
-            serviceProvider.GetService<MachineStateUpdater>().StartMonitor();
-
             // Show the shutdown monitor form so it can listen for shutdown events and block them if needed
             serviceProvider.GetService<ShutdownMonitorForm>().Show();
 

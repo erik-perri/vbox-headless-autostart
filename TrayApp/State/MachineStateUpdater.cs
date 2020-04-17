@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,11 +7,9 @@ namespace TrayApp.State
     public class MachineStateUpdater : IDisposable
     {
         private readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
-        private readonly CancellationTokenSource cancellationToken = new CancellationTokenSource();
-        private readonly List<string> fastUpdateReasons = new List<string>();
-
         private readonly AppState appState;
 
+        private CancellationTokenSource cancellationTokenSource;
         private Task updateTask;
 
         public MachineStateUpdater(AppState appState)
@@ -21,14 +18,6 @@ namespace TrayApp.State
 
             appState.OnConfigurationChange += (object _, EventArgs __) => RequestUpdate();
         }
-
-        public void RequestFastUpdates(string reason)
-        {
-            fastUpdateReasons.Add(reason);
-            RequestUpdate();
-        }
-
-        public void RemoveFastUpdateRequest(string reason) => fastUpdateReasons.Remove(reason);
 
         public void RequestUpdate()
         {
@@ -42,7 +31,9 @@ namespace TrayApp.State
                 throw new InvalidOperationException("Machine updater already running");
             }
 
-            var cancellationToken = this.cancellationToken.Token;
+            cancellationTokenSource = new CancellationTokenSource();
+
+            var cancellationToken = cancellationTokenSource.Token;
 
             updateTask = Task.Factory.StartNew(() =>
             {
@@ -50,14 +41,23 @@ namespace TrayApp.State
                 {
                     appState.UpdateMachines();
 
-                    waitEvent.WaitOne(fastUpdateReasons.Count > 0 ? 250 : 5000);
+                    waitEvent.WaitOne(250);
                 }
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         public void StopMonitor()
         {
-            cancellationToken.Cancel();
+            if (updateTask?.IsCompleted == false)
+            {
+                cancellationTokenSource.Cancel();
+                waitEvent.Set();
+                updateTask.Wait();
+            }
+            updateTask?.Dispose();
+            cancellationTokenSource?.Dispose();
+            updateTask = null;
+            cancellationTokenSource = null;
         }
 
         public void Dispose()
@@ -72,14 +72,14 @@ namespace TrayApp.State
             {
                 if (updateTask?.IsCompleted == false)
                 {
-                    cancellationToken.Cancel();
+                    cancellationTokenSource.Cancel();
                     waitEvent.Set();
                     updateTask.Wait();
                 }
 
                 waitEvent.Dispose();
-                updateTask.Dispose();
-                cancellationToken.Dispose();
+                updateTask?.Dispose();
+                cancellationTokenSource?.Dispose();
             }
         }
     }

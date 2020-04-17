@@ -14,11 +14,8 @@ namespace TrayApp.Menu
         {
             handlers = handlerCollection?.Handlers ?? throw new ArgumentNullException(nameof(handlerCollection));
 
-            Opening += (object sender, System.ComponentModel.CancelEventArgs e) =>
-                stateUpdater.RequestFastUpdates("ContextMenuOpen");
-
-            Closing += (object sender, ToolStripDropDownClosingEventArgs e) =>
-                stateUpdater.RemoveFastUpdateRequest("ContextMenuOpen");
+            Opening += (object sender, System.ComponentModel.CancelEventArgs e) => stateUpdater.StartMonitor();
+            Closing += (object sender, ToolStripDropDownClosingEventArgs e) => stateUpdater.StopMonitor();
         }
 
         public void CreateContextMenu()
