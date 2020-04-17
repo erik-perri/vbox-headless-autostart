@@ -16,7 +16,7 @@ generated value.
 
 In a command prompt from the SetupProject directory:
 
-`Paraffin.exe -dir ..\TrayApp\bin\Release\netcoreapp3.1 -alias ..\TrayApp\bin\Release\netcoreapp3.1 -includeFile Installer.wxi -GroupName CG_VBoxHeadlessTrayApp -dirref INSTALLFOLDER -NoRootDirectory Product.wxs`
+`Paraffin.exe -dir ..\TrayApp\bin\Release\netcoreapp3.1 -alias ..\TrayApp\bin\Release\netcoreapp3.1 -includeFile Installer.wxi -GroupName CG_VBoxHeadlessTrayApp -dirref INSTALLFOLDER -regExExclude "\.dev\.json$" -NoRootDirectory Product.wxs`
 
 #### Updating the existing Product.wsx
 
