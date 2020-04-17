@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace TrayApp.Configuration
+namespace TrayApp.Configuration.FileLocator
 {
     public class UserProfileFileLocator : IConfigurationFileLocator
     {
