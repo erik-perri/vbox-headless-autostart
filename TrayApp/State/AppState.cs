@@ -135,12 +135,12 @@ namespace TrayApp.State
 
             foreach (var machine in added)
             {
-                logger.LogDebug($"    - Added {machine}");
+                logger.LogDebug($" - Added {machine}");
             }
 
             foreach (var machine in removed)
             {
-                logger.LogDebug($"    - Removed {machine}");
+                logger.LogDebug($" - Removed {machine}");
             }
 
             foreach (var newMachine in newMachines)
@@ -148,9 +148,9 @@ namespace TrayApp.State
                 var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
                 if (oldMachine?.Equals(newMachine) == false)
                 {
-                    logger.LogDebug("    - Changed");
-                    logger.LogDebug($"        Old {oldMachine}");
-                    logger.LogDebug($"        New {newMachine}");
+                    logger.LogDebug(" - Changed");
+                    logger.LogDebug($"     Old {oldMachine}");
+                    logger.LogDebug($"     New {newMachine}");
                 }
             }
         }
