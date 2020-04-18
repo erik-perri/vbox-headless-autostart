@@ -12,11 +12,11 @@ namespace TrayApp.VirtualMachine
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public IMachineMetadata[] ListMachines(IMachineFilter filter = null)
+        public IMachineMetadata[] ListMachines()
         {
             using var virtualbox = factory.Create(VirtualBoxVersionLocator.GetVersion());
 
-            return virtualbox.ListMachines(filter);
+            return virtualbox.ListMachines();
         }
 
         public bool Start(IMachineMetadata machine, bool headless)

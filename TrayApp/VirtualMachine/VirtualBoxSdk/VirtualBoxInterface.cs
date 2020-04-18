@@ -22,31 +22,12 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             Machines = new ReadOnlyCollection<VirtualBox616.IMachine>(instance.Machines);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Marshal.ReleaseComObject(instance);
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public IMachineMetadata[] ListMachines(IMachineFilter filter = null)
+        public IMachineMetadata[] ListMachines()
         {
             var metadata = new List<IMachineMetadata>();
 
             foreach (var vboxMachine in instance.Machines)
             {
-                if (filter?.IncludeMachine(vboxMachine.Id) == false)
-                {
-                    continue;
-                }
-
                 metadata.Add(new MachineMetadata(
                     vboxMachine.Id,
                     vboxMachine.Name,
@@ -257,6 +238,20 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             }
 
             return false;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Marshal.ReleaseComObject(instance);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
