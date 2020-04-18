@@ -181,12 +181,19 @@ namespace TrayApp.Forms
         private void Machines_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             // Invalidate the auto-start and save state columns when the monitored column is changed to cause the
-            // checkbox re-render
+            // checkbox to re-render
             if (e.ColumnIndex == columnMonitored.Index && e.RowIndex != -1)
             {
                 dataGridMachines.InvalidateCell(columnAutoStart.Index, e.RowIndex);
                 dataGridMachines.InvalidateCell(columnSaveState.Index, e.RowIndex);
             }
+        }
+
+        private void StartWithWindows_CheckedChanged(object sender, EventArgs e)
+        {
+            // Invalidate the auto-start columns when the start with Windows option is changed to cause the checkbox to
+            // re-render
+            dataGridMachines.InvalidateColumn(columnAutoStart.Index);
         }
 
         private void Machines_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
@@ -219,7 +226,25 @@ namespace TrayApp.Forms
 
                 cell.ReadOnly = !currentRows[e.RowIndex].Monitored;
 
-                if (cell.ReadOnly || currentRows[e.RowIndex].Disabled)
+                var drawChecked = false;
+                var drawDisabled = cell.ReadOnly || currentRows[e.RowIndex].Disabled;
+
+                if (index == columnAutoStart.Index)
+                {
+                    drawChecked = currentRows[e.RowIndex].AutoStart;
+                }
+                else if (index == columnSaveState.Index)
+                {
+                    drawChecked = currentRows[e.RowIndex].SaveState;
+                }
+
+                if (!checkBoxStartWithWindows.Checked && index == columnAutoStart.Index)
+                {
+                    drawDisabled = true;
+                    drawChecked = false;
+                }
+
+                if (drawDisabled)
                 {
                     var bounds = dataGridMachines.GetCellDisplayRectangle(index, e.RowIndex, false);
                     const int checkBoxSize = 16;
@@ -228,17 +253,6 @@ namespace TrayApp.Forms
                     bounds.Y += (bounds.Height - checkBoxSize) / 2;
                     bounds.Width = checkBoxSize;
                     bounds.Height = checkBoxSize;
-
-                    var drawChecked = false;
-
-                    if (index == columnAutoStart.Index)
-                    {
-                        drawChecked = currentRows[e.RowIndex].AutoStart;
-                    }
-                    else if (index == columnSaveState.Index)
-                    {
-                        drawChecked = currentRows[e.RowIndex].SaveState;
-                    }
 
                     if (VisualStyleRenderer.IsSupported)
                     {

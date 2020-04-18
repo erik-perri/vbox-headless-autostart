@@ -237,6 +237,7 @@
             this.toolTip.SetToolTip(this.checkBoxStartWithWindows, "If enabled this application will start with Windows.  If this is disabled virtual" +
         " machines will not start with the host.");
             this.checkBoxStartWithWindows.UseVisualStyleBackColor = true;
+            this.checkBoxStartWithWindows.CheckedChanged += new System.EventHandler(this.StartWithWindows_CheckedChanged);
             // 
             // ConfigureForm
             // 
