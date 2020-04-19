@@ -39,13 +39,13 @@ namespace TrayApp.Menu.Handler
             menuItems["start"] = new ToolStripMenuItem(
                 "&Start All",
                 null,
-                (object _, EventArgs __) => new Task(() => autoController.StartAll()).Start()
+                (object _, EventArgs __) => new Task(() => autoController.StartAll(true)).Start()
             );
 
             menuItems["stop"] = new ToolStripMenuItem(
                 "S&top All",
                 null,
-                (object _, EventArgs __) => new Task(() => autoController.StopAll()).Start()
+                (object _, EventArgs __) => new Task(() => autoController.StopAll(true)).Start()
             );
 
             UpdateMenuItems();

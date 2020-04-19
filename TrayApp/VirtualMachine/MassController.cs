@@ -18,9 +18,11 @@ namespace TrayApp.VirtualMachine
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
         }
 
-        public void StartAll()
+        public void StartAll(bool includeMenuMachines = false)
         {
-            foreach (var machine in appState.GetMachines((_, c) => c?.AutoStart == true))
+            foreach (var machine in appState.GetMachines(
+                (_, c) => c?.AutoStart == true || (includeMenuMachines && c?.ShowMenu == true)
+            ))
             {
                 if (!machine.IsPoweredOff)
                 {
@@ -32,9 +34,11 @@ namespace TrayApp.VirtualMachine
             }
         }
 
-        public void StopAll()
+        public void StopAll(bool includeMenuMachines = false)
         {
-            foreach (var machine in appState.GetMachines((_, c) => c?.AutoStop == true))
+            foreach (var machine in appState.GetMachines(
+                (_, c) => c?.AutoStop == true || (includeMenuMachines && c?.ShowMenu == true)
+            ))
             {
                 if (!machine.IsPoweredOn)
                 {
