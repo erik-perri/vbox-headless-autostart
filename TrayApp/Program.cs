@@ -37,6 +37,7 @@ namespace TrayApp
                 .AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddNLog("NLog.config.xml"))
 
                 .AddSingleton<AppState>()
+                    .AddSingleton<ChangeLogger>()
 
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
@@ -89,6 +90,9 @@ namespace TrayApp
             appState.OnConfigurationChange += (object sender, ConfigurationChangeEventArgs e) =>
                 // Set the log level from the configuration
                 LogLevelConfigurationManager.SetLogLevel(e.NewConfiguration.LogLevel);
+
+            // Load the change logger so it attaches its event listeners to the app state
+            _ = serviceProvider.GetService<ChangeLogger>();
 
             try
             {
