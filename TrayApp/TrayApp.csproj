@@ -7,6 +7,8 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <ApplicationIcon>Resources\TrayIcon.ico</ApplicationIcon>
     <AssemblyName>VBoxHeadlessAutoStart</AssemblyName>
+    <Authors>Erik Perri</Authors>
+    <Product>VBox Headless AutoStart</Product>
   </PropertyGroup>
 
   <ItemGroup>
