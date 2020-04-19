@@ -71,6 +71,51 @@ namespace TrayApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If checked the machine will start with the host.  If start with Windows is disabled this will not work..
+        /// </summary>
+        internal static string TooltipColumnAutoStart {
+            get {
+                return ResourceManager.GetString("TooltipColumnAutoStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked the machine will stop with the host.  If the tray app is not running this will not work..
+        /// </summary>
+        internal static string TooltipColumnAutoStop {
+            get {
+                return ResourceManager.GetString("TooltipColumnAutoStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked the machine will be monitored during startup and shutdown..
+        /// </summary>
+        internal static string TooltipColumnEnable {
+            get {
+                return ResourceManager.GetString("TooltipColumnEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked the machine will save the state while shutting down, if not the machine will be powered off with an ACPI power down event..
+        /// </summary>
+        internal static string TooltipColumnSaveState {
+            get {
+                return ResourceManager.GetString("TooltipColumnSaveState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If checked the machine will show up in the system tray menu..
+        /// </summary>
+        internal static string TooltipColumnShowInMenu {
+            get {
+                return ResourceManager.GetString("TooltipColumnShowInMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon TrayIcon {

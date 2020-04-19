@@ -159,23 +159,23 @@ namespace TrayApp.Forms
 
             if (e.ColumnIndex == columnEnabled.Index)
             {
-                e.ToolTipText = "If checked the machine will be monitored during startup and shutdown.";
+                e.ToolTipText = Properties.Resources.TooltipColumnEnable;
             }
             else if (e.ColumnIndex == columnShowInMenu.Index)
             {
-                e.ToolTipText = "If checked the machine will show up in the system tray menu.";
+                e.ToolTipText = Properties.Resources.TooltipColumnShowInMenu;
             }
             else if (e.ColumnIndex == columnAutoStart.Index)
             {
-                e.ToolTipText = "If checked the machine will start with the host.  If start with Windows is disabled this will not work.";
+                e.ToolTipText = Properties.Resources.TooltipColumnAutoStart;
             }
             else if (e.ColumnIndex == columnAutoStop.Index)
             {
-                e.ToolTipText = "If checked the machine will stop with the host.  If the tray app is not running this will not work.";
+                e.ToolTipText = Properties.Resources.TooltipColumnAutoStop;
             }
             else if (e.ColumnIndex == columnSaveState.Index)
             {
-                e.ToolTipText = "If checked the machine will save the state while shutting down, if not the machine will be powered off with an ACPI power down event.";
+                e.ToolTipText = Properties.Resources.TooltipColumnSaveState;
             }
         }
 
