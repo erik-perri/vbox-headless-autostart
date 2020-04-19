@@ -5,6 +5,7 @@ shut them down when you log out.
 
 It currently only works with VirtualBox 6.1.x and has only been tested on Windows 10.
 
+Icons from the [Visual Studio Image Library](https://www.google.com/search?q=site%3Amicrosoft.com+Visual+Studio+Image+Library)
 
 ## Similar Projects
 
