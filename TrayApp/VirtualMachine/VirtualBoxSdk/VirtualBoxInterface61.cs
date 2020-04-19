@@ -8,18 +8,18 @@ using System.Threading;
 
 namespace TrayApp.VirtualMachine.VirtualBoxSdk
 {
-    public class VirtualBoxInterface616 : IDisposable, IMachineLocator, IMachineController
+    public class VirtualBoxInterface61 : IVirtualBoxInterface
     {
-        private readonly ILogger<VirtualBoxInterface616> logger;
-        private readonly VirtualBox616.IVirtualBox instance;
+        private readonly ILogger<VirtualBoxInterface> logger;
+        private readonly VirtualBox61.IVirtualBox instance;
 
-        public ReadOnlyCollection<VirtualBox616.IMachine> Machines { get; }
+        public ReadOnlyCollection<VirtualBox61.IMachine> Machines { get; }
 
-        public VirtualBoxInterface616(ILogger<VirtualBoxInterface616> logger)
+        public VirtualBoxInterface61(ILogger<VirtualBoxInterface> logger)
         {
             this.logger = logger;
-            instance = new VirtualBox616.VirtualBox();
-            Machines = new ReadOnlyCollection<VirtualBox616.IMachine>(instance.Machines);
+            instance = new VirtualBox61.VirtualBox();
+            Machines = new ReadOnlyCollection<VirtualBox61.IMachine>(instance.Machines);
         }
 
         public IMachineMetadata[] ListMachines()
@@ -43,17 +43,17 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             return metadata.ToArray();
         }
 
-        private MachineState ConvertVirtualBoxState(VirtualBox616.MachineState vboxState)
+        private MachineState ConvertVirtualBoxState(VirtualBox61.MachineState vboxState)
         {
             switch (vboxState)
             {
-                case VirtualBox616.MachineState.MachineState_Running: return MachineState.Running;
-                case VirtualBox616.MachineState.MachineState_Starting: return MachineState.Starting;
-                case VirtualBox616.MachineState.MachineState_PoweredOff: return MachineState.PoweredOff;
-                case VirtualBox616.MachineState.MachineState_Aborted: return MachineState.Aborted;
-                case VirtualBox616.MachineState.MachineState_Saving: return MachineState.Saving;
-                case VirtualBox616.MachineState.MachineState_Saved: return MachineState.Saved;
-                case VirtualBox616.MachineState.MachineState_Restoring:
+                case VirtualBox61.MachineState.MachineState_Running: return MachineState.Running;
+                case VirtualBox61.MachineState.MachineState_Starting: return MachineState.Starting;
+                case VirtualBox61.MachineState.MachineState_PoweredOff: return MachineState.PoweredOff;
+                case VirtualBox61.MachineState.MachineState_Aborted: return MachineState.Aborted;
+                case VirtualBox61.MachineState.MachineState_Saving: return MachineState.Saving;
+                case VirtualBox61.MachineState.MachineState_Saved: return MachineState.Saved;
+                case VirtualBox61.MachineState.MachineState_Restoring:
                     return MachineState.Restoring;
 
                 default:
@@ -73,7 +73,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             logger.LogInformation($"Starting {machine} {new { Headless = headless }}");
 
             var vboxMachine = instance.FindMachine(machine.Uuid);
-            var session = new VirtualBox616.Session();
+            var session = new VirtualBox61.Session();
 
             try
             {
@@ -109,11 +109,11 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             logger.LogInformation($"Saving state {machine}");
 
             var vboxMachine = instance.FindMachine(machine.Uuid);
-            var session = new VirtualBox616.Session();
+            var session = new VirtualBox61.Session();
 
             try
             {
-                vboxMachine.LockMachine(session, VirtualBox616.LockType.LockType_Shared);
+                vboxMachine.LockMachine(session, VirtualBox61.LockType.LockType_Shared);
 
                 var progress = session.Machine.SaveState();
 
@@ -144,11 +144,11 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             logger.LogInformation($"Powering off {machine}");
 
             var vboxMachine = instance.FindMachine(machine.Uuid);
-            var session = new VirtualBox616.Session();
+            var session = new VirtualBox61.Session();
 
             try
             {
-                vboxMachine.LockMachine(session, VirtualBox616.LockType.LockType_Shared);
+                vboxMachine.LockMachine(session, VirtualBox61.LockType.LockType_Shared);
 
                 var progress = session.Console.PowerDown();
 
@@ -179,11 +179,11 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             logger.LogInformation($"Powering off (ACPI) {machine}");
 
             var vboxMachine = instance.FindMachine(machine.Uuid);
-            var session = new VirtualBox616.Session();
+            var session = new VirtualBox61.Session();
 
             try
             {
-                vboxMachine.LockMachine(session, VirtualBox616.LockType.LockType_Shared);
+                vboxMachine.LockMachine(session, VirtualBox61.LockType.LockType_Shared);
 
                 session.Console.PowerButton();
 
@@ -196,13 +196,13 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
                 stopwatch.Start();
 
                 while (stopwatch.ElapsedMilliseconds < waitLimitInMilliseconds
-                    && session.State == VirtualBox616.SessionState.SessionState_Locked)
+                    && session.State == VirtualBox61.SessionState.SessionState_Locked)
                 {
                     onWaitAction();
                     Thread.Sleep(250);
                 }
 
-                return vboxMachine.State == VirtualBox616.MachineState.MachineState_PoweredOff;
+                return vboxMachine.State == VirtualBox61.MachineState.MachineState_PoweredOff;
             }
             catch (COMException e)
             {
@@ -222,11 +222,11 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             logger.LogInformation($"Resetting {machine}");
 
             var vboxMachine = instance.FindMachine(machine.Uuid);
-            var session = new VirtualBox616.Session();
+            var session = new VirtualBox61.Session();
 
             try
             {
-                vboxMachine.LockMachine(session, VirtualBox616.LockType.LockType_Shared);
+                vboxMachine.LockMachine(session, VirtualBox61.LockType.LockType_Shared);
 
                 session.Console.Reset();
 
