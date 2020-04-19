@@ -24,7 +24,7 @@ namespace TrayApp.VirtualMachine
             {
                 if (!machine.IsPoweredOff)
                 {
-                    logger.LogInformation($"Skipping auto-start {machine}");
+                    logger.LogInformation($"Skipping start {machine}");
                     continue;
                 }
 
@@ -38,7 +38,7 @@ namespace TrayApp.VirtualMachine
             {
                 if (!machine.IsPoweredOn)
                 {
-                    logger.LogInformation($"Skipping auto-stop {machine}");
+                    logger.LogInformation($"Skipping stop {machine}");
                     continue;
                 }
 
