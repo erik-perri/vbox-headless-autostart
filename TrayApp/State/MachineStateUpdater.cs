@@ -15,8 +15,6 @@ namespace TrayApp.State
         public MachineStateUpdater(AppState appState)
         {
             this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
-
-            appState.OnConfigurationChange += (object _, EventArgs __) => RequestUpdate();
         }
 
         public void RequestUpdate()
