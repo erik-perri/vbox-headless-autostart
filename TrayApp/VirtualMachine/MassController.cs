@@ -34,22 +34,17 @@ namespace TrayApp.VirtualMachine
 
         public void StopAll()
         {
-            var machines = appState.GetMachines();
-            var configurationMachines = appState.Configuration.Machines;
-
-            foreach (var machine in machines)
+            foreach (var machine in appState.GetMachines((_, c) => c?.AutoStop == true))
             {
-                var configuration = configurationMachines.FirstOrDefault(c => c.Uuid == machine.Uuid);
-                if (configuration == null)
+                if (!machine.IsPoweredOn)
                 {
+                    logger.LogInformation($"Skipping auto-stop {machine}");
                     continue;
                 }
 
-                if (!machine.IsPoweredOn)
+                var configuration = appState.Configuration.Machines.FirstOrDefault(c => c.Uuid == machine.Uuid);
+                if (configuration == null)
                 {
-                    logger.LogInformation(
-                        $"Skipping auto-stop {machine}"
-                    );
                     continue;
                 }
 

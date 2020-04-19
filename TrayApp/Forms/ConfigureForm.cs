@@ -70,10 +70,11 @@ namespace TrayApp.Forms
 
                 currentRows.Add(new MachineRow()
                 {
-                    Monitored = monitored,
                     Uuid = machine.Uuid,
                     Name = machine.Name,
+                    ShowMenu = configuration.ShowMenu,
                     AutoStart = configuration.AutoStart,
+                    AutoStop = configuration.AutoStop,
                     SaveState = configuration.SaveState,
                 });
             }
@@ -85,10 +86,11 @@ namespace TrayApp.Forms
                 {
                     currentRows.Add(new MachineRow()
                     {
-                        Monitored = true,
                         Uuid = configuration.Uuid,
-                        Name = "Not found in VirtualBox",
+                        Name = $"UUID Not found in VirtualBox: {configuration.Uuid}",
+                        ShowMenu = configuration.ShowMenu,
                         AutoStart = configuration.AutoStart,
+                        AutoStop = configuration.AutoStop,
                         SaveState = configuration.SaveState,
                         Disabled = true,
                     });
@@ -119,12 +121,18 @@ namespace TrayApp.Forms
             var machines = new List<MachineConfiguration>();
             foreach (var machineRow in currentRows)
             {
-                if (!machineRow.Monitored)
+                if (!machineRow.ShowMenu && !machineRow.AutoStart && !machineRow.AutoStop && !machineRow.SaveState)
                 {
                     continue;
                 }
 
-                machines.Add(new MachineConfiguration(machineRow.Uuid, machineRow.SaveState, machineRow.AutoStart));
+                machines.Add(new MachineConfiguration(
+                    machineRow.Uuid,
+                    machineRow.ShowMenu,
+                    machineRow.AutoStart,
+                    machineRow.AutoStop,
+                    machineRow.SaveState
+                ));
             }
 
             if (!Enum.TryParse(comboBoxLogLevel.SelectedItem?.ToString(), out LogLevel logLevel))
@@ -178,39 +186,11 @@ namespace TrayApp.Forms
             }
         }
 
-        private void Machines_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            // Invalidate the auto-start and save state columns when the monitored column is changed to cause the
-            // checkbox to re-render
-            if (e.ColumnIndex == columnMonitored.Index && e.RowIndex != -1)
-            {
-                dataGridMachines.InvalidateCell(columnAutoStart.Index, e.RowIndex);
-                dataGridMachines.InvalidateCell(columnSaveState.Index, e.RowIndex);
-            }
-        }
-
-        private void StartWithWindows_CheckedChanged(object sender, EventArgs e)
-        {
-            // Invalidate the auto-start columns when the start with Windows option is changed to cause the checkbox to
-            // re-render
-            dataGridMachines.InvalidateColumn(columnAutoStart.Index);
-        }
-
-        private void Machines_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            // The checkbox cell does not report the value changed until the cell selection changes, this causes it to
-            // report the change immediately
-            if (e.ColumnIndex == columnMonitored.Index && e.RowIndex != -1)
-            {
-                dataGridMachines.EndEdit();
-            }
-        }
-
         private void Machines_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            // Render the name and UUID columns as gray when the row is disabled (found in the configuration but not
-            // in the VirtualBox machine list)
-            foreach (var index in new int[] { columnName.Index, columnUuid.Index })
+            // Render the name column as gray when the row is disabled (found in the configuration but not in the
+            // VirtualBox machine list)
+            foreach (var index in new int[] { columnName.Index })
             {
                 if (dataGridMachines.Rows[e.RowIndex].Cells[index] is DataGridViewTextBoxCell textBoxCell)
                 {
@@ -218,13 +198,12 @@ namespace TrayApp.Forms
                 }
             }
 
-            // Draw a disabled checkbox over the auto-start and save state columns when the row is disabled or not
-            // monitored
-            foreach (var index in new int[] { columnAutoStart.Index, columnSaveState.Index })
+            // Draw a disabled checkbox over the auto-start and save state columns when the row is disabled
+            foreach (var index in new int[] {
+                columnAutoStart.Index, columnAutoStop.Index, columnSaveState.Index, columnShowInMenu.Index
+            })
             {
                 var cell = dataGridMachines.Rows[e.RowIndex].Cells[index] as DataGridViewCheckBoxCell;
-
-                cell.ReadOnly = !currentRows[e.RowIndex].Monitored;
 
                 var drawChecked = false;
                 var drawDisabled = cell.ReadOnly || currentRows[e.RowIndex].Disabled;
@@ -233,15 +212,17 @@ namespace TrayApp.Forms
                 {
                     drawChecked = currentRows[e.RowIndex].AutoStart;
                 }
+                else if (index == columnAutoStop.Index)
+                {
+                    drawChecked = currentRows[e.RowIndex].AutoStop;
+                }
                 else if (index == columnSaveState.Index)
                 {
                     drawChecked = currentRows[e.RowIndex].SaveState;
                 }
-
-                if (!checkBoxStartWithWindows.Checked && index == columnAutoStart.Index)
+                else if (index == columnShowInMenu.Index)
                 {
-                    drawDisabled = true;
-                    drawChecked = false;
+                    drawChecked = currentRows[e.RowIndex].ShowMenu;
                 }
 
                 if (drawDisabled)
@@ -282,13 +263,15 @@ namespace TrayApp.Forms
 
         internal class MachineRow
         {
-            public bool Monitored { get; set; }
-
             public string Uuid { get; internal set; }
 
             public string Name { get; internal set; }
 
+            public bool ShowMenu { get; set; }
+
             public bool AutoStart { get; set; }
+
+            public bool AutoStop { get; set; }
 
             public bool SaveState { get; set; }
 

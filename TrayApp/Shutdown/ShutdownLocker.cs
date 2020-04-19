@@ -83,7 +83,7 @@ namespace TrayApp.Shutdown
         private IMachineMetadata[] FindBlockingMachines()
         {
             appState.UpdateMachines();
-            return appState.Machines.Where(v => !v.IsPoweredOff).ToArray();
+            return appState.GetMachines((m, c) => c?.AutoStop == true && !m.IsPoweredOff).ToArray();
         }
 
         private static class NativeMethods

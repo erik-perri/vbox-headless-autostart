@@ -31,20 +31,19 @@
             this.components = new System.ComponentModel.Container();
             this.labelLogLevel = new System.Windows.Forms.Label();
             this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
-            this.checkBoxKeepAwakeMenu = new System.Windows.Forms.CheckBox();
+            this.checkBoxStartWithWindows = new System.Windows.Forms.CheckBox();
             this.comboBoxLogLevel = new System.Windows.Forms.ComboBox();
+            this.checkBoxKeepAwakeMenu = new System.Windows.Forms.CheckBox();
             this.Machines = new System.Windows.Forms.GroupBox();
-            this.labelDescription = new System.Windows.Forms.Label();
             this.dataGridMachines = new TrayApp.Forms.ConfigureForm.DoubleBufferedDataGridView();
-            this.columnMonitored = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.columnAutoStart = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.columnSaveState = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnUuid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.checkBoxStartWithWindows = new System.Windows.Forms.CheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.columnShowInMenu = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnAutoStart = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnAutoStop = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnSaveState = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBoxServiceConfiguration.SuspendLayout();
             this.Machines.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).BeginInit();
@@ -82,9 +81,9 @@
             this.checkBoxKeepAwakeMenu.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(150, 24);
             this.checkBoxKeepAwakeMenu.Name = "checkBoxKeepAwakeMenu";
-            this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(144, 17);
+            this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(147, 17);
             this.checkBoxKeepAwakeMenu.TabIndex = 5;
-            this.checkBoxKeepAwakeMenu.Text = "Show keep awake menu";
+            this.checkBoxKeepAwakeMenu.Text = "Show keep awake option";
             this.checkBoxKeepAwakeMenu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.toolTip.SetToolTip(this.checkBoxKeepAwakeMenu, "If enabled an option to keep the host from going to sleep will be added to the tr" +
         "ay menu.");
@@ -112,7 +111,6 @@
             this.Machines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Machines.Controls.Add(this.labelDescription);
             this.Machines.Controls.Add(this.dataGridMachines);
             this.Machines.Location = new System.Drawing.Point(12, 12);
             this.Machines.Name = "Machines";
@@ -120,18 +118,6 @@
             this.Machines.TabIndex = 0;
             this.Machines.TabStop = false;
             this.Machines.Text = "Virtual Machines";
-            // 
-            // labelDescription
-            // 
-            this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelDescription.Location = new System.Drawing.Point(11, 241);
-            this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(462, 26);
-            this.labelDescription.TabIndex = 2;
-            this.labelDescription.Text = "Unmonitored virtual machines will not be started or stopped with the host machine" +
-    " and will not show up in the system tray menu.";
-            this.labelDescription.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // dataGridMachines
             // 
@@ -145,47 +131,49 @@
             this.dataGridMachines.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridMachines.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridMachines.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.columnMonitored,
+            this.columnShowInMenu,
             this.columnAutoStart,
+            this.columnAutoStop,
             this.columnSaveState,
-            this.columnName,
-            this.columnUuid});
+            this.columnName});
             this.dataGridMachines.DoubleBuffered = true;
             this.dataGridMachines.Location = new System.Drawing.Point(12, 25);
             this.dataGridMachines.Name = "dataGridMachines";
             this.dataGridMachines.RowHeadersVisible = false;
-            this.dataGridMachines.Size = new System.Drawing.Size(462, 208);
+            this.dataGridMachines.Size = new System.Drawing.Size(462, 243);
             this.dataGridMachines.TabIndex = 1;
             this.dataGridMachines.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.Machines_CellMouseLeave);
             this.dataGridMachines.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Machines_CellMouseMove);
-            this.dataGridMachines.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Machines_CellMouseUp);
-            this.dataGridMachines.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.Machines_CellValueChanged);
             this.dataGridMachines.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.Machines_RowPostPaint);
             this.dataGridMachines.SelectionChanged += new System.EventHandler(this.Machines_SelectionChanged);
             // 
-            // columnMonitored
+            // columnShowInMenu
             // 
-            this.columnMonitored.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.columnMonitored.DataPropertyName = "Monitored";
-            this.columnMonitored.HeaderText = "Monitored";
-            this.columnMonitored.Name = "columnMonitored";
-            this.columnMonitored.Width = 60;
+            this.columnShowInMenu.DataPropertyName = "ShowMenu";
+            this.columnShowInMenu.HeaderText = "Show Menu";
+            this.columnShowInMenu.Name = "columnShowInMenu";
+            this.columnShowInMenu.Width = 80;
             // 
             // columnAutoStart
             // 
-            this.columnAutoStart.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.columnAutoStart.DataPropertyName = "AutoStart";
             this.columnAutoStart.HeaderText = "Auto-Start";
             this.columnAutoStart.Name = "columnAutoStart";
-            this.columnAutoStart.Width = 60;
+            this.columnAutoStart.Width = 70;
+            // 
+            // columnAutoStop
+            // 
+            this.columnAutoStop.DataPropertyName = "AutoStop";
+            this.columnAutoStop.HeaderText = "Auto-Stop";
+            this.columnAutoStop.Name = "columnAutoStop";
+            this.columnAutoStop.Width = 70;
             // 
             // columnSaveState
             // 
-            this.columnSaveState.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.columnSaveState.DataPropertyName = "SaveState";
             this.columnSaveState.HeaderText = "Save State";
             this.columnSaveState.Name = "columnSaveState";
-            this.columnSaveState.Width = 66;
+            this.columnSaveState.Width = 76;
             // 
             // columnName
             // 
@@ -194,14 +182,6 @@
             this.columnName.HeaderText = "Name";
             this.columnName.Name = "columnName";
             this.columnName.ReadOnly = true;
-            // 
-            // columnUuid
-            // 
-            this.columnUuid.DataPropertyName = "Uuid";
-            this.columnUuid.HeaderText = "UUID";
-            this.columnUuid.Name = "columnUuid";
-            this.columnUuid.ReadOnly = true;
-            this.columnUuid.Width = 225;
             // 
             // buttonSave
             // 
@@ -237,7 +217,6 @@
             this.toolTip.SetToolTip(this.checkBoxStartWithWindows, "If enabled this application will start with Windows.  If this is disabled virtual" +
         " machines will not start with the host.");
             this.checkBoxStartWithWindows.UseVisualStyleBackColor = true;
-            this.checkBoxStartWithWindows.CheckedChanged += new System.EventHandler(this.StartWithWindows_CheckedChanged);
             // 
             // ConfigureForm
             // 
@@ -269,12 +248,11 @@
         private System.Windows.Forms.GroupBox Machines;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn columnMonitored;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn columnShowInMenu;
         private System.Windows.Forms.DataGridViewCheckBoxColumn columnAutoStart;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn columnAutoStop;
         private System.Windows.Forms.DataGridViewCheckBoxColumn columnSaveState;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnUuid;
-        private System.Windows.Forms.Label labelDescription;
         private System.Windows.Forms.CheckBox checkBoxKeepAwakeMenu;
         private DoubleBufferedDataGridView dataGridMachines;
         private System.Windows.Forms.CheckBox checkBoxStartWithWindows;

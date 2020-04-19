@@ -29,7 +29,7 @@ namespace TrayApp.Menu.Handler
         {
             DisposeMenuItems();
 
-            if (appState.GetMachines().Count < 1)
+            if (!appState.HasMachines((_, c) => c?.ShowMenu == true))
             {
                 return Array.Empty<ToolStripMenuItem>();
             }
@@ -55,8 +55,13 @@ namespace TrayApp.Menu.Handler
 
         public void UpdateMenuItems()
         {
-            menuItems["start"].Enabled = appState.GetMachines().Any(machine => machine.IsPoweredOff) == true;
-            menuItems["stop"].Enabled = appState.GetMachines().Any(machine => machine.IsPoweredOn) == true;
+            if (menuItems.Count < 1)
+            {
+                return;
+            }
+
+            menuItems["start"].Enabled = appState.HasMachines((m, c) => c?.ShowMenu == true && m.IsPoweredOff);
+            menuItems["stop"].Enabled = appState.HasMachines((m, c) => c?.ShowMenu == true && m.IsPoweredOn);
         }
 
         private void DisposeMenuItems()

@@ -61,13 +61,7 @@ namespace TrayApp.Menu.Handler
 
         public void UpdateMenuItems()
         {
-            var machines = appState.Machines;
-            if (machines == null)
-            {
-                return;
-            }
-
-            foreach (var machine in machines)
+            foreach (var machine in appState.GetMachines((_, c) => c?.ShowMenu == true))
             {
                 if (!menuItems.ContainsKey(machine.Uuid))
                 {

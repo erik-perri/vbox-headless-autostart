@@ -26,7 +26,7 @@ namespace TrayApp.Configuration
 
         public static MachineConfiguration GetDefaultMachineConfiguration(string uuid)
         {
-            return new MachineConfiguration(uuid, true, false);
+            return new MachineConfiguration(uuid, false, false, true, true);
         }
     }
 }

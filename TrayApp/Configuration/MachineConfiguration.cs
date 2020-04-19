@@ -11,29 +11,39 @@ namespace TrayApp.Configuration
         public string Uuid { get; private set; }
 
         [DataMember]
-        public bool SaveState { get; private set; }
+        public bool ShowMenu { get; private set; }
 
         [DataMember]
         public bool AutoStart { get; private set; }
 
-        public MachineConfiguration(string uuid, bool saveState, bool autoStart)
+        [DataMember]
+        public bool AutoStop { get; private set; }
+
+        [DataMember]
+        public bool SaveState { get; private set; }
+
+        public MachineConfiguration(string uuid, bool showMenu, bool autoStart, bool autoStop, bool saveState)
         {
             Uuid = uuid;
-            SaveState = saveState;
+            ShowMenu = showMenu;
             AutoStart = autoStart;
+            AutoStop = autoStop;
+            SaveState = saveState;
         }
 
         public bool Equals(MachineConfiguration other)
         {
             return other != null
                 && Uuid == other.Uuid
-                && SaveState == other.SaveState
-                && AutoStart == other.AutoStart;
+                && ShowMenu == other.ShowMenu
+                && AutoStart == other.AutoStart
+                && AutoStop == other.AutoStop
+                && SaveState == other.SaveState;
         }
 
         public override string ToString()
         {
-            return $"{new { Uuid, SaveState, AutoStart }}";
+            return $"{new { Uuid, ShowMenu, AutoStart, AutoStop, SaveState }}";
         }
 
         public override bool Equals(object obj)
@@ -43,7 +53,13 @@ namespace TrayApp.Configuration
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Uuid.GetHashCode(StringComparison.Ordinal), SaveState, AutoStart);
+            return HashCode.Combine(
+                Uuid.GetHashCode(StringComparison.Ordinal),
+                ShowMenu,
+                AutoStart,
+                AutoStop,
+                SaveState
+            );
         }
     }
 }
