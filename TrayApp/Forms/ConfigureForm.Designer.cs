@@ -144,36 +144,37 @@
             this.dataGridMachines.TabIndex = 1;
             this.dataGridMachines.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.Machines_CellMouseLeave);
             this.dataGridMachines.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Machines_CellMouseMove);
+            this.dataGridMachines.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.Machines_CellToolTipTextNeeded);
             this.dataGridMachines.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.Machines_RowPostPaint);
             this.dataGridMachines.SelectionChanged += new System.EventHandler(this.Machines_SelectionChanged);
             // 
             // columnShowInMenu
             // 
             this.columnShowInMenu.DataPropertyName = "ShowMenu";
-            this.columnShowInMenu.HeaderText = "Show Menu";
+            this.columnShowInMenu.HeaderText = "Show in Menu";
             this.columnShowInMenu.Name = "columnShowInMenu";
-            this.columnShowInMenu.Width = 80;
+            this.columnShowInMenu.Width = 95;
             // 
             // columnAutoStart
             // 
             this.columnAutoStart.DataPropertyName = "AutoStart";
             this.columnAutoStart.HeaderText = "Auto-Start";
             this.columnAutoStart.Name = "columnAutoStart";
-            this.columnAutoStart.Width = 70;
+            this.columnAutoStart.Width = 75;
             // 
             // columnAutoStop
             // 
             this.columnAutoStop.DataPropertyName = "AutoStop";
             this.columnAutoStop.HeaderText = "Auto-Stop";
             this.columnAutoStop.Name = "columnAutoStop";
-            this.columnAutoStop.Width = 70;
+            this.columnAutoStop.Width = 75;
             // 
             // columnSaveState
             // 
             this.columnSaveState.DataPropertyName = "SaveState";
             this.columnSaveState.HeaderText = "Save State";
             this.columnSaveState.Name = "columnSaveState";
-            this.columnSaveState.Width = 76;
+            this.columnSaveState.Width = 75;
             // 
             // columnName
             // 

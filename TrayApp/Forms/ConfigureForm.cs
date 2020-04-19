@@ -152,6 +152,31 @@ namespace TrayApp.Forms
             Close();
         }
 
+        private void Machines_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
+            if (e.ColumnIndex == columnShowInMenu.Index)
+            {
+                e.ToolTipText = "If checked the machine will show up in the system tray menu.";
+            }
+            else if (e.ColumnIndex == columnAutoStart.Index)
+            {
+                e.ToolTipText = "If checked the machine will start with the host.  If start with Windows is disabled this will not work.";
+            }
+            else if (e.ColumnIndex == columnAutoStop.Index)
+            {
+                e.ToolTipText = "If checked the machine will stop with the host.  If the tray app is not running this will not work.";
+            }
+            else if (e.ColumnIndex == columnSaveState.Index)
+            {
+                e.ToolTipText = "If checked the machine will save the state while shutting down, if not the machine will be powered off with an ACPI power down event.";
+            }
+        }
+
         private void Machines_SelectionChanged(object sender, EventArgs e)
         {
             // Prevent rows from being selected, we don't allow the user to edit anything where selection makes sense
