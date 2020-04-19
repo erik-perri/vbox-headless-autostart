@@ -22,13 +22,21 @@ namespace TrayApp.Menu.Handler
             ILogger<ConfigureMenuHandler> logger,
             AppState appState,
             IMachineLocator machineLocator,
-            IConfigurationWriter configurationWriter
+            IConfigurationWriter configurationWriter,
+            NotifyIconManager notifyIconManager
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
             this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
             this.configurationWriter = configurationWriter ?? throw new ArgumentNullException(nameof(configurationWriter));
+
+            if (notifyIconManager is null)
+            {
+                throw new ArgumentNullException(nameof(notifyIconManager));
+            }
+
+            notifyIconManager.NotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
         }
 
         public int GetSortOrder()
@@ -80,6 +88,11 @@ namespace TrayApp.Menu.Handler
 
             configurationForm.Dispose();
             configurationForm = null;
+        }
+
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            ShowConfigurationForm();
         }
 
         private void OnConfigure(object sender, EventArgs eventArgs)
