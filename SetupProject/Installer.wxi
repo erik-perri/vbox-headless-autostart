@@ -48,16 +48,16 @@
     </Feature>
 
     <!-- Check if VirtualBox is installed -->
-    <!-- TODO Figure out a good way to check the version based on what TrayApp supports -->
     <Property Id="VIRUALBOXINSTALLED">
-      <RegistrySearch Id="x64" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="InstallDir" Type="raw" Win64="yes" />
-      <RegistrySearch Id="x32" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="InstallDir" Type="raw" Win64="no" />
+      <RegistrySearch Id="x64" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="Version" Type="raw" Win64="yes" />
+      <RegistrySearch Id="x32" Root="HKLM" Key="Software\Oracle\VirtualBox" Name="Version" Type="raw" Win64="no" />
     </Property>
-    <Condition Message="This application requires VirtualBox. Please install VirtualBox then run this again.">
-      <![CDATA[Installed OR VIRUALBOXINSTALLED]]>
+    <Condition Message="This application requires VirtualBox 6.1.x to be installed.">
+      <!-- Check if the version begins with 6.1. -->
+      <![CDATA[Installed OR (VIRUALBOXINSTALLED AND VIRUALBOXINSTALLED << "6.1.")]]>
     </Condition>
 
-    <!-- Attempt to load the install folder from the registry -->
+    <!-- Attempt to load the install folder from the registry in case we are upgrading and the user has adjusted it -->
     <Property Id="INSTALLFOLDER">
       <RegistrySearch Id="RA.InstallFolder"
                       Type="raw"
