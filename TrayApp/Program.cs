@@ -57,8 +57,8 @@ namespace TrayApp
                     .AddSingleton<IMenuHandler, MassControlMenuHandler>()
 
                 // Virtual machines
-                .AddSingleton<IMachineController, VirtualBoxController>()
-                .AddSingleton<IMachineLocator, VirtualBoxController>()
+                .AddSingleton<IMachineController, VirtualBoxInterface>()
+                .AddSingleton<IMachineLocator, VirtualBoxInterface>()
                 .AddSingleton<MachineStateUpdater>()
                 .AddSingleton<MassController>()
                 .AddSingleton<VirtualBoxInterfaceFactory>()
