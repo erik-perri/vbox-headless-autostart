@@ -61,7 +61,7 @@ namespace TrayApp.Forms
             foreach (var machine in machines)
             {
                 var configuration = Array.Find(machineConfigurations, c => c.Uuid == machine.Uuid);
-                var monitored = configuration != null;
+                var enabled = configuration != null;
 
                 if (configuration == null)
                 {
@@ -70,6 +70,7 @@ namespace TrayApp.Forms
 
                 currentRows.Add(new MachineRow()
                 {
+                    Enabled = enabled,
                     Uuid = machine.Uuid,
                     Name = machine.Name,
                     ShowMenu = configuration.ShowMenu,
@@ -86,13 +87,14 @@ namespace TrayApp.Forms
                 {
                     currentRows.Add(new MachineRow()
                     {
+                        Enabled = true,
+                        Missing = true,
                         Uuid = configuration.Uuid,
-                        Name = $"UUID Not found in VirtualBox: {configuration.Uuid}",
+                        Name = $"UUID not found in VirtualBox: {configuration.Uuid}",
                         ShowMenu = configuration.ShowMenu,
                         AutoStart = configuration.AutoStart,
                         AutoStop = configuration.AutoStop,
                         SaveState = configuration.SaveState,
-                        Disabled = true,
                     });
                 }
             }
@@ -119,13 +121,8 @@ namespace TrayApp.Forms
 
             // Build the new configuration machine list
             var machines = new List<MachineConfiguration>();
-            foreach (var machineRow in currentRows)
+            foreach (var machineRow in currentRows.Where(r => r.Enabled))
             {
-                if (!machineRow.ShowMenu && !machineRow.AutoStart && !machineRow.AutoStop && !machineRow.SaveState)
-                {
-                    continue;
-                }
-
                 machines.Add(new MachineConfiguration(
                     machineRow.Uuid,
                     machineRow.ShowMenu,
@@ -149,6 +146,7 @@ namespace TrayApp.Forms
             );
 
             DialogResult = DialogResult.OK;
+
             Close();
         }
 
@@ -159,7 +157,11 @@ namespace TrayApp.Forms
                 return;
             }
 
-            if (e.ColumnIndex == columnShowInMenu.Index)
+            if (e.ColumnIndex == columnEnabled.Index)
+            {
+                e.ToolTipText = "If checked the machine will be monitored during startup and shutdown.";
+            }
+            else if (e.ColumnIndex == columnShowInMenu.Index)
             {
                 e.ToolTipText = "If checked the machine will show up in the system tray menu.";
             }
@@ -181,6 +183,25 @@ namespace TrayApp.Forms
         {
             // Prevent rows from being selected, we don't allow the user to edit anything where selection makes sense
             dataGridMachines.ClearSelection();
+        }
+
+        private void Machines_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Invalidate the row when the enabled column is changed to cause a re-render enabled or disabled
+            if (e.ColumnIndex == columnEnabled.Index && e.RowIndex != -1)
+            {
+                dataGridMachines.InvalidateRow(e.RowIndex);
+            }
+        }
+
+        private void Machines_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // The checkbox cell does not report the value changed until the cell selection changes, this causes it to
+            // report the change immediately
+            if (e.ColumnIndex == columnEnabled.Index && e.RowIndex != -1)
+            {
+                dataGridMachines.EndEdit();
+            }
         }
 
         private void Machines_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
@@ -211,18 +232,32 @@ namespace TrayApp.Forms
             }
         }
 
-        private void Machines_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        private void Machines_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
-            // Render the name column as gray when the row is disabled (found in the configuration but not in the
-            // VirtualBox machine list)
+            // Render the name column as gray when the row is disabled and red when the row is missing (found in the
+            // configuration but not in the VirtualBox machine list)
             foreach (var index in new int[] { columnName.Index })
             {
                 if (dataGridMachines.Rows[e.RowIndex].Cells[index] is DataGridViewTextBoxCell textBoxCell)
                 {
-                    textBoxCell.Style.ForeColor = currentRows[e.RowIndex].Disabled ? Color.DimGray : Color.Black;
+                    if (!currentRows[e.RowIndex].Enabled)
+                    {
+                        textBoxCell.Style.ForeColor = Color.DimGray;
+                    }
+                    else if (currentRows[e.RowIndex].Missing)
+                    {
+                        textBoxCell.Style.ForeColor = Color.IndianRed;
+                    }
+                    else
+                    {
+                        textBoxCell.Style.ForeColor = Color.Black;
+                    }
                 }
             }
+        }
 
+        private void Machines_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
             // Draw a disabled checkbox over the auto-start and save state columns when the row is disabled
             foreach (var index in new int[] {
                 columnAutoStart.Index, columnAutoStop.Index, columnSaveState.Index, columnShowInMenu.Index
@@ -231,7 +266,7 @@ namespace TrayApp.Forms
                 var cell = dataGridMachines.Rows[e.RowIndex].Cells[index] as DataGridViewCheckBoxCell;
 
                 var drawChecked = false;
-                var drawDisabled = cell.ReadOnly || currentRows[e.RowIndex].Disabled;
+                var drawDisabled = cell.ReadOnly || !currentRows[e.RowIndex].Enabled;
 
                 if (index == columnAutoStart.Index)
                 {
@@ -288,6 +323,10 @@ namespace TrayApp.Forms
 
         internal class MachineRow
         {
+            public bool Enabled { get; set; }
+
+            public bool Missing { get; set; }
+
             public string Uuid { get; internal set; }
 
             public string Name { get; internal set; }
@@ -299,8 +338,6 @@ namespace TrayApp.Forms
             public bool AutoStop { get; set; }
 
             public bool SaveState { get; set; }
-
-            public bool Disabled { get; set; }
         }
 
         // Prevent some of the flickering that occurs when hovering or changing states
