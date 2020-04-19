@@ -1,158 +1,107 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TrayApp.Configuration;
-using TrayApp.Helpers;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp.State
 {
     public class AppState
     {
-        private readonly ILogger<AppState> logger;
+        private IMachineMetadata[] machines;
         private readonly IMachineLocator machineLocator;
         private readonly IConfigurationReader configurationReader;
         private readonly ConfigurationFactory configurationFactory;
 
         public AppConfiguration Configuration { get; private set; }
 
-        public ReadOnlyCollection<IMachineMetadata> Machines { get; private set; }
+        public event EventHandler<ConfigurationChangeEventArgs> OnConfigurationChange;
 
-        public event EventHandler OnConfigurationChange;
+        public event EventHandler<MachineConfigurationChangeEventArgs> OnMachineConfigurationChange;
 
-        public event EventHandler OnMachineListChange;
-
-        public event EventHandler OnMachineStateChange;
+        public event EventHandler<MachineStateChangeEventArgs> OnMachineStateChange;
 
         public AppState(
-            ILogger<AppState> logger,
             IMachineLocator machineLocator,
             IConfigurationReader configurationReader,
             ConfigurationFactory configurationFactory
         )
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.machineLocator = machineLocator ?? throw new ArgumentNullException(nameof(machineLocator));
             this.configurationReader = configurationReader ?? throw new ArgumentNullException(nameof(configurationReader));
             this.configurationFactory = configurationFactory ?? throw new ArgumentNullException(nameof(configurationFactory));
 
-            Machines = new ReadOnlyCollection<IMachineMetadata>(Array.Empty<IMachineMetadata>());
+            machines = Array.Empty<IMachineMetadata>();
+            Configuration = null;
         }
 
         public void UpdateConfiguration()
         {
-            var configuration = configurationReader.ReadConfiguration()
+            var newConfiguration = configurationReader.ReadConfiguration()
                             ?? configurationFactory.GetDefaultAppConfiguration();
 
-            if (!configuration.Equals(Configuration))
+            if (!newConfiguration.Equals(Configuration))
             {
-                DumpChanges(Configuration, configuration);
+                var oldConfiguration = Configuration;
 
-                Configuration = configuration;
+                Configuration = newConfiguration;
 
-                OnConfigurationChange?.Invoke(this, EventArgs.Empty);
-            }
-        }
+                OnConfigurationChange?.Invoke(
+                    this,
+                    new ConfigurationChangeEventArgs(oldConfiguration, newConfiguration)
+                );
 
-        internal void UpdateMachines()
-        {
-            var vboxMachines = machineLocator.ListMachines() ?? Array.Empty<IMachineMetadata>();
-            var monitoredMachines = vboxMachines.Where(
-                vboxMachine => Configuration.Machines.Any(
-                    confMachine => confMachine.Uuid == vboxMachine.Uuid
-                )
-            );
+                var oldMachines = oldConfiguration?.Machines ??
+                    new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>());
 
-            if (!monitoredMachines.OrderBy(m => m.Uuid).SequenceEqual(Machines.OrderBy(m => m.Uuid)))
-            {
-                var oldMachines = Machines.ToArray();
-                var newMachines = monitoredMachines.ToArray();
-
-                logger.LogDebug("Machine metadata changes");
-
-                DumpChanges(oldMachines, newMachines);
-
-                Machines = new ReadOnlyCollection<IMachineMetadata>(newMachines);
-
-                if (WasMachineListChanged(oldMachines, newMachines))
+                if (!newConfiguration.Machines.OrderBy(c => c.Uuid).SequenceEqual(oldMachines.OrderBy(c => c.Uuid)))
                 {
-                    OnMachineListChange?.Invoke(this, EventArgs.Empty);
-                }
-
-                OnMachineStateChange?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        private static bool WasMachineListChanged(IMachineMetadata[] oldMachines, IMachineMetadata[] newMachines)
-        {
-            if (oldMachines == null)
-            {
-                throw new ArgumentNullException(nameof(oldMachines));
-            }
-
-            if (newMachines == null)
-            {
-                throw new ArgumentNullException(nameof(newMachines));
-            }
-
-            return oldMachines == null
-                || newMachines.Except(oldMachines, new UuidEqualityComparer()).Any()
-                || oldMachines.Except(newMachines, new UuidEqualityComparer()).Any();
-        }
-
-        private void DumpChanges(AppConfiguration oldConfiguration, AppConfiguration newConfiguration)
-        {
-            if (newConfiguration == null)
-            {
-                throw new ArgumentNullException(nameof(newConfiguration));
-            }
-
-            logger.LogDebug("Configuration changes");
-
-            logger.LogDebug($" - Old: {(oldConfiguration == null ? "null" : oldConfiguration.ToString())}");
-            logger.LogDebug($" - New: {newConfiguration}");
-
-            logger.LogDebug("Configuration machine changes");
-
-            DumpChanges(oldConfiguration?.Machines.ToArray(), newConfiguration.Machines.ToArray());
-        }
-
-        private void DumpChanges(IUuidContainer[] oldMachines, IUuidContainer[] newMachines)
-        {
-            if (newMachines == null)
-            {
-                throw new ArgumentNullException(nameof(newMachines));
-            }
-
-            if (oldMachines == null)
-            {
-                oldMachines = Array.Empty<IUuidContainer>();
-            }
-
-            var added = newMachines.Except(oldMachines, new UuidEqualityComparer());
-            var removed = oldMachines.Except(newMachines, new UuidEqualityComparer());
-
-            foreach (var machine in added)
-            {
-                logger.LogDebug($" - Added {machine}");
-            }
-
-            foreach (var machine in removed)
-            {
-                logger.LogDebug($" - Removed {machine}");
-            }
-
-            foreach (var newMachine in newMachines)
-            {
-                var oldMachine = Array.Find(oldMachines, m => m.Uuid == newMachine.Uuid);
-                if (oldMachine?.Equals(newMachine) == false)
-                {
-                    logger.LogDebug(" - Changed");
-                    logger.LogDebug($"     Old {oldMachine}");
-                    logger.LogDebug($"     New {newMachine}");
+                    OnMachineConfigurationChange?.Invoke(
+                        this,
+                        new MachineConfigurationChangeEventArgs(oldMachines, newConfiguration.Machines)
+                    );
                 }
             }
+        }
+
+        public void UpdateMachines()
+        {
+            var newMachines = machineLocator.ListMachines() ?? Array.Empty<IMachineMetadata>();
+
+            if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(machines.OrderBy(m => m.Uuid)))
+            {
+                var newCollection = newMachines;
+                var oldCollection = machines;
+
+                machines = newCollection;
+
+                OnMachineStateChange?.Invoke(this, new MachineStateChangeEventArgs(oldCollection, newCollection));
+            }
+        }
+
+        public IMachineMetadata[] GetMachines()
+        {
+            return machines.ToArray();
+        }
+
+        public IMachineMetadata[] GetMachines(Func<IMachineMetadata, MachineConfiguration, bool> predicate)
+        {
+            return machines.Where(machine =>
+            {
+                var configuration = Configuration.Machines.FirstOrDefault(c => c.Uuid == machine.Uuid);
+
+                return predicate(machine, configuration);
+            }).ToArray();
+        }
+
+        public bool HasMachines(Func<IMachineMetadata, MachineConfiguration, bool> predicate)
+        {
+            return machines.Any(machine =>
+            {
+                var configuration = Configuration.Machines.FirstOrDefault(c => c.Uuid == machine.Uuid);
+
+                return predicate(machine, configuration);
+            });
         }
     }
 }

@@ -31,8 +31,8 @@ namespace TrayApp.Menu.Handler
 
             menuItems["separator"] = new ToolStripSeparator();
 
-            var machines = appState.Machines;
-            if (machines == null)
+            var machines = appState.GetMachines((_, c) => c?.ShowMenu == true).ToList();
+            if (machines.Count < 1)
             {
                 return Array.Empty<ToolStripItem>();
             }

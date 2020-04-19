@@ -11,11 +11,7 @@ namespace TrayApp.VirtualMachine
         private readonly AppState appState;
         private readonly IMachineController machineController;
 
-        public MassController(
-            ILogger<MassController> logger,
-            AppState appState,
-            IMachineController machineController
-        )
+        public MassController(ILogger<MassController> logger, AppState appState, IMachineController machineController)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
@@ -24,37 +20,21 @@ namespace TrayApp.VirtualMachine
 
         public void StartAll()
         {
-            var machines = appState.Machines;
-            var configurationMachines = appState.Configuration.Machines;
-
-            var autoStartMachines = machines
-                .Where(a => configurationMachines.Any(b => b.Uuid == a.Uuid && b.AutoStart))
-                .ToArray();
-
-            if (autoStartMachines.Length > 0)
+            foreach (var machine in appState.GetMachines((_, c) => c?.AutoStart == true))
             {
-                foreach (var machine in autoStartMachines)
+                if (!machine.IsPoweredOff)
                 {
-                    if (!machine.IsPoweredOff)
-                    {
-                        logger.LogInformation(
-                            $"Skipping auto-start {machine}"
-                        );
-                        continue;
-                    }
-
-                    machineController.Start(machine, true);
+                    logger.LogInformation($"Skipping auto-start {machine}");
+                    continue;
                 }
-            }
-            else
-            {
-                logger.LogInformation("No machines found to auto-start");
+
+                machineController.Start(machine, true);
             }
         }
 
         public void StopAll()
         {
-            var machines = appState.Machines;
+            var machines = appState.GetMachines();
             var configurationMachines = appState.Configuration.Machines;
 
             foreach (var machine in machines)

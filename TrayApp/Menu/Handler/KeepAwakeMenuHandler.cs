@@ -19,10 +19,10 @@ namespace TrayApp.Menu.Handler
             appState.OnConfigurationChange += OnConfigurationChange;
         }
 
-        private void OnConfigurationChange(object sender, EventArgs e)
+        private void OnConfigurationChange(object sender, ConfigurationChangeEventArgs e)
         {
             // TODO Should this instead be handled by TrayApplicationContext recreating the menu OnConfigurationChange?
-            menuItem.Visible = appState.Configuration.ShowKeepAwakeMenu;
+            menuItem.Visible = e.NewConfiguration.ShowKeepAwakeMenu;
         }
 
         public int GetSortOrder()

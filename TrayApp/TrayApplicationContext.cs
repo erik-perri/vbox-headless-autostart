@@ -37,13 +37,17 @@ namespace TrayApp
             notifyIconManager.NotifyIcon.ContextMenuStrip = contextMenu;
             notifyIconManager.ShowIcon();
 
-            appState.OnMachineListChange += (object _, EventArgs __) => CreateContextMenu();
-            appState.OnMachineStateChange += (object _, EventArgs __) => UpdateContextMenu();
-            appState.OnConfigurationChange += (object _, EventArgs __) =>
+            appState.OnMachineConfigurationChange += (object _, MachineConfigurationChangeEventArgs __)
+                => CreateContextMenu();
+
+            appState.OnMachineStateChange += (object _, MachineStateChangeEventArgs __)
+                => UpdateContextMenu();
+
+            appState.OnConfigurationChange += (object _, ConfigurationChangeEventArgs e) =>
             {
-                if (appState.Configuration.StartWithWindows != startupManager.IsEnabled())
+                if (e.NewConfiguration.StartWithWindows != startupManager.IsEnabled())
                 {
-                    if (appState.Configuration.StartWithWindows)
+                    if (e.NewConfiguration.StartWithWindows)
                     {
                         startupManager.EnableStartup();
                     }

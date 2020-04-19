@@ -86,9 +86,9 @@ namespace TrayApp
             logger.LogTrace("TrayApp started");
 
             var appState = serviceProvider.GetService<AppState>();
-            appState.OnConfigurationChange += (object sender, EventArgs e) =>
+            appState.OnConfigurationChange += (object sender, ConfigurationChangeEventArgs e) =>
                 // Set the log level from the configuration
-                LogLevelConfigurationManager.SetLogLevel(appState.Configuration.LogLevel);
+                LogLevelConfigurationManager.SetLogLevel(e.NewConfiguration.LogLevel);
 
             try
             {
