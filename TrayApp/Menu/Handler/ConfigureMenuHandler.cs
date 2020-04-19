@@ -16,6 +16,7 @@ namespace TrayApp.Menu.Handler
         private readonly IMachineLocator machineLocator;
         private readonly IConfigurationWriter configurationWriter;
         private ToolStripMenuItem menuItem;
+        private ConfigureForm configurationForm;
 
         public ConfigureMenuHandler(
             ILogger<ConfigureMenuHandler> logger,
@@ -43,30 +44,23 @@ namespace TrayApp.Menu.Handler
             return new ToolStripItem[] { menuItem };
         }
 
-        private void OnConfigure(object sender, EventArgs eventArgs)
+        private void ShowConfigurationForm()
         {
+            if (configurationForm != null)
+            {
+                configurationForm.Activate();
+                return;
+            }
+
             appState.UpdateConfiguration();
 
-            using var form = new ConfigureForm(appState.Configuration, machineLocator.ListMachines());
+            configurationForm = new ConfigureForm(appState.Configuration, machineLocator.ListMachines());
 
-            var result = form.ShowDialog();
-
-            if (result == DialogResult.OK)
+            if (configurationForm.ShowDialog() == DialogResult.OK)
             {
-                if (form.UpdatedConfiguration.Equals(appState.Configuration))
-                {
-                    MessageBox.Show(
-                        $"Nothing changed.",
-                        Properties.Resources.TrayTitle,
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information
-                    );
-                    return;
-                }
-
                 try
                 {
-                    configurationWriter.WriteConfiguration(form.UpdatedConfiguration);
+                    configurationWriter.WriteConfiguration(configurationForm.UpdatedConfiguration);
                 }
                 catch (Exception e) when (e is InvalidOperationException
                                         || e is DirectoryNotFoundException)
@@ -83,6 +77,14 @@ namespace TrayApp.Menu.Handler
 
                 appState.UpdateConfiguration();
             }
+
+            configurationForm.Dispose();
+            configurationForm = null;
+        }
+
+        private void OnConfigure(object sender, EventArgs eventArgs)
+        {
+            ShowConfigurationForm();
         }
 
         public void Dispose()
@@ -97,6 +99,9 @@ namespace TrayApp.Menu.Handler
             {
                 menuItem?.Dispose();
                 menuItem = null;
+
+                configurationForm?.Dispose();
+                configurationForm = null;
             }
         }
     }
