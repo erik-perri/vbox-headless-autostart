@@ -12,5 +12,5 @@
     <?define Win64 = "no" ?>
   <?endif ?>
 
-  <?define LaunchFileKey = "file_ID_FROM_PARAFFIN" ?>
+  <?define LaunchFileKey = "file_CFAC3DAD607E4EDA87AA7DBA65A37754" ?>
 </Include>

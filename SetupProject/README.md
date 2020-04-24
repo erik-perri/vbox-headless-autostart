@@ -12,12 +12,6 @@ generated ID.
 
 ## Paraffin commands
 
-#### Generating a new Product.wxs
-
-In a command prompt from the SetupProject directory:
-
-`Paraffin.exe -dir ..\TrayApp\bin\Release\netcoreapp3.1 -alias ..\TrayApp\bin\Release\netcoreapp3.1 -includeFile Installer.wxi -GroupName CG_VBoxHeadlessTrayApp -dirref INSTALLFOLDER -regExExclude "\.dev\.json$" -NoRootDirectory Product.wxs`
-
 #### Updating the existing Product.wsx
 
 In a command prompt from the SetupProject directory:
@@ -26,3 +20,17 @@ In a command prompt from the SetupProject directory:
 
 That will produce `Product.PARAFFIN` which should replace `Product.wxs` after verifying the file was generated
 correctly.
+
+#### Generating a new Product.wxs
+
+In a command prompt from the SetupProject directory:
+
+`Paraffin.exe -dir ..\TrayApp\bin\Release\netcoreapp3.1\publish -alias ..\TrayApp\bin\Release\netcoreapp3.1\publish -includeFile Installer.wxi -GroupName CG_VBoxHeadlessTrayApp -dirref INSTALLFOLDER -NoRootDirectory Product.wxs`
+
+## Building new version
+
+ * Build and publish `TrayApp`
+ * Update `Product.wsx` and `Variables.wsi` and commit
+ * Tag commit with version or use [increment messages](https://gitversion.net/docs/more-info/version-increments)
+ * Rebuild and publish `TrayApp` (to assign versions)
+ * Build `SetupProject`
