@@ -34,7 +34,7 @@ namespace TrayApp.Forms
             {
                 // When Windows asks if we're ready to end the session create a block and tell it no
                 case NativeMethods.WM_QUERYENDSESSION:
-                    logger.LogDebug($"WndProc received {new { Msg = "WM_QUERYENDSESSION", m.WParam, m.LParam }}");
+                    logger.LogTrace($"WndProc received {new { Msg = "WM_QUERYENDSESSION", m.WParam, m.LParam }}");
 
                     if (shutdownMonitor.CreateLock(this))
                     {
@@ -45,7 +45,7 @@ namespace TrayApp.Forms
 
                 // When Windows is actually ending the session stop all machines, remove the lock, and exit
                 case NativeMethods.WM_ENDSESSION:
-                    logger.LogDebug($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
+                    logger.LogTrace($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
                     logger.LogInformation("Stopping machines due to system shutdown");
                     autoController.StopAll();
@@ -65,7 +65,7 @@ namespace TrayApp.Forms
 
         private void WaitForVirtualBoxToFinish()
         {
-            logger.LogInformation("Machine stop complete, waiting for VirtualBox");
+            logger.LogDebug("Machine stop complete, waiting for VirtualBox");
 
             var stopwatch = new Stopwatch();
 
@@ -73,12 +73,7 @@ namespace TrayApp.Forms
 
             while (stopwatch.ElapsedMilliseconds < 10000)
             {
-                var processes = Process.GetProcesses().Count(
-                    p => p.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase) &&
-                        !p.ProcessName.Equals("VBoxHeadlessAutoStart", StringComparison.OrdinalIgnoreCase) &&
-                        !p.ProcessName.Equals("VBoxSDS", StringComparison.OrdinalIgnoreCase)
-                );
-
+                var processes = Process.GetProcesses().Count(FilterVirtualBoxProcesses);
                 if (processes < 1)
                 {
                     break;
@@ -87,6 +82,50 @@ namespace TrayApp.Forms
                 logger.LogDebug($"Still waiting for VirtualBox, processes left: {processes}");
                 Thread.Sleep(1000);
             }
+
+            // VBoxSVC should close when it is no longer needed, if it hasn't we will attempt to kill it to prevent
+            // Windows from blocking shutdown due to "VirtualBox Interface has active connections".  If we are unable
+            // to kill it the process is likely owned by someone else.
+            var processesLeft = Process.GetProcesses().Where(FilterVirtualBoxProcesses);
+            if (processesLeft.Count() == 1 && processesLeft.First().ProcessName == "VBoxSVC")
+            {
+                try
+                {
+                    var process = processesLeft.First();
+
+                    // In my testing it takes 3-4 seconds for it to close after the last machine is closed, this plus
+                    // the 1000ms wait above will hopefully be plenty of time if the process is going to close itself.
+                    Thread.Sleep(5000);
+
+                    if (process.HasExited)
+                    {
+                        return;
+                    }
+
+                    process.Kill();
+                    if (process.WaitForExit(1000))
+                    {
+                        logger.LogInformation($"Killed rogue VBoxSVC process, {process.Id}");
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Failed to kill rogue VBoxSVC process, WaitForExit failed");
+                    }
+                }
+#pragma warning disable CA1031 // Do not catch general exception types
+                catch (Exception e)
+#pragma warning restore CA1031 // Do not catch general exception types
+                {
+                    logger.LogInformation($"Failed to kill VBoxSVC process, {e.Message}");
+                }
+            }
+        }
+
+        private bool FilterVirtualBoxProcesses(Process process)
+        {
+            return process.ProcessName.StartsWith("VBox", StringComparison.OrdinalIgnoreCase) &&
+                !process.ProcessName.Equals("VBoxHeadlessAutoStart", StringComparison.OrdinalIgnoreCase) &&
+                !process.ProcessName.Equals("VBoxSDS", StringComparison.OrdinalIgnoreCase);
         }
 
         protected override void SetVisibleCore(bool value)
