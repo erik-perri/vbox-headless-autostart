@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 
 namespace TrayApp.VirtualMachine.VirtualBoxSdk
 {
-    public class VirtualBoxInterface : IMachineController, IMachineLocator
+    public class VirtualBoxInterface : IMachineLocator, IMachineController
     {
-        private readonly VirtualBoxInterfaceFactory factory;
+        private readonly VirtualBoxProxyFactory factory;
         private readonly string version;
 
-        public VirtualBoxInterface(VirtualBoxInterfaceFactory factory)
+        public VirtualBoxInterface(VirtualBoxProxyFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
 
@@ -16,44 +19,97 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
         public IMachineMetadata[] ListMachines()
         {
-            using var virtualbox = factory.Create(version);
+            using var instance = factory.Create(version);
 
-            return virtualbox.ListMachines();
+            return instance.Machines.Select(
+                m => new MachineMetadata(m.Uuid, m.Name, m.State, m.LastStateChange, m.SessionName)
+            ).ToArray<IMachineMetadata>();
         }
 
         public bool Start(IMachineMetadata machine, bool headless)
         {
-            using var virtualbox = factory.Create(version);
+            if (machine == null)
+            {
+                throw new ArgumentNullException(nameof(machine));
+            }
 
-            return virtualbox.Start(machine, headless);
+            using var instance = factory.Create(version);
+
+            return instance.PowerOn(machine.Uuid, headless).CheckForSuccess();
         }
 
         public bool SaveState(IMachineMetadata machine)
         {
-            using var virtualbox = factory.Create(version);
+            if (machine == null)
+            {
+                throw new ArgumentNullException(nameof(machine));
+            }
 
-            return virtualbox.SaveState(machine);
+            using var instance = factory.Create(version);
+
+            var session = instance.LockMachine(machine.Uuid);
+
+            return session?.SaveState().CheckForSuccess() == true;
         }
 
         public bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds, Action onWaitAction)
         {
-            using var virtualbox = factory.Create(version);
+            if (machine == null)
+            {
+                throw new ArgumentNullException(nameof(machine));
+            }
 
-            return virtualbox.AcpiPowerOff(machine, waitLimitInMilliseconds, onWaitAction);
+            using var instance = factory.Create(version);
+
+            var session = instance.LockMachine(machine.Uuid);
+            if (session == null)
+            {
+                return false;
+            }
+
+            if (!session.AcpiPowerOff())
+            {
+                return false;
+            }
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (stopwatch.ElapsedMilliseconds < waitLimitInMilliseconds && session.IsLocked)
+            {
+                onWaitAction();
+                Thread.Sleep(250);
+            }
+
+            return session.Machine.State == VirtualMachineState.PoweredOff;
         }
 
         public bool PowerOff(IMachineMetadata machine)
         {
-            using var virtualbox = factory.Create(version);
+            if (machine == null)
+            {
+                throw new ArgumentNullException(nameof(machine));
+            }
 
-            return virtualbox.PowerOff(machine);
+            using var instance = factory.Create(version);
+
+            var session = instance.LockMachine(machine.Uuid);
+
+            return session?.PowerDown().CheckForSuccess() == true;
         }
 
         public bool Reset(IMachineMetadata machine)
         {
-            using var virtualbox = factory.Create(version);
+            if (machine == null)
+            {
+                throw new ArgumentNullException(nameof(machine));
+            }
 
-            return virtualbox.Reset(machine);
+            using var instance = factory.Create(version);
+
+            var session = instance.LockMachine(machine.Uuid);
+
+            return session?.Reset() == true;
         }
     }
 }
