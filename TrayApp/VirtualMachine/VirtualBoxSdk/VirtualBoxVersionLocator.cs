@@ -14,23 +14,8 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             }
 
             var value = (string)key.GetValue("Version", null, RegistryValueOptions.None);
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return null;
-            }
 
-            return value;
-        }
-
-        public static Version ParseVersion()
-        {
-            var version = GetVersion();
-            if (version == null)
-            {
-                return null;
-            }
-
-            return Version.Parse(version);
+            return string.IsNullOrWhiteSpace(value) ? null : value;
         }
     }
 }

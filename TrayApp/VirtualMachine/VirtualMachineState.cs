@@ -1,6 +1,6 @@
 ﻿namespace TrayApp.VirtualMachine
 {
-    public enum MachineState
+    public enum VirtualMachineState
     {
         Unknown = 0,
         Running,

@@ -6,13 +6,13 @@ namespace TrayApp.VirtualMachine
     {
         string Name { get; }
 
-        public MachineState State { get; }
+        public VirtualMachineState State { get; }
 
         public bool IsPoweredOn
         {
             get
             {
-                return State == MachineState.Running;
+                return State == VirtualMachineState.Running;
             }
         }
 
@@ -20,9 +20,9 @@ namespace TrayApp.VirtualMachine
         {
             get
             {
-                return State == MachineState.Aborted
-                    || State == MachineState.PoweredOff
-                    || State == MachineState.Saved;
+                return State == VirtualMachineState.Aborted
+                    || State == VirtualMachineState.PoweredOff
+                    || State == VirtualMachineState.Saved;
             }
         }
     }

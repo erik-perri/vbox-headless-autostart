@@ -43,23 +43,23 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             return metadata.ToArray();
         }
 
-        private MachineState ConvertVirtualBoxState(VirtualBox61.MachineState vboxState)
+        private VirtualMachineState ConvertVirtualBoxState(VirtualBox61.MachineState vboxState)
         {
             switch (vboxState)
             {
-                case VirtualBox61.MachineState.MachineState_Running: return MachineState.Running;
-                case VirtualBox61.MachineState.MachineState_Starting: return MachineState.Starting;
-                case VirtualBox61.MachineState.MachineState_PoweredOff: return MachineState.PoweredOff;
-                case VirtualBox61.MachineState.MachineState_Aborted: return MachineState.Aborted;
-                case VirtualBox61.MachineState.MachineState_Saving: return MachineState.Saving;
-                case VirtualBox61.MachineState.MachineState_Saved: return MachineState.Saved;
+                case VirtualBox61.MachineState.MachineState_Running: return VirtualMachineState.Running;
+                case VirtualBox61.MachineState.MachineState_Starting: return VirtualMachineState.Starting;
+                case VirtualBox61.MachineState.MachineState_PoweredOff: return VirtualMachineState.PoweredOff;
+                case VirtualBox61.MachineState.MachineState_Aborted: return VirtualMachineState.Aborted;
+                case VirtualBox61.MachineState.MachineState_Saving: return VirtualMachineState.Saving;
+                case VirtualBox61.MachineState.MachineState_Saved: return VirtualMachineState.Saved;
                 case VirtualBox61.MachineState.MachineState_Restoring:
-                    return MachineState.Restoring;
+                    return VirtualMachineState.Restoring;
 
                 default:
                     logger.LogWarning($"Unhandled machine state encountered {new { State = vboxState }}");
 
-                    return MachineState.Unknown;
+                    return VirtualMachineState.Unknown;
             }
         }
 

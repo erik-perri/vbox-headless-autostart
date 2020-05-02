@@ -134,24 +134,24 @@ namespace TrayApp.Menu.Handler
             };
         }
 
-        private System.Drawing.Bitmap GetMenuImage(MachineState state)
+        private System.Drawing.Bitmap GetMenuImage(VirtualMachineState state)
         {
             switch (state)
             {
-                case MachineState.Aborted:
+                case VirtualMachineState.Aborted:
                     return Properties.Resources.VirtualMachineError;
 
-                case MachineState.PoweredOff:
+                case VirtualMachineState.PoweredOff:
                     return Properties.Resources.VirtualMachineStop;
 
-                case MachineState.Saved:
+                case VirtualMachineState.Saved:
                     return Properties.Resources.VirtualMachinePause;
 
-                case MachineState.Running:
+                case VirtualMachineState.Running:
                     return Properties.Resources.VirtualMachineRunning;
 
-                case MachineState.Saving:
-                case MachineState.Restoring:
+                case VirtualMachineState.Saving:
+                case VirtualMachineState.Restoring:
                     return Properties.Resources.VirtualMachineRefresh;
             }
 

@@ -8,13 +8,13 @@ namespace TrayApp.VirtualMachine
 
         public string Name { get; }
 
-        public MachineState State { get; }
+        public VirtualMachineState State { get; }
 
         public DateTime LastAction { get; }
 
         public string SessionName { get; }
 
-        public MachineMetadata(string uuid, string name, MachineState state, DateTime lastAction, string sessionName)
+        public MachineMetadata(string uuid, string name, VirtualMachineState state, DateTime lastAction, string sessionName)
         {
             Uuid = uuid;
             Name = name;
