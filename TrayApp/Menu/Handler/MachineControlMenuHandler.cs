@@ -151,6 +151,7 @@ namespace TrayApp.Menu.Handler
                     return Properties.Resources.VirtualMachineRunning;
 
                 case VirtualMachineState.Saving:
+                case VirtualMachineState.Starting:
                 case VirtualMachineState.Restoring:
                     return Properties.Resources.VirtualMachineRefresh;
             }
