@@ -40,6 +40,7 @@ namespace TrayApp.Forms
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxTrayIcon = new System.Windows.Forms.CheckBox();
             this.dataGridMachines = new TrayApp.Forms.ConfigureForm.DoubleBufferedDataGridView();
             this.columnEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,7 +49,6 @@ namespace TrayApp.Forms
             this.columnAutoStop = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnSaveState = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
-            this.checkBoxTrayIcon = new System.Windows.Forms.CheckBox();
             this.tabControlMachines = new System.Windows.Forms.TabControl();
             this.tabPageMachines = new System.Windows.Forms.TabPage();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
@@ -116,11 +116,11 @@ namespace TrayApp.Forms
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(407, 376);
+            this.buttonSave.Location = new System.Drawing.Point(377, 376);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(90, 23);
+            this.buttonSave.Size = new System.Drawing.Size(120, 23);
             this.buttonSave.TabIndex = 10;
-            this.buttonSave.Text = "Save Changes";
+            this.buttonSave.Text = "&Save Configuration";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.OnSave);
             // 
@@ -128,13 +128,25 @@ namespace TrayApp.Forms
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(326, 376);
+            this.buttonCancel.Location = new System.Drawing.Point(296, 376);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 11;
-            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.Text = "&Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.OnCancel);
+            // 
+            // checkBoxTrayIcon
+            // 
+            this.checkBoxTrayIcon.AutoSize = true;
+            this.checkBoxTrayIcon.Location = new System.Drawing.Point(12, 47);
+            this.checkBoxTrayIcon.Name = "checkBoxTrayIcon";
+            this.checkBoxTrayIcon.Size = new System.Drawing.Size(131, 17);
+            this.checkBoxTrayIcon.TabIndex = 5;
+            this.checkBoxTrayIcon.Text = "Show system tray icon";
+            this.toolTip.SetToolTip(this.checkBoxTrayIcon, "Displays an icon in the system tray with a menu to control the virtual machines. " +
+        " If this is disabled open the app a second time to adjust the configuration.");
+            this.checkBoxTrayIcon.UseVisualStyleBackColor = true;
             // 
             // dataGridMachines
             // 
@@ -226,18 +238,6 @@ namespace TrayApp.Forms
             this.groupBoxServiceConfiguration.TabStop = false;
             this.groupBoxServiceConfiguration.Text = "Configuration";
             // 
-            // checkBoxTrayIcon
-            // 
-            this.checkBoxTrayIcon.AutoSize = true;
-            this.checkBoxTrayIcon.Location = new System.Drawing.Point(12, 47);
-            this.checkBoxTrayIcon.Name = "checkBoxTrayIcon";
-            this.checkBoxTrayIcon.Size = new System.Drawing.Size(131, 17);
-            this.checkBoxTrayIcon.TabIndex = 5;
-            this.checkBoxTrayIcon.Text = "Show system tray icon";
-            this.toolTip.SetToolTip(this.checkBoxTrayIcon, "Displays an icon in the system tray with a menu to control the virtual machines. " +
-        " If this is disabled open the app a second time to adjust the configuration.");
-            this.checkBoxTrayIcon.UseVisualStyleBackColor = true;
-            // 
             // tabControlMachines
             // 
             this.tabControlMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -291,9 +291,9 @@ namespace TrayApp.Forms
             // 
             this.buttonExit.Location = new System.Drawing.Point(13, 375);
             this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(75, 23);
+            this.buttonExit.Size = new System.Drawing.Size(125, 23);
             this.buttonExit.TabIndex = 12;
-            this.buttonExit.Text = "E&xit";
+            this.buttonExit.Text = "Stop monitoring && E&xit";
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.OnExit);
             // 
@@ -345,7 +345,7 @@ namespace TrayApp.Forms
         private DataGridViewCheckBoxColumn columnAutoStart;
         private DataGridViewCheckBoxColumn columnAutoStop;
         private DataGridViewCheckBoxColumn columnSaveState;
-        private CheckBox checkBoxTrayIcon;
-        private Button buttonExit;
+        private System.Windows.Forms.CheckBox checkBoxTrayIcon;
+        private System.Windows.Forms.Button buttonExit;
     }
 }
