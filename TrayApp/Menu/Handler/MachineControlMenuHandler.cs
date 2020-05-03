@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrayApp.State;
@@ -75,6 +79,12 @@ namespace TrayApp.Menu.Handler
                     {
                         item.Enabled = false;
 
+                        if (item is MachineStatusToolStripItem statusItem)
+                        {
+                            statusItem.Update(machine);
+                            continue;
+                        }
+
                         switch (item.Text)
                         {
                             case "Headless start":
@@ -99,64 +109,56 @@ namespace TrayApp.Menu.Handler
         {
             return new ToolStripItem[]
             {
+                new MachineStatusToolStripItem(machine),
+                new ToolStripSeparator(),
                 new ToolStripMenuItem(
                     "Headless start",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.Start(machine, true)).Start()
+                    (_, __) => new Task(() => machineController.Start(machine, true)).Start()
                 ),
                 new ToolStripMenuItem(
                     "Normal start",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.Start(machine, false)).Start()
+                    (_, __) => new Task(() => machineController.Start(machine, false)).Start()
                 ),
                 new ToolStripSeparator(),
                 new ToolStripMenuItem(
                     "Save State",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.SaveState(machine)).Start()
+                    (_, __) => new Task(() => machineController.SaveState(machine)).Start()
                 ),
                 new ToolStripMenuItem(
                     "ACPI Shutdown",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.AcpiPowerOff(machine, 90000)).Start()
+                    (_, __) => new Task(() => machineController.AcpiPowerOff(machine, 90000)).Start()
                 ),
                 new ToolStripMenuItem(
                     "Power off",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.PowerOff(machine)).Start()
+                    (_, __) => new Task(() => machineController.PowerOff(machine)).Start()
                 ),
                 new ToolStripSeparator(),
                 new ToolStripMenuItem(
                     "Reset",
                     null,
-                    (object _, EventArgs __) => machineController.Reset(machine)
+                    (_, __) => machineController.Reset(machine)
                 )
             };
         }
 
-        private System.Drawing.Bitmap GetMenuImage(VirtualMachineState state)
+        private static Bitmap GetMenuImage(VirtualMachineState state)
         {
-            switch (state)
+            return state switch
             {
-                case VirtualMachineState.Aborted:
-                    return Properties.Resources.VirtualMachineError;
-
-                case VirtualMachineState.PoweredOff:
-                    return Properties.Resources.VirtualMachineStop;
-
-                case VirtualMachineState.Saved:
-                    return Properties.Resources.VirtualMachinePause;
-
-                case VirtualMachineState.Running:
-                    return Properties.Resources.VirtualMachineRunning;
-
-                case VirtualMachineState.Saving:
-                case VirtualMachineState.Starting:
-                case VirtualMachineState.Restoring:
-                    return Properties.Resources.VirtualMachineRefresh;
-            }
-
-            return Properties.Resources.VirtualMachine;
+                VirtualMachineState.Aborted => Properties.Resources.VirtualMachineError,
+                VirtualMachineState.PoweredOff => Properties.Resources.VirtualMachineStop,
+                VirtualMachineState.Saved => Properties.Resources.VirtualMachinePause,
+                VirtualMachineState.Running => Properties.Resources.VirtualMachineRunning,
+                VirtualMachineState.Saving => Properties.Resources.VirtualMachineRefresh,
+                VirtualMachineState.Starting => Properties.Resources.VirtualMachineRefresh,
+                VirtualMachineState.Restoring => Properties.Resources.VirtualMachineRefresh,
+                _ => Properties.Resources.VirtualMachine
+            };
         }
 
         private void DisposeMenuItems()
@@ -182,6 +184,39 @@ namespace TrayApp.Menu.Handler
             if (disposing)
             {
                 DisposeMenuItems();
+            }
+        }
+
+        private class MachineStatusToolStripItem : ToolStripMenuItem
+        {
+            public MachineStatusToolStripItem(IMachineMetadata machine)
+            {
+                Update(machine);
+            }
+
+            public void Update(IMachineMetadata machine)
+            {
+                var text = new StringBuilder();
+
+                text.Append(Regex.Replace(machine.State.ToString(), "([a-z])_?([A-Z])", "$1 $2"));
+
+                if (machine is MachineMetadata metadata)
+                {
+                    text.Append(" since ");
+
+                    text.Append(
+                        metadata.LastAction.Date == DateTime.Today
+                            ? metadata.LastAction.ToString("t", CultureInfo.CurrentCulture)
+                            : metadata.LastAction.ToString("g", CultureInfo.CurrentCulture)
+                    );
+
+                    if (!string.IsNullOrWhiteSpace(metadata.SessionName))
+                    {
+                        text.Append(" (").Append(metadata.SessionName).Append(')');
+                    }
+                }
+
+                Text = text.ToString();
             }
         }
     }
