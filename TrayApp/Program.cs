@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrayApp.Configuration;
@@ -119,14 +118,8 @@ namespace TrayApp
 
             if (IsAutoStarting())
             {
-                Task.Factory.StartNew(
-                    () => serviceProvider.GetService<MassController>().StartAll(
-                        (_, c) => c?.AutoStart == true
-                    ),
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.Default
-                );
+                var massController = serviceProvider.GetService<MassController>();
+                Task.Run(() => massController.StartAll((_, c) => c?.AutoStart == true));
             }
 
             // Show the shutdown monitor form so it can listen for shutdown events and block them if needed

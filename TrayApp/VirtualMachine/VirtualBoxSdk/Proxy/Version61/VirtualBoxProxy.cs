@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using VirtualBox61;
 
@@ -39,16 +38,11 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk.Proxy.Version61
                 var frontend = headless ? "headless" : "gui";
                 var progress = machine.LaunchVMProcess(session, frontend, Array.Empty<string>());
 
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        progress.WaitForCompletion(-1);
-                        session.UnlockMachine();
-                    },
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.Default
-                );
+                Task.Run(() =>
+                {
+                    progress.WaitForCompletion(-1);
+                    session.UnlockMachine();
+                });
 
                 return new ProgressProxy(logger, progress);
             }
