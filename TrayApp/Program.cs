@@ -128,11 +128,6 @@ namespace TrayApp
                 var massController = serviceProvider.GetService<MassController>();
                 Task.Run(() => massController.StartAll((_, c) => c?.AutoStart == true));
             }
-            else if (!appState.Configuration.ShowTrayIcon)
-            {
-                var configurationUpdater = serviceProvider.GetService<ConfigurationUpdater>();
-                Task.Run(() => configurationUpdater.ShowConfigurationForm());
-            }
 
             // Show the shutdown monitor form so it can listen for shutdown events and block them if needed
             serviceProvider.GetService<MonitorForm>().Show();
@@ -148,7 +143,7 @@ namespace TrayApp
             NLog.LogManager.Shutdown();
         }
 
-        private static bool IsAutoStarting()
+        public static bool IsAutoStarting()
         {
             return Array.Find(Environment.GetCommandLineArgs(), arg => arg == "--auto-start") != null;
         }
