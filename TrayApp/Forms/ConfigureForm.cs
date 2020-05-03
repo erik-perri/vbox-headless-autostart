@@ -270,7 +270,10 @@ namespace TrayApp.Forms
                 columnAutoStart.Index, columnAutoStop.Index, columnSaveState.Index, columnShowInMenu.Index
             })
             {
-                var cell = dataGridMachines.Rows[e.RowIndex].Cells[index] as DataGridViewCheckBoxCell;
+                if (!(dataGridMachines.Rows[e.RowIndex].Cells[index] is DataGridViewCheckBoxCell cell))
+                {
+                    continue;
+                }
 
                 var drawChecked = false;
                 var drawDisabled = cell.ReadOnly || !currentRows[e.RowIndex].Enabled;
