@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using TrayApp.Configuration;
 using TrayApp.State;
 
 namespace TrayApp.VirtualMachine
@@ -18,11 +19,9 @@ namespace TrayApp.VirtualMachine
             this.machineController = machineController ?? throw new ArgumentNullException(nameof(machineController));
         }
 
-        public void StartAll(bool includeMenuMachines = false)
+        public void StartAll(Func<IMachineMetadata, MachineConfiguration, bool> predicate)
         {
-            foreach (var machine in appState.GetMachines(
-                (_, c) => c?.AutoStart == true || (includeMenuMachines && c?.ShowMenu == true)
-            ))
+            foreach (var machine in appState.GetMachines(predicate))
             {
                 if (!machine.IsPoweredOff)
                 {
@@ -34,11 +33,9 @@ namespace TrayApp.VirtualMachine
             }
         }
 
-        public void StopAll(bool includeMenuMachines = false)
+        public void StopAll(Func<IMachineMetadata, MachineConfiguration, bool> predicate)
         {
-            foreach (var machine in appState.GetMachines(
-                (_, c) => c?.AutoStop == true || (includeMenuMachines && c?.ShowMenu == true)
-            ))
+            foreach (var machine in appState.GetMachines(predicate))
             {
                 if (!machine.IsPoweredOn)
                 {
@@ -58,7 +55,7 @@ namespace TrayApp.VirtualMachine
                 }
                 else if (!machineController.AcpiPowerOff(machine, 90000))
                 {
-                    logger.LogError($"Failed to power off {machine}");
+                    logger.LogError($"Failed to power off via ACPI {machine}");
                 }
             }
         }

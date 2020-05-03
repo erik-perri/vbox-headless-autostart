@@ -119,7 +119,9 @@ namespace TrayApp
             if (IsAutoStarting())
             {
                 Task.Factory.StartNew(
-                    () => serviceProvider.GetService<MassController>().StartAll(),
+                    () => serviceProvider.GetService<MassController>().StartAll(
+                        (_, c) => c?.AutoStart == true
+                    ),
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     TaskScheduler.Default
