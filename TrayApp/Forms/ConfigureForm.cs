@@ -293,6 +293,11 @@ namespace TrayApp.Forms
                 else if (index == columnShowInMenu.Index)
                 {
                     drawChecked = currentRows[e.RowIndex].ShowMenu;
+
+                    if (!checkBoxTrayIcon.Checked)
+                    {
+                        drawDisabled = true;
+                    }
                 }
 
                 if (drawDisabled)
