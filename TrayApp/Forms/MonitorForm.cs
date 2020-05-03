@@ -9,14 +9,14 @@ using TrayApp.VirtualMachine;
 
 namespace TrayApp.Forms
 {
-    public partial class ShutdownMonitorForm : Form
+    public partial class MonitorForm : Form
     {
-        private readonly ILogger<ShutdownMonitorForm> logger;
+        private readonly ILogger<MonitorForm> logger;
         private readonly ShutdownLocker shutdownMonitor;
         private readonly MassController autoController;
 
-        public ShutdownMonitorForm(
-            ILogger<ShutdownMonitorForm> logger,
+        public MonitorForm(
+            ILogger<MonitorForm> logger,
             ShutdownLocker shutdownMonitor,
             MassController autoController
         )

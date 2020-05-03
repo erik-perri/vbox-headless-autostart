@@ -1,6 +1,6 @@
 ﻿namespace TrayApp.Forms
 {
-    partial class ShutdownMonitorForm
+    partial class MonitorForm
     {
         /// <summary>
         /// Required designer variable.

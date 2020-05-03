@@ -72,7 +72,7 @@ namespace TrayApp
                 .AddSingleton<ConfigurationFactory>()
 
                 // Shutdown monitor
-                .AddSingleton<ShutdownMonitorForm>()
+                .AddSingleton<MonitorForm>()
                 .AddSingleton<ShutdownLocker>()
 
                 .AddSingleton(_ =>
