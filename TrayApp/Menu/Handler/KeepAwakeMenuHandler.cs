@@ -15,14 +15,6 @@ namespace TrayApp.Menu.Handler
         {
             this.keepAwakeTask = keepAwakeTask ?? throw new ArgumentNullException(nameof(keepAwakeTask));
             this.appState = appState ?? throw new ArgumentNullException(nameof(appState));
-
-            appState.OnConfigurationChange += OnConfigurationChange;
-        }
-
-        private void OnConfigurationChange(object sender, ConfigurationChangeEventArgs e)
-        {
-            // TODO Should this instead be handled by TrayApplicationContext recreating the menu OnConfigurationChange?
-            menuItem.Visible = e.NewConfiguration.ShowKeepAwakeMenu;
         }
 
         public int GetSortOrder()
