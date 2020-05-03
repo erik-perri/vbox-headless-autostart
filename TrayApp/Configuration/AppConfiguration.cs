@@ -13,38 +13,50 @@ namespace TrayApp.Configuration
         public LogLevel LogLevel { get; private set; }
 
         [DataMember]
-        public bool ShowKeepAwakeMenu { get; private set; }
+        public bool StartWithWindows { get; private set; }
 
         [DataMember]
-        public bool StartWithWindows { get; private set; }
+        public bool ShowTrayIcon { get; set; }
+
+        [DataMember]
+        public bool ShowKeepAwakeMenu { get; private set; }
 
         [DataMember]
         public ReadOnlyCollection<MachineConfiguration> Machines { get; private set; }
 
         public AppConfiguration(
             LogLevel logLevel,
-            bool showKeepAwakeMenu,
             bool startWithWindows,
+            bool showTrayIcon,
+            bool showKeepAwakeMenu,
             ReadOnlyCollection<MachineConfiguration> machines
         )
         {
             LogLevel = logLevel;
-            ShowKeepAwakeMenu = showKeepAwakeMenu;
             StartWithWindows = startWithWindows;
+            ShowTrayIcon = showTrayIcon;
+            ShowKeepAwakeMenu = showKeepAwakeMenu;
             Machines = machines;
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext _)
+        {
+            ShowTrayIcon = true;
         }
 
         public override string ToString()
         {
-            return $"{new { LogLevel, ShowKeepAwakeMenu, StartWithWindows, MachineCount = Machines.Count }}";
+            return $"{new { LogLevel, StartWithWindows, ShowTrayIcon, ShowKeepAwakeMenu, Machines = Machines.Count }}";
         }
 
         public bool Equals(AppConfiguration other)
         {
             return other != null
                 && LogLevel == other.LogLevel
-                && ShowKeepAwakeMenu == other.ShowKeepAwakeMenu
                 && StartWithWindows == other.StartWithWindows
+                && ShowTrayIcon == other.ShowTrayIcon
+                && ShowKeepAwakeMenu == other.ShowKeepAwakeMenu
                 && Machines.OrderBy(m => m.Uuid).SequenceEqual(other.Machines.OrderBy(m => m.Uuid));
         }
 
@@ -57,8 +69,9 @@ namespace TrayApp.Configuration
         {
             var hashCode = new HashCode();
             hashCode.Add(LogLevel);
-            hashCode.Add(ShowKeepAwakeMenu);
             hashCode.Add(StartWithWindows);
+            hashCode.Add(ShowTrayIcon);
+            hashCode.Add(ShowKeepAwakeMenu);
 
             foreach (var machine in Machines)
             {

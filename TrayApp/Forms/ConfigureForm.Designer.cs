@@ -41,17 +41,19 @@ namespace TrayApp.Forms
             this.buttonCancel = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dataGridMachines = new TrayApp.Forms.ConfigureForm.DoubleBufferedDataGridView();
-            this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
-            this.tabControlMachines = new System.Windows.Forms.TabControl();
-            this.tabPageMachines = new System.Windows.Forms.TabPage();
-            this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
             this.columnEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnShowInMenu = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnAutoStart = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnAutoStop = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnSaveState = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
+            this.checkBoxTrayIcon = new System.Windows.Forms.CheckBox();
+            this.tabControlMachines = new System.Windows.Forms.TabControl();
+            this.tabPageMachines = new System.Windows.Forms.TabPage();
+            this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
+            this.buttonExit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).BeginInit();
             this.groupBoxServiceConfiguration.SuspendLayout();
             this.tabControlMachines.SuspendLayout();
@@ -66,7 +68,7 @@ namespace TrayApp.Forms
             this.labelLogLevel.Location = new System.Drawing.Point(8, 24);
             this.labelLogLevel.Name = "labelLogLevel";
             this.labelLogLevel.Size = new System.Drawing.Size(54, 13);
-            this.labelLogLevel.TabIndex = 6;
+            this.labelLogLevel.TabIndex = 8;
             this.labelLogLevel.Text = "Log Level";
             // 
             // checkBoxStartWithWindows
@@ -95,16 +97,16 @@ namespace TrayApp.Forms
             this.comboBoxLogLevel.Location = new System.Drawing.Point(73, 20);
             this.comboBoxLogLevel.Name = "comboBoxLogLevel";
             this.comboBoxLogLevel.Size = new System.Drawing.Size(97, 21);
-            this.comboBoxLogLevel.TabIndex = 7;
+            this.comboBoxLogLevel.TabIndex = 9;
             // 
             // checkBoxKeepAwakeMenu
             // 
             this.checkBoxKeepAwakeMenu.AutoSize = true;
             this.checkBoxKeepAwakeMenu.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(12, 47);
+            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(12, 70);
             this.checkBoxKeepAwakeMenu.Name = "checkBoxKeepAwakeMenu";
             this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(210, 17);
-            this.checkBoxKeepAwakeMenu.TabIndex = 5;
+            this.checkBoxKeepAwakeMenu.TabIndex = 6;
             this.checkBoxKeepAwakeMenu.Text = "Show keep host awake option in menu";
             this.checkBoxKeepAwakeMenu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.toolTip.SetToolTip(this.checkBoxKeepAwakeMenu, "If enabled an option to keep the host from going to sleep will be added to the tr" +
@@ -117,7 +119,7 @@ namespace TrayApp.Forms
             this.buttonSave.Location = new System.Drawing.Point(407, 376);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(90, 23);
-            this.buttonSave.TabIndex = 8;
+            this.buttonSave.TabIndex = 10;
             this.buttonSave.Text = "Save Changes";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.OnSave);
@@ -129,7 +131,7 @@ namespace TrayApp.Forms
             this.buttonCancel.Location = new System.Drawing.Point(326, 376);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 9;
+            this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.OnCancel);
@@ -166,68 +168,6 @@ namespace TrayApp.Forms
             this.dataGridMachines.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.Machines_RowPostPaint);
             this.dataGridMachines.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.Machines_RowPrePaint);
             this.dataGridMachines.SelectionChanged += new System.EventHandler(this.Machines_SelectionChanged);
-            // 
-            // groupBoxServiceConfiguration
-            // 
-            this.groupBoxServiceConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxStartWithWindows);
-            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxKeepAwakeMenu);
-            this.groupBoxServiceConfiguration.Location = new System.Drawing.Point(6, 6);
-            this.groupBoxServiceConfiguration.Name = "groupBoxServiceConfiguration";
-            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(461, 77);
-            this.groupBoxServiceConfiguration.TabIndex = 3;
-            this.groupBoxServiceConfiguration.TabStop = false;
-            this.groupBoxServiceConfiguration.Text = "Configuration";
-            // 
-            // tabControlMachines
-            // 
-            this.tabControlMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControlMachines.Controls.Add(this.tabPageMachines);
-            this.tabControlMachines.Controls.Add(this.tabPageSettings);
-            this.tabControlMachines.Location = new System.Drawing.Point(8, 8);
-            this.tabControlMachines.Name = "tabControlMachines";
-            this.tabControlMachines.SelectedIndex = 0;
-            this.tabControlMachines.Size = new System.Drawing.Size(494, 362);
-            this.tabControlMachines.TabIndex = 10;
-            // 
-            // tabPageMachines
-            // 
-            this.tabPageMachines.Controls.Add(this.dataGridMachines);
-            this.tabPageMachines.Location = new System.Drawing.Point(4, 22);
-            this.tabPageMachines.Name = "tabPageMachines";
-            this.tabPageMachines.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageMachines.Size = new System.Drawing.Size(486, 336);
-            this.tabPageMachines.TabIndex = 0;
-            this.tabPageMachines.Text = "Virtual Machines";
-            this.tabPageMachines.UseVisualStyleBackColor = true;
-            // 
-            // tabPageSettings
-            // 
-            this.tabPageSettings.Controls.Add(this.groupBoxLogging);
-            this.tabPageSettings.Controls.Add(this.groupBoxServiceConfiguration);
-            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
-            this.tabPageSettings.Name = "tabPageSettings";
-            this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(486, 336);
-            this.tabPageSettings.TabIndex = 1;
-            this.tabPageSettings.Text = "Settings";
-            this.tabPageSettings.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxLogging
-            // 
-            this.groupBoxLogging.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxLogging.Controls.Add(this.labelLogLevel);
-            this.groupBoxLogging.Controls.Add(this.comboBoxLogLevel);
-            this.groupBoxLogging.Location = new System.Drawing.Point(7, 90);
-            this.groupBoxLogging.Name = "groupBoxLogging";
-            this.groupBoxLogging.Size = new System.Drawing.Size(460, 54);
-            this.groupBoxLogging.TabIndex = 8;
-            this.groupBoxLogging.TabStop = false;
-            this.groupBoxLogging.Text = "Logging";
             // 
             // columnEnabled
             // 
@@ -272,6 +212,91 @@ namespace TrayApp.Forms
             this.columnSaveState.Name = "columnSaveState";
             this.columnSaveState.Width = 70;
             // 
+            // groupBoxServiceConfiguration
+            // 
+            this.groupBoxServiceConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxTrayIcon);
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxStartWithWindows);
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxKeepAwakeMenu);
+            this.groupBoxServiceConfiguration.Location = new System.Drawing.Point(6, 6);
+            this.groupBoxServiceConfiguration.Name = "groupBoxServiceConfiguration";
+            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(461, 98);
+            this.groupBoxServiceConfiguration.TabIndex = 3;
+            this.groupBoxServiceConfiguration.TabStop = false;
+            this.groupBoxServiceConfiguration.Text = "Configuration";
+            // 
+            // checkBoxTrayIcon
+            // 
+            this.checkBoxTrayIcon.AutoSize = true;
+            this.checkBoxTrayIcon.Location = new System.Drawing.Point(12, 47);
+            this.checkBoxTrayIcon.Name = "checkBoxTrayIcon";
+            this.checkBoxTrayIcon.Size = new System.Drawing.Size(131, 17);
+            this.checkBoxTrayIcon.TabIndex = 5;
+            this.checkBoxTrayIcon.Text = "Show system tray icon";
+            this.toolTip.SetToolTip(this.checkBoxTrayIcon, "Displays an icon in the system tray with a menu to control the virtual machines. " +
+        " If this is disabled open the app a second time to adjust the configuration.");
+            this.checkBoxTrayIcon.UseVisualStyleBackColor = true;
+            // 
+            // tabControlMachines
+            // 
+            this.tabControlMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlMachines.Controls.Add(this.tabPageMachines);
+            this.tabControlMachines.Controls.Add(this.tabPageSettings);
+            this.tabControlMachines.Location = new System.Drawing.Point(8, 8);
+            this.tabControlMachines.Name = "tabControlMachines";
+            this.tabControlMachines.SelectedIndex = 0;
+            this.tabControlMachines.Size = new System.Drawing.Size(494, 362);
+            this.tabControlMachines.TabIndex = 10;
+            // 
+            // tabPageMachines
+            // 
+            this.tabPageMachines.Controls.Add(this.dataGridMachines);
+            this.tabPageMachines.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMachines.Name = "tabPageMachines";
+            this.tabPageMachines.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageMachines.Size = new System.Drawing.Size(486, 336);
+            this.tabPageMachines.TabIndex = 0;
+            this.tabPageMachines.Text = "Virtual Machines";
+            this.tabPageMachines.UseVisualStyleBackColor = true;
+            // 
+            // tabPageSettings
+            // 
+            this.tabPageSettings.Controls.Add(this.groupBoxLogging);
+            this.tabPageSettings.Controls.Add(this.groupBoxServiceConfiguration);
+            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSettings.Name = "tabPageSettings";
+            this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSettings.Size = new System.Drawing.Size(486, 336);
+            this.tabPageSettings.TabIndex = 1;
+            this.tabPageSettings.Text = "Settings";
+            this.tabPageSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxLogging
+            // 
+            this.groupBoxLogging.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLogging.Controls.Add(this.labelLogLevel);
+            this.groupBoxLogging.Controls.Add(this.comboBoxLogLevel);
+            this.groupBoxLogging.Location = new System.Drawing.Point(7, 110);
+            this.groupBoxLogging.Name = "groupBoxLogging";
+            this.groupBoxLogging.Size = new System.Drawing.Size(460, 54);
+            this.groupBoxLogging.TabIndex = 7;
+            this.groupBoxLogging.TabStop = false;
+            this.groupBoxLogging.Text = "Logging";
+            // 
+            // buttonExit
+            // 
+            this.buttonExit.Location = new System.Drawing.Point(13, 375);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(75, 23);
+            this.buttonExit.TabIndex = 12;
+            this.buttonExit.Text = "E&xit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            this.buttonExit.Click += new System.EventHandler(this.OnExit);
+            // 
             // ConfigureForm
             // 
             this.AcceptButton = this.buttonSave;
@@ -279,13 +304,14 @@ namespace TrayApp.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(509, 411);
+            this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.tabControlMachines);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(525, 450);
             this.Name = "ConfigureForm";
-            this.Text = "Configure";
+            this.Text = "Configure VBox Headless AutoStart";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).EndInit();
             this.groupBoxServiceConfiguration.ResumeLayout(false);
             this.groupBoxServiceConfiguration.PerformLayout();
@@ -319,5 +345,7 @@ namespace TrayApp.Forms
         private DataGridViewCheckBoxColumn columnAutoStart;
         private DataGridViewCheckBoxColumn columnAutoStop;
         private DataGridViewCheckBoxColumn columnSaveState;
+        private CheckBox checkBoxTrayIcon;
+        private Button buttonExit;
     }
 }
