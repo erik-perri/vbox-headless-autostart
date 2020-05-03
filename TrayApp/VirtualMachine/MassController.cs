@@ -55,7 +55,9 @@ namespace TrayApp.VirtualMachine
                 }
                 else if (!machineController.AcpiPowerOff(machine, 90000))
                 {
-                    logger.LogError($"Failed to power off via ACPI {machine}");
+                    logger.LogError($"Failed to power off via ACPI {machine}, forcing");
+
+                    machineController.PowerOff(machine);
                 }
             }
         }
