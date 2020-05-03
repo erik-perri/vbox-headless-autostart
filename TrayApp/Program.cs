@@ -77,7 +77,12 @@ namespace TrayApp
 
                 .AddSingleton(_ =>
                 {
-                    var currentFile = Process.GetCurrentProcess().MainModule.FileName;
+                    var currentFile = Process.GetCurrentProcess().MainModule?.FileName;
+                    if (string.IsNullOrWhiteSpace(currentFile))
+                    {
+                        throw new InvalidOperationException("Unable to retrieve current process name");
+                    }
+
                     var command = $"\"{currentFile}\" --auto-start";
 
                     return new StartupManager("VBoxHeadlessAutoStart", command);
