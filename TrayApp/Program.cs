@@ -90,6 +90,7 @@ namespace TrayApp
             var locker = serviceProvider.GetService<InstanceLocker>();
             if (!locker.StartLock())
             {
+                MonitorForm.BroadcastConfigureMessage();
                 return;
             }
 
