@@ -69,6 +69,7 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
                 .AddSingleton<ConfigurationFactory>()
+                .AddSingleton<ConfigurationUpdater>()
 
                 // Shutdown monitor
                 .AddSingleton<MonitorForm>()
@@ -110,7 +111,6 @@ namespace TrayApp
                         MessageBoxButtons.OK, MessageBoxIcon.Error
                     );
                 }
-
                 return;
             }
 
