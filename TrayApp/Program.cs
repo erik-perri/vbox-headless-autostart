@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,7 +42,6 @@ namespace TrayApp
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
                     .AddSingleton<NotifyIconManager>()
-                    .AddSingleton<TrayContextMenuStrip>()
 
                 // Menu
                 .AddSingleton<TrayContextMenuStrip>()
@@ -76,7 +76,7 @@ namespace TrayApp
 
                 .AddSingleton(_ =>
                 {
-                    var currentFile = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    var currentFile = Process.GetCurrentProcess().MainModule.FileName;
                     var command = $"\"{currentFile}\" --auto-start";
 
                     return new StartupManager("VBoxHeadlessAutoStart", command);
@@ -85,11 +85,11 @@ namespace TrayApp
                 .BuildServiceProvider();
 
             var logger = serviceProvider.GetService<ILogger<TrayApplicationContext>>();
-            logger.LogTrace("TrayApp started");
+            logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} started");
 
             var appState = serviceProvider.GetService<AppState>();
             appState.OnConfigurationChange += (object sender, ConfigurationChangeEventArgs e) =>
-                // Set the log level from the configuration
+                // Update the log level from the configuration
                 LogLevelConfigurationManager.SetLogLevel(e.NewConfiguration.LogLevel);
 
             // Load the change logger so it attaches its event listeners to the app state
@@ -106,10 +106,8 @@ namespace TrayApp
                 if (!IsAutoStarting())
                 {
                     MessageBox.Show(
-                        $"Could not continue, {e.Message}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
+                        $"Could not continue, {e.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error
                     );
                 }
 
@@ -123,12 +121,12 @@ namespace TrayApp
             }
 
             // Show the shutdown monitor form so it can listen for shutdown events and block them if needed
-            serviceProvider.GetService<ShutdownMonitorForm>().Show();
+            serviceProvider.GetService<MonitorForm>().Show();
 
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
 
-            logger.LogTrace("TrayApp finished");
+            logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} finished");
 
             NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
