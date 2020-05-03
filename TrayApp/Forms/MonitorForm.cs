@@ -114,12 +114,12 @@ namespace TrayApp.Forms
             // VBoxSVC should close when it is no longer needed, if it hasn't we will attempt to kill it to prevent
             // Windows from blocking shutdown due to "VirtualBox Interface has active connections".  If we are unable
             // to kill it the process is likely owned by someone else.
-            var processesLeft = Process.GetProcesses().Where(FilterVirtualBoxProcesses);
-            if (processesLeft.Count() == 1 && processesLeft.First().ProcessName == "VBoxSVC")
+            var processesLeft = Process.GetProcesses().Where(FilterVirtualBoxProcesses).ToList();
+            if (processesLeft.Count == 1 && processesLeft[0].ProcessName == "VBoxSVC")
             {
                 try
                 {
-                    var process = processesLeft.First();
+                    var process = processesLeft[0];
 
                     // In my testing it takes 3-4 seconds for it to close after the last machine is closed, this plus
                     // the 1000ms wait above will hopefully be plenty of time if the process is going to close itself.
