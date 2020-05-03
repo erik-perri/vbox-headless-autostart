@@ -40,6 +40,7 @@
       <ComponentRef Id="comp_D0F86225EEC74D4EA28256D890E8A649" />
       <ComponentRef Id="comp_3E9678F736D1417AB7880E5E58B6CE90" />
       <ComponentRef Id="comp_2619E18B7CFB422E9DBBE68DA0ACCD6E" />
+      <ComponentRef Id="comp_25DA1397EFCF4ED2AFD86BAD36DF9F8E" />
       <ComponentRef Id="comp_8E076E57BE5B49D4B2C36D5D6A5179B8" />
     </ComponentGroup>
     <DirectoryRef Id="INSTALLFOLDER">
@@ -93,6 +94,9 @@
       </Component>
       <Component Id="comp_2619E18B7CFB422E9DBBE68DA0ACCD6E" Guid="90EB82F4-CA03-4131-A0FC-34883B4DC4F1">
         <File Id="file_92074AA646E247899490FAAC8200F837" KeyPath="yes" Source="..\TrayApp\bin\Release\netcoreapp3.1\publish\VBoxHeadlessAutoStart.runtimeconfig.json" />
+      </Component>
+      <Component Id="comp_25DA1397EFCF4ED2AFD86BAD36DF9F8E" Guid="191860B8-DEC3-458B-B2F5-E8DAB5269D84">
+        <File Id="file_B2B4BD7C2BA24F2391313F064DF1B4AE" Checksum="yes" KeyPath="yes" Source="..\TrayApp\bin\Release\netcoreapp3.1\publish\VirtualBox60.dll" />
       </Component>
       <Component Id="comp_8E076E57BE5B49D4B2C36D5D6A5179B8" Guid="C036B856-7650-403B-8A33-C7E2EE2A86D2">
         <File Id="file_99A30877F9DE4415ACE6B3E09BAE4A07" Checksum="yes" KeyPath="yes" Source="..\TrayApp\bin\Release\netcoreapp3.1\publish\VirtualBox61.dll" />
