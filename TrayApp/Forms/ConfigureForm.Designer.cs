@@ -145,7 +145,7 @@ namespace TrayApp.Forms
             this.checkBoxTrayIcon.TabIndex = 5;
             this.checkBoxTrayIcon.Text = "Show system tray icon";
             this.toolTip.SetToolTip(this.checkBoxTrayIcon, "Displays an icon in the system tray with a menu to control the virtual machines. " +
-        " If this is disabled open the app a second time to adjust the configuration.");
+        " If this is disabled reopen the application to adjust the configuration.");
             this.checkBoxTrayIcon.UseVisualStyleBackColor = true;
             // 
             // dataGridMachines
