@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using TrayApp.State;
 using TrayApp.VirtualMachine;
@@ -94,10 +93,6 @@ namespace TrayApp.Shutdown
             [DllImport("user32.dll", SetLastError = true)]
             public static extern bool ShutdownBlockReasonCreate(IntPtr hWnd,
                 [MarshalAs(UnmanagedType.LPWStr)] string reason);
-
-            [DllImport("user32.dll", SetLastError = true)]
-            public static extern bool ShutdownBlockReasonQuery(IntPtr hWnd,
-                [MarshalAs(UnmanagedType.LPWStr)] StringBuilder reason, ref uint size);
         }
     }
 }
