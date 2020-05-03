@@ -40,18 +40,20 @@ namespace TrayApp.Forms
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxTrayIcon = new System.Windows.Forms.CheckBox();
             this.dataGridMachines = new TrayApp.Forms.ConfigureForm.DoubleBufferedDataGridView();
-            this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
-            this.tabControlMachines = new System.Windows.Forms.TabControl();
-            this.tabPageMachines = new System.Windows.Forms.TabPage();
-            this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
             this.columnEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnShowInMenu = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnAutoStart = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnAutoStop = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.columnSaveState = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.groupBoxServiceConfiguration = new System.Windows.Forms.GroupBox();
+            this.tabControlMachines = new System.Windows.Forms.TabControl();
+            this.tabPageMachines = new System.Windows.Forms.TabPage();
+            this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
+            this.buttonExit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).BeginInit();
             this.groupBoxServiceConfiguration.SuspendLayout();
             this.tabControlMachines.SuspendLayout();
@@ -66,7 +68,7 @@ namespace TrayApp.Forms
             this.labelLogLevel.Location = new System.Drawing.Point(8, 24);
             this.labelLogLevel.Name = "labelLogLevel";
             this.labelLogLevel.Size = new System.Drawing.Size(54, 13);
-            this.labelLogLevel.TabIndex = 6;
+            this.labelLogLevel.TabIndex = 8;
             this.labelLogLevel.Text = "Log Level";
             // 
             // checkBoxStartWithWindows
@@ -95,16 +97,16 @@ namespace TrayApp.Forms
             this.comboBoxLogLevel.Location = new System.Drawing.Point(73, 20);
             this.comboBoxLogLevel.Name = "comboBoxLogLevel";
             this.comboBoxLogLevel.Size = new System.Drawing.Size(97, 21);
-            this.comboBoxLogLevel.TabIndex = 7;
+            this.comboBoxLogLevel.TabIndex = 9;
             // 
             // checkBoxKeepAwakeMenu
             // 
             this.checkBoxKeepAwakeMenu.AutoSize = true;
             this.checkBoxKeepAwakeMenu.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(12, 47);
+            this.checkBoxKeepAwakeMenu.Location = new System.Drawing.Point(12, 70);
             this.checkBoxKeepAwakeMenu.Name = "checkBoxKeepAwakeMenu";
             this.checkBoxKeepAwakeMenu.Size = new System.Drawing.Size(210, 17);
-            this.checkBoxKeepAwakeMenu.TabIndex = 5;
+            this.checkBoxKeepAwakeMenu.TabIndex = 6;
             this.checkBoxKeepAwakeMenu.Text = "Show keep host awake option in menu";
             this.checkBoxKeepAwakeMenu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.toolTip.SetToolTip(this.checkBoxKeepAwakeMenu, "If enabled an option to keep the host from going to sleep will be added to the tr" +
@@ -114,11 +116,11 @@ namespace TrayApp.Forms
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(407, 376);
+            this.buttonSave.Location = new System.Drawing.Point(377, 376);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(90, 23);
-            this.buttonSave.TabIndex = 8;
-            this.buttonSave.Text = "Save Changes";
+            this.buttonSave.Size = new System.Drawing.Size(120, 23);
+            this.buttonSave.TabIndex = 10;
+            this.buttonSave.Text = "&Save Configuration";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.OnSave);
             // 
@@ -126,13 +128,25 @@ namespace TrayApp.Forms
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(326, 376);
+            this.buttonCancel.Location = new System.Drawing.Point(296, 376);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 9;
-            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.TabIndex = 11;
+            this.buttonCancel.Text = "&Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.OnCancel);
+            // 
+            // checkBoxTrayIcon
+            // 
+            this.checkBoxTrayIcon.AutoSize = true;
+            this.checkBoxTrayIcon.Location = new System.Drawing.Point(12, 47);
+            this.checkBoxTrayIcon.Name = "checkBoxTrayIcon";
+            this.checkBoxTrayIcon.Size = new System.Drawing.Size(131, 17);
+            this.checkBoxTrayIcon.TabIndex = 5;
+            this.checkBoxTrayIcon.Text = "Show system tray icon";
+            this.toolTip.SetToolTip(this.checkBoxTrayIcon, "Displays an icon in the system tray with a menu to control the virtual machines. " +
+        " If this is disabled reopen the application to adjust the configuration.");
+            this.checkBoxTrayIcon.UseVisualStyleBackColor = true;
             // 
             // dataGridMachines
             // 
@@ -167,15 +181,59 @@ namespace TrayApp.Forms
             this.dataGridMachines.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.Machines_RowPrePaint);
             this.dataGridMachines.SelectionChanged += new System.EventHandler(this.Machines_SelectionChanged);
             // 
+            // columnEnabled
+            // 
+            this.columnEnabled.DataPropertyName = "Enabled";
+            this.columnEnabled.HeaderText = "Enabled";
+            this.columnEnabled.Name = "columnEnabled";
+            this.columnEnabled.Width = 60;
+            // 
+            // columnName
+            // 
+            this.columnName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnName.DataPropertyName = "Name";
+            this.columnName.HeaderText = "Name";
+            this.columnName.Name = "columnName";
+            this.columnName.ReadOnly = true;
+            // 
+            // columnShowInMenu
+            // 
+            this.columnShowInMenu.DataPropertyName = "ShowMenu";
+            this.columnShowInMenu.HeaderText = "Show in Menu";
+            this.columnShowInMenu.Name = "columnShowInMenu";
+            this.columnShowInMenu.Width = 95;
+            // 
+            // columnAutoStart
+            // 
+            this.columnAutoStart.DataPropertyName = "AutoStart";
+            this.columnAutoStart.HeaderText = "Auto-Start";
+            this.columnAutoStart.Name = "columnAutoStart";
+            this.columnAutoStart.Width = 70;
+            // 
+            // columnAutoStop
+            // 
+            this.columnAutoStop.DataPropertyName = "AutoStop";
+            this.columnAutoStop.HeaderText = "Auto-Stop";
+            this.columnAutoStop.Name = "columnAutoStop";
+            this.columnAutoStop.Width = 70;
+            // 
+            // columnSaveState
+            // 
+            this.columnSaveState.DataPropertyName = "SaveState";
+            this.columnSaveState.HeaderText = "Save State";
+            this.columnSaveState.Name = "columnSaveState";
+            this.columnSaveState.Width = 70;
+            // 
             // groupBoxServiceConfiguration
             // 
             this.groupBoxServiceConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxTrayIcon);
             this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxStartWithWindows);
             this.groupBoxServiceConfiguration.Controls.Add(this.checkBoxKeepAwakeMenu);
             this.groupBoxServiceConfiguration.Location = new System.Drawing.Point(6, 6);
             this.groupBoxServiceConfiguration.Name = "groupBoxServiceConfiguration";
-            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(461, 77);
+            this.groupBoxServiceConfiguration.Size = new System.Drawing.Size(461, 98);
             this.groupBoxServiceConfiguration.TabIndex = 3;
             this.groupBoxServiceConfiguration.TabStop = false;
             this.groupBoxServiceConfiguration.Text = "Configuration";
@@ -222,55 +280,22 @@ namespace TrayApp.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxLogging.Controls.Add(this.labelLogLevel);
             this.groupBoxLogging.Controls.Add(this.comboBoxLogLevel);
-            this.groupBoxLogging.Location = new System.Drawing.Point(7, 90);
+            this.groupBoxLogging.Location = new System.Drawing.Point(7, 110);
             this.groupBoxLogging.Name = "groupBoxLogging";
             this.groupBoxLogging.Size = new System.Drawing.Size(460, 54);
-            this.groupBoxLogging.TabIndex = 8;
+            this.groupBoxLogging.TabIndex = 7;
             this.groupBoxLogging.TabStop = false;
             this.groupBoxLogging.Text = "Logging";
             // 
-            // columnEnabled
+            // buttonExit
             // 
-            this.columnEnabled.DataPropertyName = "Enabled";
-            this.columnEnabled.HeaderText = "Enabled";
-            this.columnEnabled.Name = "columnEnabled";
-            this.columnEnabled.Width = 60;
-            // 
-            // columnName
-            // 
-            this.columnName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnName.DataPropertyName = "Name";
-            this.columnName.HeaderText = "Name";
-            this.columnName.Name = "columnName";
-            this.columnName.ReadOnly = true;
-            // 
-            // columnShowInMenu
-            // 
-            this.columnShowInMenu.DataPropertyName = "ShowMenu";
-            this.columnShowInMenu.HeaderText = "Show in Menu";
-            this.columnShowInMenu.Name = "columnShowInMenu";
-            this.columnShowInMenu.Width = 95;
-            // 
-            // columnAutoStart
-            // 
-            this.columnAutoStart.DataPropertyName = "AutoStart";
-            this.columnAutoStart.HeaderText = "Auto-Start";
-            this.columnAutoStart.Name = "columnAutoStart";
-            this.columnAutoStart.Width = 70;
-            // 
-            // columnAutoStop
-            // 
-            this.columnAutoStop.DataPropertyName = "AutoStop";
-            this.columnAutoStop.HeaderText = "Auto-Stop";
-            this.columnAutoStop.Name = "columnAutoStop";
-            this.columnAutoStop.Width = 70;
-            // 
-            // columnSaveState
-            // 
-            this.columnSaveState.DataPropertyName = "SaveState";
-            this.columnSaveState.HeaderText = "Save State";
-            this.columnSaveState.Name = "columnSaveState";
-            this.columnSaveState.Width = 70;
+            this.buttonExit.Location = new System.Drawing.Point(13, 375);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(125, 23);
+            this.buttonExit.TabIndex = 12;
+            this.buttonExit.Text = "Stop monitoring && E&xit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            this.buttonExit.Click += new System.EventHandler(this.OnExit);
             // 
             // ConfigureForm
             // 
@@ -279,13 +304,14 @@ namespace TrayApp.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(509, 411);
+            this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.tabControlMachines);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(525, 450);
             this.Name = "ConfigureForm";
-            this.Text = "Configure";
+            this.Text = "Configure VBox Headless AutoStart";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridMachines)).EndInit();
             this.groupBoxServiceConfiguration.ResumeLayout(false);
             this.groupBoxServiceConfiguration.PerformLayout();
@@ -319,5 +345,7 @@ namespace TrayApp.Forms
         private DataGridViewCheckBoxColumn columnAutoStart;
         private DataGridViewCheckBoxColumn columnAutoStop;
         private DataGridViewCheckBoxColumn columnSaveState;
+        private System.Windows.Forms.CheckBox checkBoxTrayIcon;
+        private System.Windows.Forms.Button buttonExit;
     }
 }

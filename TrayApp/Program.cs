@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TrayApp.Configuration;
@@ -42,7 +42,6 @@ namespace TrayApp
                 // Application context
                 .AddSingleton<TrayApplicationContext>()
                     .AddSingleton<NotifyIconManager>()
-                    .AddSingleton<TrayContextMenuStrip>()
 
                 // Menu
                 .AddSingleton<TrayContextMenuStrip>()
@@ -70,27 +69,42 @@ namespace TrayApp
                 .AddSingleton<IConfigurationReader, XmlConfigurationReader>()
                 .AddSingleton<IConfigurationWriter, XmlConfigurationWriter>()
                 .AddSingleton<ConfigurationFactory>()
+                .AddSingleton<ConfigurationUpdater>()
 
                 // Shutdown monitor
-                .AddSingleton<ShutdownMonitorForm>()
+                .AddSingleton<MonitorForm>()
                 .AddSingleton<ShutdownLocker>()
 
                 .AddSingleton(_ =>
                 {
-                    var currentFile = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    var currentFile = Process.GetCurrentProcess().MainModule?.FileName;
+                    if (string.IsNullOrWhiteSpace(currentFile))
+                    {
+                        throw new InvalidOperationException("Unable to retrieve current process name");
+                    }
+
                     var command = $"\"{currentFile}\" --auto-start";
 
                     return new StartupManager("VBoxHeadlessAutoStart", command);
                 })
 
+                .AddSingleton<InstanceLocker>()
+
                 .BuildServiceProvider();
 
+            var locker = serviceProvider.GetService<InstanceLocker>();
+            if (!locker.StartLock())
+            {
+                MonitorForm.BroadcastConfigureMessage();
+                return;
+            }
+
             var logger = serviceProvider.GetService<ILogger<TrayApplicationContext>>();
-            logger.LogTrace("TrayApp started");
+            logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} started");
 
             var appState = serviceProvider.GetService<AppState>();
             appState.OnConfigurationChange += (object sender, ConfigurationChangeEventArgs e) =>
-                // Set the log level from the configuration
+                // Update the log level from the configuration
                 LogLevelConfigurationManager.SetLogLevel(e.NewConfiguration.LogLevel);
 
             // Load the change logger so it attaches its event listeners to the app state
@@ -107,41 +121,34 @@ namespace TrayApp
                 if (!IsAutoStarting())
                 {
                     MessageBox.Show(
-                        $"Could not continue, {e.Message}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
+                        $"Could not continue, {e.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error
                     );
                 }
-
                 return;
             }
 
             if (IsAutoStarting())
             {
-                Task.Factory.StartNew(
-                    () => serviceProvider.GetService<MassController>().StartAll(
-                        (_, c) => c?.AutoStart == true
-                    ),
-                    CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.Default
-                );
+                var massController = serviceProvider.GetService<MassController>();
+                Task.Run(() => massController.StartAll((_, c) => c?.AutoStart == true));
             }
 
             // Show the shutdown monitor form so it can listen for shutdown events and block them if needed
-            serviceProvider.GetService<ShutdownMonitorForm>().Show();
+            serviceProvider.GetService<MonitorForm>().Show();
 
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
 
-            logger.LogTrace("TrayApp finished");
+            locker.StopLock();
+
+            logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} finished");
 
             NLog.LogManager.Flush();
             NLog.LogManager.Shutdown();
         }
 
-        private static bool IsAutoStarting()
+        public static bool IsAutoStarting()
         {
             return Array.Find(Environment.GetCommandLineArgs(), arg => arg == "--auto-start") != null;
         }

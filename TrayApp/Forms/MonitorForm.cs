@@ -2,34 +2,55 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using TrayApp.Configuration;
 using TrayApp.Shutdown;
 using TrayApp.VirtualMachine;
 
 namespace TrayApp.Forms
 {
-    public partial class ShutdownMonitorForm : Form
+    public partial class MonitorForm : Form
     {
-        private readonly ILogger<ShutdownMonitorForm> logger;
+        private readonly ILogger<MonitorForm> logger;
         private readonly ShutdownLocker shutdownMonitor;
         private readonly MassController autoController;
+        private readonly ConfigurationUpdater configurationUpdater;
 
-        public ShutdownMonitorForm(
-            ILogger<ShutdownMonitorForm> logger,
+        private static readonly uint ConfigureMessage = NativeMethods.RegisterWindowMessage(
+            $"{Assembly.GetEntryAssembly()?.GetName().Name}\\Configure"
+        );
+
+        public MonitorForm(
+            ILogger<MonitorForm> logger,
             ShutdownLocker shutdownMonitor,
-            MassController autoController
+            MassController autoController,
+            ConfigurationUpdater configurationUpdater
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.shutdownMonitor = shutdownMonitor ?? throw new ArgumentNullException(nameof(shutdownMonitor));
             this.autoController = autoController ?? throw new ArgumentNullException(nameof(autoController));
+            this.configurationUpdater = configurationUpdater ?? throw new ArgumentNullException(nameof(configurationUpdater));
 
             InitializeComponent();
         }
 
+        public static void BroadcastConfigureMessage()
+        {
+            NativeMethods.SendNotifyMessage(NativeMethods.HWND_BROADCAST, ConfigureMessage, UIntPtr.Zero, IntPtr.Zero);
+        }
+
         protected override void WndProc(ref Message m)
         {
+            if (m.Msg == ConfigureMessage)
+            {
+                configurationUpdater.ShowConfigurationForm();
+                return;
+            }
+
             switch (m.Msg)
             {
                 // When Windows asks if we're ready to end the session create a block and tell it no
@@ -169,6 +190,14 @@ namespace TrayApp.Forms
             /// is ending.
             /// </summary>
             public const int WM_ENDSESSION = 0x0016;
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            public static extern uint RegisterWindowMessage(string lpString);
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            public static extern bool SendNotifyMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, IntPtr lParam);
+
+            public static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
         }
     }
 }

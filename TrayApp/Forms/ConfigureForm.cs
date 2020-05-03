@@ -50,8 +50,9 @@ namespace TrayApp.Forms
                 comboBoxLogLevel.SelectedIndex = index;
             }
 
-            checkBoxKeepAwakeMenu.Checked = configuration.ShowKeepAwakeMenu;
             checkBoxStartWithWindows.Checked = configuration.StartWithWindows;
+            checkBoxTrayIcon.Checked = configuration.ShowTrayIcon;
+            checkBoxKeepAwakeMenu.Checked = configuration.ShowKeepAwakeMenu;
         }
 
         private void SetupDataGrid(IMachineMetadata[] machines, MachineConfiguration[] machineConfigurations)
@@ -105,6 +106,11 @@ namespace TrayApp.Forms
             dataGridMachines.DataSource = source;
         }
 
+        private void OnExit(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
         private void OnCancel(object sender, EventArgs e)
         {
             UpdatedConfiguration = null;
@@ -140,8 +146,9 @@ namespace TrayApp.Forms
             // Save the new configuration for the caller
             UpdatedConfiguration = new AppConfiguration(
                 logLevel,
-                checkBoxKeepAwakeMenu.Checked,
                 checkBoxStartWithWindows.Checked,
+                checkBoxTrayIcon.Checked,
+                checkBoxKeepAwakeMenu.Checked,
                 new ReadOnlyCollection<MachineConfiguration>(machines.ToArray())
             );
 
@@ -321,7 +328,7 @@ namespace TrayApp.Forms
             }
         }
 
-        internal class MachineRow
+        private class MachineRow
         {
             public bool Enabled { get; set; }
 
@@ -341,7 +348,7 @@ namespace TrayApp.Forms
         }
 
         // Prevent some of the flickering that occurs when hovering or changing states
-        internal class DoubleBufferedDataGridView : DataGridView
+        private class DoubleBufferedDataGridView : DataGridView
         {
             public new bool DoubleBuffered
             {

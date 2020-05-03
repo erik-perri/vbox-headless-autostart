@@ -18,8 +18,9 @@ namespace TrayApp.Configuration
         {
             return new AppConfiguration(
                 LogLevelConfigurationManager.DefaultLevel,
-                false,
                 startupManager.IsEnabled(),
+                true,
+                false,
                 new ReadOnlyCollection<MachineConfiguration>(Array.Empty<MachineConfiguration>())
             );
         }

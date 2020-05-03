@@ -12,12 +12,12 @@ namespace TrayApp.Helpers
         {
             if (string.IsNullOrWhiteSpace(keyName))
             {
-                throw new ArgumentException("Key name cannot be empty", nameof(keyName));
+                throw new ArgumentNullException(nameof(keyName));
             }
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentException("Value cannot be empty", nameof(value));
+                throw new ArgumentNullException(nameof(value));
             }
 
             this.keyName = keyName;
