@@ -39,28 +39,22 @@ namespace TrayApp.Shutdown
                 return false;
             }
 
-            string machinesLabel = "";
+            string machinesLabel = machines.Length switch
+            {
+                1 => machines[0].Name,
+                2 => string.Join(" & ", machines.Select(m => m.Name)),
+                _ => string.Join(", ", machines.Select(m => m.Name))
+            };
 
-            if (machines.Length == 1)
+            var reason = $"Shutting down {machinesLabel}";
+            if (!NativeMethods.ShutdownBlockReasonCreate(owner.Handle, reason))
             {
-                machinesLabel = machines[0].Name;
-            }
-            else if (machines.Length == 2)
-            {
-                machinesLabel = string.Join(" & ", machines.Select(m => m.Name));
-            }
-            else
-            {
-                machinesLabel = string.Join(", ", machines.Select(m => m.Name));
-            }
-
-            if (!NativeMethods.ShutdownBlockReasonCreate(owner.Handle, $"Shutting down {machinesLabel}"))
-            {
-                logger.LogError($"Failed to create shutdown block {new { LastError = Marshal.GetLastWin32Error() }}");
+                var error = Marshal.GetLastWin32Error();
+                logger.LogError($"Failed to create shutdown block \"{reason}\" {new { LastError = error }}");
                 return false;
             }
 
-            logger.LogTrace("Created shutdown block");
+            logger.LogTrace($"Created shutdown block \"{reason}\"");
             return true;
         }
 

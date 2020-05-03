@@ -35,6 +35,11 @@ namespace TrayApp.VirtualMachine
 
         public void StopAll(Func<IMachineMetadata, MachineConfiguration, bool> predicate)
         {
+            StopAll(predicate, () => { });
+        }
+
+        public void StopAll(Func<IMachineMetadata, MachineConfiguration, bool> predicate, Action updateAction)
+        {
             foreach (var machine in appState.GetMachines(predicate))
             {
                 if (!machine.IsPoweredOn)
@@ -59,6 +64,8 @@ namespace TrayApp.VirtualMachine
 
                     machineController.PowerOff(machine);
                 }
+
+                updateAction();
             }
         }
     }

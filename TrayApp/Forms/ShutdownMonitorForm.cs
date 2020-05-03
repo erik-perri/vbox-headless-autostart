@@ -48,7 +48,14 @@ namespace TrayApp.Forms
                     logger.LogTrace($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
 
                     logger.LogInformation("Stopping machines due to system shutdown");
-                    autoController.StopAll((_, c) => c?.AutoStop == true);
+                    autoController.StopAll(
+                        (_, c) => c?.AutoStop == true,
+                        () =>
+                        {
+                            // Update the shutdown lock message
+                            shutdownMonitor.CreateLock(this);
+                        }
+                    );
 
                     // If we don't wait here we end up with VirtualBox hanging the shutdown complaining about open
                     // connections
