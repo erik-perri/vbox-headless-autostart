@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TrayApp.VirtualMachine
+﻿namespace TrayApp.VirtualMachine
 {
     public interface IMachineController
     {
@@ -10,7 +8,7 @@ namespace TrayApp.VirtualMachine
 
         bool PowerOff(IMachineMetadata machine);
 
-        bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds, Action onWaitAction);
+        bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds);
 
         bool Reset(IMachineMetadata machine);
     }

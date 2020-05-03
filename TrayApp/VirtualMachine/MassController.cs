@@ -56,11 +56,7 @@ namespace TrayApp.VirtualMachine
                 {
                     machineController.SaveState(machine);
                 }
-                else if (!machineController.AcpiPowerOff(
-                    machine,
-                    90000,
-                    () => logger.LogDebug($"Waiting for power off {machine}")
-                ))
+                else if (!machineController.AcpiPowerOff(machine, 90000))
                 {
                     logger.LogError($"Failed to power off {machine}");
                 }

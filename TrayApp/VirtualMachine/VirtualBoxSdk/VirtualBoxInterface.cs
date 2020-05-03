@@ -52,7 +52,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
             return session?.SaveState().CheckForSuccess() == true;
         }
 
-        public bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds, Action onWaitAction)
+        public bool AcpiPowerOff(IMachineMetadata machine, int waitLimitInMilliseconds)
         {
             if (machine == null)
             {
@@ -77,7 +77,6 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             while (stopwatch.ElapsedMilliseconds < waitLimitInMilliseconds && session.IsLocked)
             {
-                onWaitAction();
                 Thread.Sleep(250);
             }
 

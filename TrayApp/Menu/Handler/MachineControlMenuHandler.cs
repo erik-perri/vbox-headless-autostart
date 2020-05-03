@@ -118,7 +118,7 @@ namespace TrayApp.Menu.Handler
                 new ToolStripMenuItem(
                     "ACPI Shutdown",
                     null,
-                    (object _, EventArgs __) => new Task(() => machineController.AcpiPowerOff(machine, 90000, () => { })).Start()
+                    (object _, EventArgs __) => new Task(() => machineController.AcpiPowerOff(machine, 90000)).Start()
                 ),
                 new ToolStripMenuItem(
                     "Power off",
