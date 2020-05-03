@@ -83,7 +83,15 @@ namespace TrayApp
                     return new StartupManager("VBoxHeadlessAutoStart", command);
                 })
 
+                .AddSingleton<InstanceLocker>()
+
                 .BuildServiceProvider();
+
+            var locker = serviceProvider.GetService<InstanceLocker>();
+            if (!locker.StartLock())
+            {
+                return;
+            }
 
             var logger = serviceProvider.GetService<ILogger<TrayApplicationContext>>();
             logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} started");
@@ -125,6 +133,8 @@ namespace TrayApp
 
             // Run the application
             Application.Run(serviceProvider.GetService<TrayApplicationContext>());
+
+            locker.StopLock();
 
             logger.LogTrace($"TrayApp {Process.GetCurrentProcess().Id} finished");
 
