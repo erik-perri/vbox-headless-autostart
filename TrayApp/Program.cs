@@ -59,8 +59,9 @@ namespace TrayApp
                 // Virtual machines
                 .AddSingleton<IMachineController, VirtualBoxInterface>()
                 .AddSingleton<IMachineLocator, VirtualBoxInterface>()
-                .AddSingleton(p => new VirtualBoxProxyFactory(p))
-                .AddTransient<VirtualMachine.VirtualBoxSdk.Proxy.Version61.VirtualBoxProxy>()
+                    .AddSingleton(p => new VirtualBoxProxyFactory(p))
+                        .AddTransient<VirtualMachine.VirtualBoxSdk.Proxy.Version60.VirtualBoxProxy>()
+                        .AddTransient<VirtualMachine.VirtualBoxSdk.Proxy.Version61.VirtualBoxProxy>()
                 .AddSingleton<MachineStateUpdater>()
                 .AddSingleton<MassController>()
 

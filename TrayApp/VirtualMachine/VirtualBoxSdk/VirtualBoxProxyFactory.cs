@@ -19,6 +19,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             return $"{parsedVersion.Major}.{parsedVersion.Minor}" switch
             {
+                "6.0" => serviceProvider.GetService<Proxy.Version60.VirtualBoxProxy>(),
                 "6.1" => serviceProvider.GetService<Proxy.Version61.VirtualBoxProxy>(),
                 _ => throw new InvalidInstallException($"VirtualBox {version} is not supported")
             };

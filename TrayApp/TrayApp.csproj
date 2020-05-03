@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="VirtualBox60">
+      <HintPath>..\VirtualBoxSdk\VirtualBox60.dll</HintPath>
+    </Reference>
     <Reference Include="VirtualBox61">
       <HintPath>..\VirtualBoxSdk\VirtualBox61.dll</HintPath>
     </Reference>
