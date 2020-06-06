@@ -38,7 +38,7 @@ namespace TrayApp.Shutdown
                 return false;
             }
 
-            string machinesLabel = machines.Length switch
+            var machinesLabel = machines.Length switch
             {
                 1 => machines[0].Name,
                 2 => string.Join(" & ", machines.Select(m => m.Name)),
@@ -57,7 +57,7 @@ namespace TrayApp.Shutdown
             return true;
         }
 
-        internal void RemoveLock(Control owner)
+        public void RemoveLock(Control owner)
         {
             if (owner == null)
             {
