@@ -18,6 +18,7 @@ namespace TrayApp.Forms
         private readonly ShutdownLocker shutdownMonitor;
         private readonly MassController autoController;
         private readonly ConfigurationUpdater configurationUpdater;
+        private bool shutdownLocked;
 
         private static readonly uint ConfigureMessage = NativeMethods.RegisterWindowMessage(
             $"{Assembly.GetEntryAssembly()?.GetName().Name}\\Configure"
@@ -59,6 +60,7 @@ namespace TrayApp.Forms
 
                     if (shutdownMonitor.CreateLock(this))
                     {
+                        shutdownLocked = true;
                         m.Result = new IntPtr(1);
                         return;
                     }
@@ -67,6 +69,11 @@ namespace TrayApp.Forms
                 // When Windows is actually ending the session stop all machines, remove the lock, and exit
                 case NativeMethods.WM_ENDSESSION:
                     logger.LogTrace($"WndProc received {new { Msg = "WM_ENDSESSION", m.WParam, m.LParam }}");
+
+                    if (!shutdownLocked)
+                    {
+                        break;
+                    }
 
                     logger.LogInformation("Stopping machines due to system shutdown");
                     autoController.StopAll(
