@@ -21,7 +21,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
         {
             using var instance = factory.Create(version);
 
-            return instance.Machines.Select(
+            return instance?.Machines.Select(
                 m => new MachineMetadata(m.Uuid, m.Name, m.State, m.LastStateChange, m.SessionName)
             ).ToArray<IMachineMetadata>();
         }
@@ -35,7 +35,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             using var instance = factory.Create(version);
 
-            return instance.PowerOn(machine.Uuid, headless).CheckForSuccess();
+            return instance?.PowerOn(machine.Uuid, headless).CheckForSuccess() == true;
         }
 
         public bool SaveState(IMachineMetadata machine)
@@ -47,7 +47,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             using var instance = factory.Create(version);
 
-            var session = instance.LockMachine(machine.Uuid);
+            var session = instance?.LockMachine(machine.Uuid);
 
             return session?.SaveState().CheckForSuccess() == true;
         }
@@ -61,7 +61,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             using var instance = factory.Create(version);
 
-            var session = instance.LockMachine(machine.Uuid);
+            var session = instance?.LockMachine(machine.Uuid);
             if (session == null)
             {
                 return false;
@@ -90,9 +90,9 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
                 throw new ArgumentNullException(nameof(machine));
             }
 
-            using var instance = factory.Create(version);
+            using var instance = factory?.Create(version);
 
-            var session = instance.LockMachine(machine.Uuid);
+            var session = instance?.LockMachine(machine.Uuid);
 
             return session?.PowerDown().CheckForSuccess() == true;
         }
@@ -106,7 +106,7 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
 
             using var instance = factory.Create(version);
 
-            var session = instance.LockMachine(machine.Uuid);
+            var session = instance?.LockMachine(machine.Uuid);
 
             return session?.Reset() == true;
         }

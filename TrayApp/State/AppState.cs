@@ -66,7 +66,13 @@ namespace TrayApp.State
 
         public void UpdateMachines()
         {
-            var newMachines = machineLocator.ListMachines() ?? Array.Empty<IMachineMetadata>();
+            var newMachines = machineLocator.ListMachines();
+            // If we get null the VirtualBox instance was invalid.  There is no point updating the machine state if we
+            // can't obtain it.
+            if (newMachines == null)
+            {
+                return;
+            }
 
             if (!newMachines.OrderBy(m => m.Uuid).SequenceEqual(machines.OrderBy(m => m.Uuid)))
             {

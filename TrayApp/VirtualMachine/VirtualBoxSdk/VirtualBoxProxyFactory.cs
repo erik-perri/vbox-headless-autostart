@@ -1,15 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 using TrayApp.VirtualMachine.VirtualBoxSdk.Proxy;
 
 namespace TrayApp.VirtualMachine.VirtualBoxSdk
 {
     public class VirtualBoxProxyFactory
     {
+        private readonly ILogger<VirtualBoxProxyFactory> logger;
         private readonly IServiceProvider serviceProvider;
 
-        public VirtualBoxProxyFactory(IServiceProvider serviceProvider)
+        public VirtualBoxProxyFactory(ILogger<VirtualBoxProxyFactory> logger, IServiceProvider serviceProvider)
         {
+            this.logger = logger;
             this.serviceProvider = serviceProvider;
         }
 
@@ -17,12 +21,20 @@ namespace TrayApp.VirtualMachine.VirtualBoxSdk
         {
             var parsedVersion = Version.Parse(version);
 
-            return $"{parsedVersion.Major}.{parsedVersion.Minor}" switch
+            try
             {
-                "6.0" => serviceProvider.GetService<Proxy.Version60.VirtualBoxProxy>(),
-                "6.1" => serviceProvider.GetService<Proxy.Version61.VirtualBoxProxy>(),
-                _ => throw new InvalidInstallException($"VirtualBox {version} is not supported")
-            };
+                return $"{parsedVersion.Major}.{parsedVersion.Minor}" switch
+                {
+                    "6.0" => serviceProvider.GetService<Proxy.Version60.VirtualBoxProxy>(),
+                    "6.1" => serviceProvider.GetService<Proxy.Version61.VirtualBoxProxy>(),
+                    _ => throw new InvalidInstallException($"VirtualBox {version} is not supported")
+                };
+            }
+            catch (COMException e)
+            {
+                logger.LogError(e, "Failed to create VirtualBox COM instance");
+                return null;
+            }
         }
     }
 }
