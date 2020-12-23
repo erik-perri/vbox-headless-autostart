@@ -9,6 +9,8 @@ It has only been tested on Windows 10.
 
 Icons from the [Visual Studio Image Library](https://www.google.com/search?q=site%3Amicrosoft.com+Visual+Studio+Image+Library)
 
+<img src=".docs/vbox-context-menu.png" alt="Context menu" width="329" height="250"/> <img src=".docs/vbox-config.png" alt="Config screen" width="294" height="250"/>
+
 ## Similar Projects
 
  * [VBoxVmService](https://github.com/onlyfang/VBoxVmService/)
